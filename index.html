@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDD Тренажор — Прототип</title>
+<style>
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  background: #B4B4B4;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  padding-bottom: 48px;
+}
+
+/* ══════════════════════════════════════════
+   DEMO NAV
+══════════════════════════════════════════ */
+.demo-nav {
+  position: sticky; top: 0; z-index: 9999;
+  width: 100%; background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  overflow-x: auto; box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+}
+.demo-nav::-webkit-scrollbar { display: none; }
+.dn-sep { width: 1px; height: 22px; background: #D8D8D8; flex-shrink: 0; }
+.dn-lbl { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; flex-shrink: 0; }
+.dn-btn {
+  flex-shrink: 0; padding: 6px 13px; border-radius: 20px;
+  border: 1.5px solid #222; background: white;
+  font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  transition: background 0.12s; outline: none;
+}
+.dn-btn:hover { background: #F5F5F5; }
+.dn-btn.on { background: #010101; color: white; border-color: #010101; }
+
+/* ══════════════════════════════════════════
+   PHONE FRAME
+══════════════════════════════════════════ */
+.phone-wrap { padding: 28px 0 0; }
+.phone {
+  width: 390px; height: 844px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #DDDDDD 100%);
+  border-radius: 44px; overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.12), 0 28px 72px rgba(0,0,0,0.40);
+}
+
+/* ══════════════════════════════════════════
+   SCREENS
+══════════════════════════════════════════ */
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
+.screen.on { display: flex; }
+
+/* ══════════════════════════════════════════
+   HEADER  (Figma node 1-765)
+   status-bar: 48px empty · header: 44px h-44 px-20
+══════════════════════════════════════════ */
+
+/* iOS-style status bar placeholder */
+.status-bar { height: 48px; flex-shrink: 0; }
+
+.q-hdr {
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 12px;
+  height: 44px; flex-shrink: 0;
+}
+.hdr-left { width: 84px; display: flex; align-items: center; flex-shrink: 0; }
+.hdr-back {
+  width: 32px; height: 32px; border-radius: 100px;
+  background: #010101; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; transition: opacity 0.15s;
+}
+.hdr-back:active { opacity: 0.75; }
+.hdr-title {
+  flex: 1; text-align: center; font-size: 17px; font-weight: 600;
+  color: #1a1a1a; letter-spacing: -0.408px;
+  display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  white-space: nowrap; overflow: hidden;
+}
+.hdr-chevron { flex-shrink: 0; }
+
+/* BG / RU pill — Figma: w-84 h-32 p-2, each tab w-40 */
+.lang-tog {
+  width: 84px; height: 32px; display: flex;
+  background: #010101; border-radius: 100px; padding: 2px; flex-shrink: 0;
+}
+.lang-opt {
+  width: 40px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4);
+  cursor: pointer; user-select: none; border-radius: 100px;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.2px;
+}
+.lang-opt.on { background: white; color: #1a1a1a; }
+
+/* ══════════════════════════════════════════
+   SCROLL AREA
+══════════════════════════════════════════ */
+.q-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.q-scroll::-webkit-scrollbar { display: none; }
+.q-inner {
+  min-height: 100%;
+  display: flex; flex-direction: column;
+  padding: 20px 20px 130px;   /* 130px = space for pill + action bar */
+}
+.q-top { flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.q-img {
+  width: 350px; height: 160px;
+  background: white; border-radius: 0;
+  overflow: hidden; flex-shrink: 0; align-self: center;
+  display: flex; align-items: center; justify-content: center;
+}
+.q-text {
+  font-size: 22px; font-weight: 600; color: #1a1a1a;
+  line-height: 28px; letter-spacing: 0.35px; min-height: 28px;
+}
+
+/* ── Status label — sits directly above answers, same 12px gap as between cards ── */
+.q-status {
+  width: 100%; text-align: center;
+  font-size: 12px; font-weight: 400; color: #515151;
+  background: rgba(0,0,0,0.05); border-radius: 4px;
+  padding: 4px 8px; height: 24px; white-space: nowrap;
+  font-family: "Open Sans", -apple-system, sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 12px; /* same gap as between answer cards */
+  transition: background 0.22s, color 0.22s;
+}
+.q-status.ok  { background: #057c46; color: white; }
+.q-status.err { background: #FF2D55; color: white; }
+
+.q-spacer { flex: 1; min-height: 20px; }
+
+/* ══════════════════════════════════════════
+   TEXT ANSWER CARDS
+══════════════════════════════════════════ */
+.ans-list { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+.ans-card {
+  background: white; border-radius: 12px; padding: 16px;
+  display: flex; align-items: flex-start; gap: 8px; /* Figma: gap-[8px] */
+  cursor: pointer; border: 2px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.15s;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.ans-card:active:not(.locked) { opacity: 0.8; }
+.ans-card.sel   { border-color: #515151; }
+.ans-card.right { border-color: #057c46; }
+.ans-card.fail  { border-color: #FF2D55; }
+/* Badge slides in from left edge.
+   Hidden: width:0 + margin-right:-8px cancels the flex gap → text stays at 16px from card left.
+   Shown:  width:20px + margin-right:0 → gap provides the 8px spacing. */
+.ans-badge {
+  box-sizing: border-box; /* ensures width:0 truly means 0 incl. padding */
+  width: 0; height: 20px; border-radius: 100px; padding: 2px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  overflow: hidden;
+  margin-right: -8px; /* cancel the gap: hidden badge adds 0 visual space */
+  transition: width 0.28s cubic-bezier(0.32, 0.72, 0, 1),
+              margin-right 0.28s cubic-bezier(0.32, 0.72, 0, 1),
+              background 0.15s;
+}
+.ans-card.right .ans-badge { width: 20px; margin-right: 0; background: #057c46; }
+.ans-card.fail  .ans-badge { width: 20px; margin-right: 0; background: #FF2D55; }
+.ans-txt { flex: 1; font-size: 14px; font-weight: 400; color: #1a1a1a; line-height: 20px; letter-spacing: -0.24px; }
+
+/* ══════════════════════════════════════════
+   IMAGE ANSWER GRID (2×2)
+══════════════════════════════════════════ */
+.img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex-shrink: 0; }
+.img-ans {
+  background: white; border-radius: 12px; aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: 2px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: border-color 0.15s;
+  overflow: hidden; padding: 14px; position: relative;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.img-ans:active:not(.locked) { opacity: 0.8; }
+.img-ans.sel   { border-color: #515151; }
+.img-ans.right { border-color: #057c46; }
+.img-ans.fail  { border-color: #FF2D55; }
+.img-badge {
+  position: absolute; top: 8px; left: 8px;
+  width: 20px; height: 20px; border-radius: 100px; padding: 2px;
+  display: none; align-items: center; justify-content: center;
+}
+.img-ans.right .img-badge { display: flex; background: #057c46; }
+.img-ans.fail  .img-badge { display: flex; background: #FF2D55; }
+
+/* ══════════════════════════════════════════
+   PROGRESS PILL — pinned to bottom of screen
+   Figma: node 2-1990
+   - Black pill, border-radius 28px, padding 12px 20px
+   - Top row: chevron+nums | 120px track | 32px heart
+   - Expanded: dots row appears below with 16px gap
+══════════════════════════════════════════ */
+.prog-pill {
+  position: absolute;
+  bottom: 34px; left: 20px; right: 20px;
+  z-index: 100;
+  background: #010101;
+  border-radius: 28px;
+  padding: 12px 20px;
+  display: flex; flex-direction: column;
+}
+
+/* Top row — grid keeps track perfectly centred */
+.pp-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+}
+
+/* Left: chevron + numbers */
+.pp-nav {
+  display: flex; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.pp-chevron {
+  flex-shrink: 0; opacity: 0.6;
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.prog-pill.open .pp-chevron { transform: rotate(180deg); }
+
+.pp-nums { font-size: 15px; font-weight: 400; white-space: nowrap; line-height: 1; }
+.pp-cur  { color: white; }
+.pp-tot  { color: rgba(255,255,255,0.6); }
+
+/* Center: progress track */
+.pp-track {
+  width: 120px; flex: 0 0 120px; height: 8px;
+  background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;
+}
+.pp-fill { height: 100%; background: white; border-radius: 10px; transition: width 0.3s ease; }
+
+/* Right: heart */
+.pp-right { display: flex; justify-content: flex-end; align-items: center; justify-self: end; }
+.pp-heart-btn {
+  width: 32px; height: 32px; border-radius: 100px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+.pp-heart-btn:active { transform: scale(1.2); }
+
+/* ── Dots: outer wrapper handles collapse animation ── */
+.pp-dots-wrap {
+  overflow: hidden;
+  max-height: 0;
+  margin-top: 0;
+  transition: max-height 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+              margin-top 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.prog-pill.open .pp-dots-wrap {
+  max-height: var(--dots-open-h, 64px); /* set dynamically in updateDots() */
+  margin-top: 16px;
+}
+/* Inner grid — fixed 16-col layout, always same size, centered in pill */
+.pp-dots {
+  display: grid;
+  grid-template-columns: repeat(17, 10px);
+  grid-template-rows: repeat(3, 10px);
+  gap: 8px;
+  justify-content: center; /* equal left & right margin */
+  padding: 3px 3px 8px; /* 3px sides/top for ring overflow; 8px bottom = pill-bottom-padding(12) - pill visual balance */
+}
+
+/* Dot states — Figma node 2-1991 Steps component */
+.pp-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  cursor: pointer; flex-shrink: 0;
+  transition: transform 0.1s;
+  position: relative;
+}
+.pp-dot:active { transform: scale(1.15); }
+/* not yet: dimmed white */
+.pp-dot.not-yet  { background: rgba(255,255,255,0.2); }
+/* current: container 10×10, visible ring 14×14 via ::after (Figma: inset -2px) */
+.pp-dot.current  {
+  background: transparent;
+}
+.pp-dot.current::after {
+  content: '';
+  position: absolute;
+  inset: -2px;          /* 10 + 2×2 = 14px — matches Figma */
+  border-radius: 50%;
+  border: 2px solid white;
+}
+/* answered correct */
+.pp-dot.ok  { background: #057c46; }
+/* answered wrong */
+.pp-dot.err { background: #FF2D55; }
+/* placeholder — visual only */
+.pp-dot.placeholder { cursor: default; opacity: 0.5; }
+.pp-dot.placeholder:active { transform: none; }
+
+/* ══════════════════════════════════════════
+   ACTION BAR — slides up from below
+   z-index: 200 > pill z-index: 100
+══════════════════════════════════════════ */
+.action-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: #EBEBEB;
+  border-top: 1px solid rgba(255,255,255,0.85);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.12), 0 0 4px rgba(0,0,0,0.06);
+  padding: 20px 20px 34px;
+  transform: translateY(110%);
+  transition: transform 0.36s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.action-bar.visible { transform: translateY(0); }
+.ab-row { display: flex; gap: 8px; align-items: center; }
+.ab-heart {
+  width: 56px; height: 56px; border-radius: 100px;
+  background: linear-gradient(180deg, #EBEBEB 0%, #FFFFFF 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; user-select: none;
+  transition: transform 0.15s;
+}
+.ab-heart:active { transform: scale(1.08); }
+.ab-primary {
+  flex: 1; height: 56px; border-radius: 100px;
+  background: #010101;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 16px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.3px; user-select: none;
+  transition: background 0.2s, transform 0.1s;
+}
+.ab-primary:active { transform: scale(0.97); }
+
+/* ══════════════════════════════════════════
+   OVERLAYS
+══════════════════════════════════════════ */
+.overlay {
+  position: absolute; inset: 0; z-index: 400;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+.overlay.on { opacity: 1; pointer-events: all; }
+.ov-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.2); }
+.sheet {
+  position: relative; background: #EBEBEB;
+  border-radius: 24px 24px 0 0;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.sheet::-webkit-scrollbar { display: none; }
+.overlay.on .sheet { transform: translateY(0); }
+.drag-bar { width: 44px; height: 4px; background: rgba(0,0,0,0.3); border-radius: 2px; margin: 12px auto 0; }
+.sh-inner { display: flex; flex-direction: column; gap: 32px; padding: 24px 20px 34px; }
+.sh-top { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sh-title { font-size: 22px; font-weight: 700; color: #010101; line-height: 28px; letter-spacing: 0.35px; text-align: center; width: 100%; }
+.sh-sub { font-family: "Inter", -apple-system, sans-serif; font-size: 14px; color: #1a1a1a; line-height: 20px; letter-spacing: -0.24px; text-align: center; width: 100%; }
+.sh-btns { display: flex; flex-direction: column; gap: 12px; }
+.sh-btn { width: 100%; height: 56px; border-radius: 100px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer; user-select: none; border: none; transition: transform 0.1s, opacity 0.1s; }
+.sh-btn:active { transform: scale(0.97); opacity: 0.88; }
+.sh-black { background: #010101; color: white; }
+.sh-light { background: linear-gradient(180deg, #EBEBEB 0%, #FFFFFF 100%); color: #010101; }
+
+.topics-sheet { max-height: 78vh; display: flex; flex-direction: column; overflow: hidden; }
+.sh-list-title { font-size: 22px; font-weight: 700; color: #010101; padding: 16px 20px 12px; letter-spacing: -0.3px; }
+.topic-list { overflow-y: auto; padding: 0 20px 34px; flex: 1; }
+.topic-list::-webkit-scrollbar { display: none; }
+.topic-row { display: flex; align-items: center; padding: 13px 0; border-bottom: 1px solid rgba(0,0,0,0.06); cursor: pointer; gap: 10px; transition: opacity 0.15s; }
+.topic-row:last-child { border-bottom: none; }
+.topic-row:active { opacity: 0.6; }
+.ti { flex: 1; }
+.ti-name { font-size: 15px; font-weight: 600; color: #010101; margin-bottom: 1px; }
+.ti-cnt { font-size: 12px; color: #888; }
+.t-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 8px; letter-spacing: 0.3px; white-space: nowrap; flex-shrink: 0; }
+.t-done   { background: #010101; color: white; }
+.t-active { background: #057c46; color: white; }
+
+/* ══════════════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════════════ */
+.home-inner {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 0 20px 40px; gap: 0;
+}
+.home-hero {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  padding-bottom: 8px;
+}
+.home-icon {
+  width: 80px; height: 80px; border-radius: 20px;
+  background: #010101;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.home-title {
+  font-size: 26px; font-weight: 700; color: #010101;
+  letter-spacing: -0.5px; text-align: center;
+}
+.home-sub {
+  font-size: 14px; color: #888; text-align: center; line-height: 1.5;
+}
+.home-btns {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.home-btn-exam {
+  width: 100%; height: 64px; border-radius: 100px;
+  background: #010101;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.home-btn-exam:active { opacity: 0.8; }
+.home-btn-exam span {
+  font-size: 18px; font-weight: 700; color: white; letter-spacing: 0.3px;
+}
+.home-btn-row {
+  display: flex; gap: 12px;
+}
+.home-btn-sec {
+  flex: 1; height: 56px; border-radius: 100px;
+  background: linear-gradient(180deg, #EBEBEB 0%, #FFFFFF 100%);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none;
+  transition: opacity 0.15s;
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.home-btn-sec:active { opacity: 0.75; }
+.home-btn-sec span {
+  font-size: 15px; font-weight: 600; color: #010101; letter-spacing: 0.1px;
+}
+.home-btn-weak { display: none; } /* shown only when weakSpots exist */
+
+/* Exam badge on results */
+.res-exam-badge {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.3px; text-align: center;
+}
+.res-exam-badge.pass { color: #057c46; }
+.res-exam-badge.fail { color: #FF2D55; }
+.res-score-lbl { font-size: 14px; color: #888; text-align: center; }
+
+/* ══════════════════════════════════════════
+   RESULTS SCREEN
+══════════════════════════════════════════ */
+.res-hdr {
+  display: flex; align-items: center;
+  padding: 0 20px; height: 44px; flex-shrink: 0; gap: 12px;
+}
+.res-close-btn {
+  width: 32px; height: 32px; border-radius: 100px; background: #010101;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; user-select: none;
+  transition: opacity 0.15s;
+}
+.res-close-btn:active { opacity: 0.75; }
+.res-hdr-title {
+  flex: 1; text-align: center; font-size: 17px; font-weight: 590;
+  color: #1a1a1a; letter-spacing: -0.408px;
+}
+.res-body {
+  flex: 1; overflow-y: auto; min-height: 0;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 40px; padding: 40px 20px;
+}
+.res-body::-webkit-scrollbar { display: none; }
+.res-title {
+  font-size: 28px; font-weight: 700; color: #010101;
+  text-align: center; letter-spacing: 0.35px; width: 100%; line-height: 1.25;
+}
+.ring-wrap { position: relative; width: 156px; height: 156px; flex-shrink: 0; }
+.ring-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; pointer-events: none;
+}
+.ring-pct { font-size: 36px; font-weight: 700; color: #010101; line-height: 1; }
+.ring-lbl  { font-size: 12px; font-weight: 500; color: #010101; }
+.res-stats { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.res-stat-card {
+  background: white; border-radius: 12px; height: 52px; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.res-stat-left { display: flex; align-items: center; gap: 8px; }
+.res-stat-icon {
+  width: 20px; height: 20px; border-radius: 100px; padding: 2px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.res-stat-ok  { background: #057c46; }
+.res-stat-err { background: #FF2D55; }
+.res-stat-lbl { font-size: 14px; color: #010101; }
+.res-stat-num { font-size: 20px; font-weight: 700; }
+.res-val-ok   { color: #057c46; }
+.res-val-err  { color: #FF2D55; }
+.res-footer {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 20px 34px; flex-shrink: 0; width: 100%; box-sizing: border-box;
+}
+.res-reload-btn {
+  width: 56px; height: 56px; border-radius: 100px; flex-shrink: 0;
+  background: linear-gradient(180deg, #ebebeb 0%, #ffffff 100%);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none; transition: opacity 0.15s;
+}
+.res-reload-btn:active { opacity: 0.75; }
+.res-next-btn {
+  flex: 1; height: 56px; border-radius: 100px; background: #010101;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none; transition: opacity 0.15s;
+}
+.res-next-btn:active { opacity: 0.75; }
+.res-next-btn span {
+  font-size: 16px; font-weight: 700; color: white; letter-spacing: 0.3px;
+}
+/* ══════════════════════════════════════════
+   DESKTOP INLINE PROGRESS  (mobile: hidden)
+══════════════════════════════════════════ */
+.dt-progress { display: none; }
+.dt-sidebar  { display: none; }
+
+/* ══════════════════════════════════════════
+   DESKTOP LAYOUT  ≥1024px
+══════════════════════════════════════════ */
+@media (min-width: 1024px) {
+
+  /* ── Body & container ── */
+  body {
+    background: #F2F2F7;
+    align-items: stretch;
+    padding-bottom: 0;
+  }
+
+  /* Hide phone frame chrome */
+  .demo-nav   { display: none; }
+  .phone-wrap { padding: 0; width: 100%; flex: 1; display: flex; }
+  .phone {
+    width: 100%; height: auto; min-height: 100vh;
+    border-radius: 0; box-shadow: none;
+    background: #F2F2F7;
+    position: static;
+    flex: 1;
+    display: flex; flex-direction: column;
+  }
+
+  /* Screens: static flow */
+  .screen {
+    position: static;
+    overflow: visible;
+    flex: 1;
+  }
+  .screen.on {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .status-bar { display: none; }
+
+  /* ── HOME SCREEN (desktop) ── */
+  #s-home {
+    align-items: center;
+    justify-content: center;
+  }
+  #s-home .q-hdr {
+    width: 100%;
+    max-width: 680px;
+    background: transparent;
+    border: none;
+  }
+  #s-home .home-inner {
+    max-width: 480px;
+    width: 100%;
+    padding: 0 20px 60px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ── QUIZ SCREEN (desktop: 3-column grid) ── */
+  #s-quiz {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 680px) 1fr;
+    grid-template-rows: auto 1fr;
+    /* row 1 = sticky header, row 2 = content */
+    align-items: start;
+  }
+
+  /* Header spans all 3 columns */
+  #s-quiz .q-hdr {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: sticky; top: 0; z-index: 50;
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    height: 56px;
+    padding: 0 32px;
+    cursor: default;
+  }
+  /* On desktop, title click opens sidebar topic—keep chevron but don't open overlay */
+  #s-quiz .hdr-title { cursor: default; pointer-events: none; }
+
+  /* Left sidebar */
+  .dt-sidebar {
+    display: flex; flex-direction: column;
+    grid-column: 1; grid-row: 2;
+    position: sticky; top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto; overflow-x: hidden;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    background: white;
+    padding: 16px 0;
+  }
+  .dt-sidebar::-webkit-scrollbar { display: none; }
+  .dt-topic-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.12s;
+    border-left: 3px solid transparent;
+  }
+  .dt-topic-row:hover { background: #F5F5F5; }
+  .dt-topic-row.active {
+    background: #F0F0F0;
+    border-left-color: #010101;
+  }
+  .dt-topic-num {
+    font-size: 11px; font-weight: 700; color: #888;
+    min-width: 20px; text-align: right; flex-shrink: 0;
+  }
+  .dt-topic-name {
+    font-size: 13px; font-weight: 500; color: #1a1a1a;
+    line-height: 1.3; flex: 1;
+  }
+  .dt-topic-row.active .dt-topic-num,
+  .dt-topic-row.active .dt-topic-name { color: #010101; }
+
+  /* Center content column */
+  #s-quiz .q-scroll {
+    grid-column: 2; grid-row: 2;
+    overflow: visible;  /* page-level scroll on desktop */
+    min-height: calc(100vh - 56px);
+    background: white;
+    border-right: 1px solid rgba(0,0,0,0.06);
+  }
+  #s-quiz .q-inner {
+    padding: 32px 40px 48px;
+    min-height: calc(100vh - 56px);
+    display: flex; flex-direction: column;
+  }
+
+  /* Right empty column */
+  #s-quiz .q-scroll ~ * { /* no separate right div needed */ }
+
+  /* Inline progress (desktop only) */
+  .dt-progress {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px; flex-shrink: 0;
+  }
+  .dt-prog-nums {
+    font-size: 13px; font-weight: 600; color: #888;
+    white-space: nowrap; min-width: 48px;
+  }
+  .dt-prog-track {
+    flex: 1; height: 4px;
+    background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;
+  }
+  .dt-prog-fill {
+    height: 100%; background: #010101; border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  /* Question image wider on desktop */
+  #s-quiz .q-img {
+    width: 100%; height: auto; max-height: 240px;
+    margin-bottom: 4px;
+  }
+
+  /* Hide mobile progress pill on desktop */
+  #s-quiz .prog-pill { display: none !important; }
+
+  /* Action bar: unwrap from absolute positioning */
+  #s-quiz .action-bar {
+    position: static !important;
+    transform: none !important;
+    background: transparent;
+    border: none; border-top: 1px solid rgba(0,0,0,0.06);
+    box-shadow: none;
+    padding: 20px 0 0;
+    border-radius: 0;
+    margin-top: 8px;
+  }
+  #s-quiz .action-bar.visible,
+  #s-quiz .action-bar:not(.visible) {
+    transform: none !important;
+  }
+  /* On desktop action bar is always "visible" in flow — managed by opacity instead */
+  #s-quiz .action-bar { opacity: 1; }
+
+  /* Desktop: show action bar only when there's a selection (keep .visible toggling but via opacity) */
+  /* We override: always show the bar structure, button is enabled/disabled via JS */
+  #s-quiz .ab-primary {
+    max-width: 360px;
+    height: 52px; font-size: 15px;
+    border-radius: 12px;
+  }
+  #s-quiz .ab-heart { width: 52px; height: 52px; }
+
+  /* ── RESULTS SCREEN (desktop) ── */
+  #s-results {
+    align-items: center;
+  }
+  #s-results .res-hdr {
+    width: 100%; max-width: 560px;
+    background: transparent; border: none;
+  }
+  #s-results .res-body {
+    max-width: 440px; width: 100%;
+    justify-content: center; flex: 1;
+  }
+  #s-results .res-footer {
+    max-width: 440px; width: 100%;
+    padding: 0 0 48px;
+  }
+
+} /* end @media desktop */
+</style>
+<script src="questions.js"></script>
+<script src="quiz-engine.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════ DEMO NAV ══════════════════ -->
+<div class="demo-nav">
+  <span class="dn-lbl">Тема:</span>
+  <button class="dn-btn" onclick="goHome()">🏠 Home</button>
+  <button class="dn-btn" onclick="startExam()">📝 Exam</button>
+  <button class="dn-btn" onclick="loadTopic('t1')">T1</button>
+  <button class="dn-btn" onclick="loadTopic('t3')">T3 (картинки)</button>
+  <button class="dn-btn" onclick="loadTopic('t12')">T12 (знаци)</button>
+  <button class="dn-btn" onclick="loadTopic('t17')">T17 (да/не)</button>
+  <div class="dn-sep"></div>
+  <button class="dn-btn" onclick="openOv('ov-topics')">Всички теми</button>
+  <button class="dn-btn" onclick="openOv('ov-close')">Затвори</button>
+</div>
+
+<div class="phone-wrap"><div class="phone" id="phone">
+
+<!-- ══════ REUSABLE SVG SYMBOLS ══════ -->
+<svg style="display:none">
+  <symbol id="ic-check" viewBox="0 0 16 16" fill="none">
+    <path d="M3.2 8.4l3.2 3L12.8 4.8" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-x" viewBox="0 0 16 16" fill="none">
+    <path d="M4 4l8 8M12 4l-8 8" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ic-back" viewBox="0 0 20 20" fill="none">
+    <path d="M12 4L6 10L12 16" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-chevron-down" viewBox="0 0 16 16" fill="none">
+    <path d="M4 6l4 4 4-4" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <!-- white dim chevron — used in pill -->
+  <symbol id="ic-chevron-down-w" viewBox="0 0 16 16" fill="none">
+    <path d="M4 6l4 4 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-chevron-right" viewBox="0 0 8 14" fill="none">
+    <path d="M1 1l6 6-6 6" stroke="#C0C0C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <!-- heart outline dark (action bar) — favourite.svg path, dark fill -->
+  <symbol id="ic-heart" viewBox="0 0 20 20" fill="none">
+    <path d="M17.7082 7.24527C17.7081 5.16593 16.2006 3.54166 14.1665 3.54166C13.1164 3.54166 12.0177 3.86589 10.4417 5.44188C10.1977 5.68596 9.80202 5.68596 9.55794 5.44188C7.98195 3.86589 6.88332 3.54166 5.83317 3.54166C3.79904 3.54166 2.29155 5.16593 2.2915 7.24527C2.2915 8.81333 3.31969 10.5732 4.76058 12.2298C6.17844 13.86 7.89229 15.2741 9.04932 16.1393C9.61853 16.565 10.3811 16.565 10.9504 16.1393C12.1074 15.2741 13.8212 13.86 15.2391 12.2298C16.68 10.5732 17.7082 8.81333 17.7082 7.24527ZM18.9582 7.24527C18.9582 9.29419 17.6581 11.3533 16.1823 13.0501C14.6836 14.7733 12.8923 16.2474 11.6982 17.1403C10.6853 17.8976 9.31442 17.8976 8.30143 17.1403C7.10742 16.2474 5.31612 14.7733 3.81738 13.0501C2.34159 11.3533 1.0415 9.29419 1.0415 7.24527C1.04155 4.54334 3.0428 2.29166 5.83317 2.29166C7.1597 2.29166 8.44469 2.71889 9.99984 4.13736C11.555 2.71889 12.84 2.29166 14.1665 2.29166C16.9569 2.29166 18.9581 4.54334 18.9582 7.24527Z" fill="#010101"/>
+  </symbol>
+  <!-- heart outline white (pill) — favourite.svg path, white fill -->
+  <symbol id="ic-heart-w" viewBox="0 0 20 20" fill="none">
+    <path d="M17.7082 7.24527C17.7081 5.16593 16.2006 3.54166 14.1665 3.54166C13.1164 3.54166 12.0177 3.86589 10.4417 5.44188C10.1977 5.68596 9.80202 5.68596 9.55794 5.44188C7.98195 3.86589 6.88332 3.54166 5.83317 3.54166C3.79904 3.54166 2.29155 5.16593 2.2915 7.24527C2.2915 8.81333 3.31969 10.5732 4.76058 12.2298C6.17844 13.86 7.89229 15.2741 9.04932 16.1393C9.61853 16.565 10.3811 16.565 10.9504 16.1393C12.1074 15.2741 13.8212 13.86 15.2391 12.2298C16.68 10.5732 17.7082 8.81333 17.7082 7.24527ZM18.9582 7.24527C18.9582 9.29419 17.6581 11.3533 16.1823 13.0501C14.6836 14.7733 12.8923 16.2474 11.6982 17.1403C10.6853 17.8976 9.31442 17.8976 8.30143 17.1403C7.10742 16.2474 5.31612 14.7733 3.81738 13.0501C2.34159 11.3533 1.0415 9.29419 1.0415 7.24527C1.04155 4.54334 3.0428 2.29166 5.83317 2.29166C7.1597 2.29166 8.44469 2.71889 9.99984 4.13736C11.555 2.71889 12.84 2.29166 14.1665 2.29166C16.9569 2.29166 18.9581 4.54334 18.9582 7.24527Z" fill="white"/>
+  </symbol>
+  <!-- heart filled pink (both, favourited) — favourite_selected.svg -->
+  <symbol id="ic-heart-fill" viewBox="0 0 20 20" fill="none">
+    <path d="M18.9582 7.24527C18.9582 9.29419 17.6581 11.3533 16.1823 13.0501C14.6836 14.7733 12.8923 16.2474 11.6982 17.1403C10.6853 17.8976 9.31442 17.8976 8.30143 17.1403C7.10742 16.2474 5.31612 14.7733 3.81738 13.0501C2.34159 11.3533 1.0415 9.29419 1.0415 7.24527C1.04155 4.54334 3.0428 2.29166 5.83317 2.29166C7.1597 2.29166 8.44469 2.71889 9.99984 4.13736C11.555 2.71889 12.84 2.29166 14.1665 2.29166C16.9569 2.29166 18.9581 4.54334 18.9582 7.24527Z" fill="#FF2D55"/>
+  </symbol>
+</svg>
+
+
+<!-- ══════════════════════════════════════
+     HOME SCREEN
+══════════════════════════════════════════ -->
+<div class="screen on" id="s-home">
+  <div class="status-bar"></div>
+  <div class="q-hdr">
+    <div class="hdr-left"></div>
+    <div class="hdr-title" style="cursor:default">
+      <span id="home-hdr-lbl">ПДД Тренажор</span>
+    </div>
+    <div class="lang-tog">
+      <div class="lang-opt on" data-lang="BG" onclick="swapLang('BG')">BG</div>
+      <div class="lang-opt"    data-lang="RU" onclick="swapLang('RU')">RU</div>
+    </div>
+  </div>
+  <div class="home-inner">
+    <div class="home-hero">
+      <div class="home-icon">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="18" stroke="white" stroke-width="3"/>
+          <path d="M22 13v9l6 3" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="home-title" id="home-title">Подготви се за изпита</div>
+      <div class="home-sub" id="home-sub">1514 въпроса · 19 теми · BG/RU</div>
+    </div>
+    <div class="home-btns">
+      <div class="home-btn-exam" onclick="startExam()">
+        <span id="home-btn-exam-lbl">Започни изпит</span>
+      </div>
+      <div class="home-btn-row">
+        <div class="home-btn-sec" onclick="openOv('ov-topics')">
+          <span id="home-btn-topics-lbl">По теми</span>
+        </div>
+        <div class="home-btn-sec home-btn-weak" id="home-btn-weak" onclick="loadWeakSpots()">
+          <span id="home-btn-weak-lbl">Слаби места</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     UNIFIED QUIZ SCREEN
+══════════════════════════════════════════ -->
+<div class="screen" id="s-quiz">
+  <div class="status-bar"></div>
+  <div class="q-hdr">
+    <div class="hdr-left">
+      <button class="hdr-back" onclick="openOv('ov-close')">
+        <svg width="16" height="16"><use href="#ic-back"/></svg>
+      </button>
+    </div>
+    <div class="hdr-title" onclick="openOv('ov-topics')" id="hdr-topic-title">
+      Тема 1
+      <svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>
+    </div>
+    <div class="lang-tog">
+      <div class="lang-opt on" data-lang="BG" onclick="swapLang('BG')">BG</div>
+      <div class="lang-opt" data-lang="RU" onclick="swapLang('RU')">RU</div>
+    </div>
+  </div>
+  <!-- Desktop sidebar — hidden on mobile via CSS -->
+  <div class="dt-sidebar" id="dt-sidebar"></div>
+
+  <div class="q-scroll">
+    <div class="q-inner">
+      <!-- Inline progress — shown on desktop, hidden on mobile -->
+      <div class="dt-progress" id="dt-progress">
+        <span class="dt-prog-nums" id="dt-prog-nums">1 / 45</span>
+        <div class="dt-prog-track"><div class="dt-prog-fill" id="dt-prog-fill" style="width:1%"></div></div>
+      </div>
+
+      <div class="q-img" id="qi-quiz" style="display:none"></div>
+      <div class="q-top">
+        <p class="q-text" id="qt-quiz">Зареждане…</p>
+      </div>
+      <div class="q-spacer"></div>
+      <div class="q-status" id="qs-quiz">Въпросът има 1 верен отговор</div>
+      <div class="ans-list" id="al-quiz"></div>
+      <div class="img-grid" id="ag-quiz" style="display:none"></div>
+    </div>
+  </div>
+  <div class="prog-pill" id="pp-quiz">
+    <div class="pp-row">
+      <button class="pp-nav" onclick="togglePill()">
+        <svg class="pp-chevron" width="16" height="16"><use href="#ic-chevron-down-w"/></svg>
+        <span class="pp-nums"><span class="pp-cur" id="pc-quiz">1</span><span class="pp-tot" id="pt-quiz">/84</span></span>
+      </button>
+      <div class="pp-track"><div class="pp-fill" id="pf-quiz" style="width:1%"></div></div>
+      <div class="pp-right">
+        <button class="pp-heart-btn" onclick="toggleHeart()">
+          <svg width="20" height="20"><use href="#ic-heart-w" id="phi-quiz"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="pp-dots-wrap"><div class="pp-dots" id="pd-quiz"></div></div>
+  </div>
+  <div class="action-bar">
+    <div class="ab-row">
+      <div class="ab-heart" id="ab-heart-quiz" style="display:none" onclick="toggleHeart()">
+        <svg width="24" height="24"><use href="#ic-heart" id="ahi-quiz"/></svg>
+      </div>
+      <div class="ab-primary" id="ab-btn-quiz" onclick="onAction()">Предай</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULTS SCREEN
+══════════════════════════════════════════ -->
+<div class="screen" id="s-results">
+  <div class="status-bar"></div>
+  <!-- Header -->
+  <div class="res-hdr">
+    <div class="res-close-btn" id="res-close-btn" onclick="onResClose()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 4L12 12M12 4L4 12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span id="res-hdr-title" class="res-hdr-title">Резултат</span>
+    <div style="width:32px"></div>
+  </div>
+
+  <!-- Body (vertically centered) -->
+  <div class="res-body">
+    <!-- Exam pass/fail badge (hidden in topic mode) -->
+    <div id="res-exam-verdict" style="display:none">
+      <div class="res-exam-badge" id="res-exam-badge-lbl">Издържал!</div>
+      <div class="res-score-lbl" id="res-score-lbl">48 / 54 т.</div>
+    </div>
+
+    <div class="res-title" id="res-title">Тренирайте!</div>
+
+    <!-- Progress Ring 156×156, r=62, C≈390 -->
+    <div class="ring-wrap">
+      <svg width="156" height="156" viewBox="0 0 156 156">
+        <circle cx="78" cy="78" r="62" fill="none" stroke="#EBEBEB" stroke-width="14"/>
+        <circle id="ring-arc" cx="78" cy="78" r="62" fill="none" stroke="#FF2D55"
+          stroke-width="14" stroke-dasharray="0 390" stroke-linecap="round"
+          transform="rotate(-90 78 78)"/>
+      </svg>
+      <div class="ring-inner">
+        <span class="ring-pct" id="res-pct">0%</span>
+        <span class="ring-lbl" id="res-accuracy-lbl">точност</span>
+      </div>
+    </div>
+
+    <!-- Stats: 2 individual cards -->
+    <div class="res-stats">
+      <div class="res-stat-card">
+        <div class="res-stat-left">
+          <div class="res-stat-icon res-stat-ok">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="res-stat-lbl" id="res-lbl-ok">Верни</span>
+        </div>
+        <span class="res-stat-num res-val-ok" id="res-ok">0</span>
+      </div>
+      <div class="res-stat-card">
+        <div class="res-stat-left">
+          <div class="res-stat-icon res-stat-err">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M5 5L11 11M11 5L5 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="res-stat-lbl" id="res-lbl-err">Грешни</span>
+        </div>
+        <span class="res-stat-num res-val-err" id="res-err">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer: reload circle + action button -->
+  <div class="res-footer">
+    <div class="res-reload-btn" id="res-retry">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M21 2v6h-6" stroke="#010101" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 12a9 9 0 0115-6.7L21 8" stroke="#010101" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 22v-6h6" stroke="#010101" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21 12a9 9 0 01-15 6.7L3 16" stroke="#010101" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="res-next-btn" id="res-next-btn" onclick="onResNext()">
+      <span id="res-next-lbl">Следваща тема</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     OVERLAY: CLOSE CONFIRMATION
+══════════════════════════════════════════ -->
+<div class="overlay" id="ov-close">
+  <div class="ov-bg" onclick="closeOv('ov-close')"></div>
+  <div class="sheet">
+    <div class="drag-bar"></div>
+    <div class="sh-inner">
+      <div class="sh-top">
+        <div class="sh-title">Да затворя темата?</div>
+        <div class="sh-sub">Вашият напредък ще бъде запазен и можете да продължите по-късно.</div>
+      </div>
+      <div class="sh-btns">
+        <button class="sh-btn sh-black" onclick="closeOv('ov-close'); goTo('s-results')">Излез от темата</button>
+        <button class="sh-btn sh-light" onclick="closeOv('ov-close')">Отказ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     OVERLAY: TOPIC PICKER
+══════════════════════════════════════════ -->
+<div class="overlay" id="ov-topics">
+  <div class="ov-bg" onclick="closeOv('ov-topics')"></div>
+  <div class="sheet topics-sheet">
+    <div class="drag-bar"></div>
+    <div class="sh-list-title">Изберете тема</div>
+    <div class="topic-list" id="topics-sheet"></div>
+  </div>
+</div>
+
+</div></div><!-- /phone /phone-wrap -->
+
+<script>
+/* ════════════════════════════════════════════════════
+   DATA & STATE
+════════════════════════════════════════════════════ */
+let allQuestions  = [];
+let sessionQs     = [];
+let currentIdx    = 0;
+let isChecked     = false;
+let lang          = 'BG';
+let currentTopic  = 't1';
+let examMode      = false;   // true → exam of 45 questions
+const scores      = { ok: 0, total: 0 };
+const qData       = [];
+let   isFav       = false;
+/* ════════════════════════════════════════════════════
+   TOPICS
+════════════════════════════════════════════════════ */
+const TOPICS = [
+  {n:1,  key:'t1',  bg:'Основни понятия',                ru:'Основные понятия',                    pts:2},
+  {n:2,  key:'t2',  bg:'Пътищата и улиците',             ru:'Дороги и улицы',                       pts:2},
+  {n:3,  key:'t3',  bg:'Другите участници',              ru:'Другие участники движения',            pts:2},
+  {n:4,  key:'t4',  bg:'Регулиране на движението',       ru:'Регулирование движения',               pts:2},
+  {n:5,  key:'t5',  bg:'Разположение на ППС',            ru:'Расположение ТС на дороге',            pts:2},
+  {n:6,  key:'t6',  bg:'Скорост, дистанция',             ru:'Скорость, дистанция',                  pts:2},
+  {n:7,  key:'t7',  bg:'Маневри',                        ru:'Манёвры',                              pts:2},
+  {n:8,  key:'t8',  bg:'Кръстовище, тунел, ЖП прелез',  ru:'Перекрёсток, тоннель, ЖД переезд',    pts:2},
+  {n:9,  key:'t9',  bg:'Движение по автомагистрала',     ru:'Движение по автомагистрали',           pts:2},
+  {n:10, key:'t10', bg:'Спирки на превозните средства',  ru:'Остановки транспортных средств',       pts:2},
+  {n:11, key:'t11', bg:'Специални правила',              ru:'Специальные правила',                  pts:2},
+  {n:12, key:'t12', bg:'Престой, паркиране, МПС спряно', ru:'Стоянка, парковка, остановка',        pts:2},
+  {n:13, key:'t13', bg:'Неблагоприятно време и сезони',  ru:'Неблагоприятная погода и сезоны',      pts:2},
+  {n:14, key:'t14', bg:'Организация на пътуването',      ru:'Организация поездки',                  pts:1},
+  {n:15, key:'t15', bg:'Психо-моторни функции',          ru:'Психомоторные функции водителя',       pts:1},
+  {n:16, key:'t16', bg:'Задължения на водача',           ru:'Обязанности водителя',                 pts:1},
+  {n:17, key:'t17', bg:'Административна отговорност',    ru:'Административная ответственность',     pts:1},
+  {n:18, key:'t18', bg:'Правила при ПТП',                ru:'Правила при ДТП',                      pts:1},
+  {n:19, key:'t19', bg:'Общо устройство на МПС',         ru:'Общее устройство ТС',                  pts:1},
+];
+
+/* ════════════════════════════════════
+   UI STRINGS
+════════════════════════════════════ */
+const UI = {
+  BG: {
+    check:          'Предай',
+    next:           'Следващ въпрос',
+    result:         'Виж резултата',
+    correct:        'Вярно ✓',
+    wrong:          'Невярно ✗',
+    hasOne:         n => `Въпросът има ${n} верен${n > 1 ? 'а' : ''} отговор${n > 1 ? 'а' : ''}`,
+    success:        'Поздравления!',
+    retry_lbl:      'Тренирайте!',
+    res_suffix:     ' — Резултат',
+    stat_ok:        'Верни',
+    stat_err:       'Грешни',
+    accuracy_lbl:   'точност',
+    next_topic:     'Следваща тема',
+    topic_q:        'въпроса',
+    done_badge:     'ЗАВЪРШЕН',
+    active_badge:   'АКТИВНА',
+    topic_label:    'Тема',
+    loading:        'Зареждане…',
+    // Exam
+    exam_title:     'Изпит',
+    exam_pass:      'Издържал!',
+    exam_fail:      'Не издържал',
+    exam_retry:     'Нов изпит',
+    exam_home:      'Начало',
+    // Home
+    home_title:     'Подготви се за изпита',
+    home_sub:       '1514 въпроса · 19 теми · BG/RU',
+    home_exam:      'Започни изпит',
+    home_topics:    'По теми',
+    home_weak:      'Слаби места',
+  },
+  RU: {
+    check:          'Проверить',
+    next:           'Следующий вопрос',
+    result:         'Показать результат',
+    correct:        'Верно ✓',
+    wrong:          'Неверно ✗',
+    hasOne:         n => `Вопрос имеет ${n} верн${n > 1 ? 'ых' : 'ый'} ответ${n > 1 ? 'а' : ''}`,
+    success:        'Поздравления!',
+    retry_lbl:      'Тренируйтесь!',
+    res_suffix:     ' — Результат',
+    stat_ok:        'Верные',
+    stat_err:       'Неверные',
+    accuracy_lbl:   'точность',
+    next_topic:     'Следующая тема',
+    topic_q:        'вопросов',
+    done_badge:     'ЗАВЕРШЕНА',
+    active_badge:   'АКТИВНА',
+    topic_label:    'Тема',
+    loading:        'Загрузка…',
+    // Exam
+    exam_title:     'Экзамен',
+    exam_pass:      'Сдал!',
+    exam_fail:      'Не сдал',
+    exam_retry:     'Новый экзамен',
+    exam_home:      'На главную',
+    // Home
+    home_title:     'Подготовка к экзамену',
+    home_sub:       '1514 вопросов · 19 тем · BG/RU',
+    home_exam:      'Начать экзамен',
+    home_topics:    'По темам',
+    home_weak:      'Слабые места',
+  },
+};
+
+/* ════════════════════════════════════
+   HOME SCREEN
+════════════════════════════════════ */
+function goHome() {
+  _ensureQuestions();
+  // Show weak spots button only if there are errors in storage
+  const weak = QuizEngine.getWeakSpots(allQuestions);
+  const weakBtn = document.getElementById('home-btn-weak');
+  if (weakBtn) weakBtn.style.display = weak.length > 0 ? 'flex' : 'none';
+  refreshHomeTexts();
+  goTo('s-home');
+}
+
+function refreshHomeTexts() {
+  const u = UI[lang];
+  setText('home-title',         u.home_title);
+  setText('home-sub',           u.home_sub);
+  setText('home-btn-exam-lbl',  u.home_exam);
+  setText('home-btn-topics-lbl',u.home_topics);
+  setText('home-btn-weak-lbl',  u.home_weak);
+  // sync lang-tog on home screen
+  document.querySelectorAll('.lang-opt').forEach(o =>
+    o.classList.toggle('on', o.dataset.lang === lang));
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ════════════════════════════════════
+   EXAM MODE
+════════════════════════════════════ */
+function startExam() {
+  _ensureQuestions();
+  examMode    = true;
+  currentTopic = null;
+  closeOv('ov-topics');
+
+  const u = UI[lang];
+  const hdrTitle = document.getElementById('hdr-topic-title');
+  if (hdrTitle) hdrTitle.innerHTML =
+    `${u.exam_title}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+
+  document.getElementById('qt-quiz').textContent = u.loading;
+  document.getElementById('al-quiz').innerHTML   = '';
+  document.getElementById('ag-quiz').style.display = 'none';
+  document.getElementById('al-quiz').style.display = '';
+  goTo('s-quiz');
+
+  sessionQs  = QuizEngine.generateExam(allQuestions, 45);
+  currentIdx = 0;
+  isChecked  = false;
+  scores.ok  = 0;
+  scores.total = 0;
+  qData.length = 0;
+  sessionQs.forEach(() => qData.push({ checked: false, ok: null }));
+
+  isFav = false;
+  const ahi = document.getElementById('ahi-quiz');
+  if (ahi) ahi.setAttribute('href', '#ic-heart');
+
+  loadQuestion(0);
+}
+
+function _ensureQuestions() {
+  if (allQuestions.length === 0) {
+    if (window.QUESTIONS_DATA && window.QUESTIONS_DATA.length) {
+      allQuestions = window.QUESTIONS_DATA;
+    }
+  }
+}
+
+/* ════════════════════════════════════
+   RESULTS ACTIONS
+════════════════════════════════════ */
+function onResClose() {
+  if (examMode) goHome();
+  else          openOv('ov-topics');
+}
+
+function onResNext() {
+  if (examMode) startExam();
+  else          openOv('ov-topics');
+}
+
+/* ════════════════════════════════════
+   WEAK SPOTS (placeholder)
+════════════════════════════════════ */
+function loadWeakSpots() {
+  _ensureQuestions();
+  examMode     = false;
+  currentTopic = '__weak__';
+
+  const weak = QuizEngine.getWeakSpots(allQuestions);
+  if (weak.length === 0) { goHome(); return; }
+
+  const u = UI[lang];
+  const hdrTitle = document.getElementById('hdr-topic-title');
+  if (hdrTitle) hdrTitle.innerHTML =
+    `${lang === 'BG' ? 'Слаби места' : 'Слабые места'}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+
+  document.getElementById('qt-quiz').textContent = u.loading;
+  document.getElementById('al-quiz').innerHTML   = '';
+  document.getElementById('ag-quiz').style.display = 'none';
+  document.getElementById('al-quiz').style.display = '';
+  goTo('s-quiz');
+
+  sessionQs  = weak;
+  currentIdx = 0;
+  isChecked  = false;
+  scores.ok  = 0;
+  scores.total = 0;
+  qData.length = 0;
+  sessionQs.forEach(() => qData.push({ checked: false, ok: null }));
+
+  isFav = false;
+  const ahi = document.getElementById('ahi-quiz');
+  if (ahi) ahi.setAttribute('href', '#ic-heart');
+
+  loadQuestion(0);
+}
+
+/* ════════════════════════════════════
+   DATA LOADER
+════════════════════════════════════ */
+function loadTopic(topicKey) {
+  examMode     = false;
+  currentTopic = topicKey;
+  closeOv('ov-topics');
+
+  const t = TOPICS.find(x => x.key === topicKey);
+  const L = lang.toLowerCase();
+  const hdrTitle = document.getElementById('hdr-topic-title');
+  if (hdrTitle && t) hdrTitle.innerHTML =
+    `Тема ${t.n} — ${t[L]}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+
+  _ensureQuestions();
+  if (!allQuestions.length) {
+    document.getElementById('qt-quiz').textContent = 'Грешка при зареждане / Ошибка загрузки';
+    return;
+  }
+
+  document.getElementById('qt-quiz').textContent = UI[lang].loading;
+  document.getElementById('al-quiz').innerHTML   = '';
+  document.getElementById('ag-quiz').style.display = 'none';
+  document.getElementById('al-quiz').style.display = '';
+  goTo('s-quiz');
+
+  sessionQs = QuizEngine.filterByTopic(allQuestions, topicKey);
+  currentIdx = 0;
+  isChecked  = false;
+  scores.ok  = 0;
+  scores.total = 0;
+
+  qData.length = 0;
+  sessionQs.forEach(() => qData.push({ checked: false, ok: null }));
+
+  isFav = false;
+  const ahi = document.getElementById('ahi-quiz');
+  if (ahi) ahi.setAttribute('href', '#ic-heart');
+
+  updateDtSidebarActive();
+  loadQuestion(0);
+}
+
+/* ════════════════════════════════════
+   QUESTION TYPE HELPERS  (delegated to QuizEngine)
+════════════════════════════════════ */
+const isAnswerImages = q => QuizEngine.isAnswerImages(q);
+const isMulti        = q => QuizEngine.isMulti(q);
+
+/* ════════════════════════════════════
+   LOAD QUESTION
+════════════════════════════════════ */
+function loadQuestion(idx) {
+  const q = sessionQs[idx];
+  if (!q) return;
+  const u = UI[lang];
+
+  currentIdx = idx;
+  isChecked  = false;
+
+  const bar = document.querySelector('#s-quiz .action-bar');
+  if (bar) bar.classList.remove('visible');
+  const btn = document.getElementById('ab-btn-quiz');
+  if (btn) btn.textContent = u.check;
+  const heart = document.getElementById('ab-heart-quiz');
+  if (heart) heart.style.display = 'none';
+
+  document.getElementById('qt-quiz').textContent = QuizEngine.getQuestionText(q, lang);
+
+  // Show question image only for image-in-question type (not for answer-image type)
+  const qi = document.getElementById('qi-quiz');
+  const hasQImg = q.has_image && q.images && q.images.length > 0 && !isAnswerImages(q);
+  if (hasQImg) {
+    qi.style.display = '';
+    qi.innerHTML = `<img src="images/questions/${q.images[0]}" alt=""
+      style="max-width:100%;max-height:100%;display:block;border-radius:8px;">`;
+  } else {
+    qi.style.display = 'none';
+    qi.innerHTML = '';
+  }
+
+  const status = document.getElementById('qs-quiz');
+  if (status) {
+    const n = q.answers.filter(a => a.correct).length;
+    status.textContent = u.hasOne(n);
+    status.className   = 'q-status';
+  }
+
+  const pillCur  = document.getElementById('pc-quiz');
+  const pillTot  = document.getElementById('pt-quiz');
+  const pillFill = document.getElementById('pf-quiz');
+  if (pillCur)  pillCur.textContent  = idx + 1;
+  if (pillTot)  pillTot.textContent  = '/' + sessionQs.length;
+  if (pillFill) pillFill.style.width = ((idx + 1) / sessionQs.length * 100) + '%';
+
+  if (isAnswerImages(q)) {
+    buildImageAnswers(q);
+  } else {
+    buildTextAnswers(q);
+  }
+
+  updateDots();
+  updateDtProgress();
+
+  // Desktop: on new question, show action bar (always visible in flow)
+  // but grey out button until selection — handled via CSS pointer-events
+  if (isDesktop()) {
+    const bar = document.querySelector('#s-quiz .action-bar');
+    if (bar) bar.classList.add('visible');
+    // disable button until selection
+    const btn = document.getElementById('ab-btn-quiz');
+    if (btn) { btn.style.opacity = '0.35'; btn.style.pointerEvents = 'none'; }
+  }
+
+  const scroll = document.querySelector('#s-quiz .q-scroll');
+  if (scroll) scroll.scrollTop = 0;
+  else window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+/* ════════════════════════════════════
+   BUILD ANSWERS
+════════════════════════════════════ */
+function buildTextAnswers(q) {
+  const list = document.getElementById('al-quiz');
+  const grid = document.getElementById('ag-quiz');
+  list.style.display = '';
+  grid.style.display = 'none';
+
+  const multi = isMulti(q);
+  if (multi) {
+    list.dataset.required = q.answers.filter(a => a.correct).length;
+  } else {
+    delete list.dataset.required;
+  }
+
+  list.innerHTML = q.answers.map(a => `
+    <div class="ans-card" data-ok="${a.correct?1:0}"
+         onclick="pickAns(this,'${multi?'multi':'single'}')">
+      <div class="ans-badge">
+        <svg width="16" height="16"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>
+      </div>
+      <span class="ans-txt">${QuizEngine.getAnswerText(a, lang)}</span>
+    </div>`).join('');
+}
+
+function buildImageAnswers(q) {
+  const list = document.getElementById('al-quiz');
+  const grid = document.getElementById('ag-quiz');
+  list.style.display = 'none';
+  grid.style.display = '';
+
+  grid.innerHTML = q.answers.map(a => `
+    <div class="img-ans" data-ok="${a.correct?1:0}" onclick="pickImg(this)">
+      <div class="img-badge">
+        <svg width="16" height="16"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>
+      </div>
+      <img src="images/questions/${a.image}" alt=""
+           style="max-width:100%;display:block;border-radius:6px;">
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════
+   REFRESH TEXTS  (language switch)
+════════════════════════════════════ */
+function refreshTexts() {
+  if (!sessionQs.length) return;
+  const q = sessionQs[currentIdx];
+  const u = UI[lang];
+
+  document.getElementById('qt-quiz').textContent = QuizEngine.getQuestionText(q, lang);
+
+  if (!isAnswerImages(q)) {
+    document.querySelectorAll('#al-quiz .ans-txt').forEach((el, i) => {
+      if (q.answers[i]) el.textContent = QuizEngine.getAnswerText(q.answers[i], lang);
+    });
+  }
+
+  const status = document.getElementById('qs-quiz');
+  if (status) {
+    if (isChecked && qData[currentIdx]?.checked) {
+      status.textContent = qData[currentIdx].ok ? u.correct : u.wrong;
+    } else {
+      const n = q.answers.filter(a => a.correct).length;
+      status.textContent = u.hasOne(n);
+    }
+  }
+
+  const btn = document.getElementById('ab-btn-quiz');
+  if (btn) {
+    if (isChecked) {
+      btn.textContent = currentIdx < sessionQs.length - 1 ? u.next : u.result;
+    } else {
+      btn.textContent = u.check;
+    }
+  }
+
+  const hdrTitle = document.getElementById('hdr-topic-title');
+  if (hdrTitle) {
+    if (examMode) {
+      hdrTitle.innerHTML = `${UI[lang].exam_title}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+    } else if (currentTopic === '__weak__') {
+      hdrTitle.innerHTML = `${lang === 'BG' ? 'Слаби места' : 'Слабые места'}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+    } else {
+      const t = TOPICS.find(x => x.key === currentTopic);
+      if (t) hdrTitle.innerHTML = `Тема ${t.n} — ${t[lang.toLowerCase()]}<svg width="16" height="16" class="hdr-chevron"><use href="#ic-chevron-down"/></svg>`;
+    }
+  }
+}
+
+/* ════════════════════════════════════
+   PROGRESS PILL
+════════════════════════════════════ */
+function togglePill() {
+  document.getElementById('pp-quiz')?.classList.toggle('open');
+}
+
+function updateDots() {
+  const el = document.getElementById('pd-quiz');
+  if (!el) return;
+  el.innerHTML = sessionQs.map((_, i) => {
+    const d = qData[i];
+    let cls;
+    if (i === currentIdx)                      cls = 'current';
+    else if (d?.checked && d.ok === true)      cls = 'ok';
+    else if (d?.checked && d.ok === false)     cls = 'err';
+    else                                       cls = 'not-yet';
+    return `<div class="pp-dot ${cls}" onclick="jumpToQ(${i})" title="${i+1}"></div>`;
+  }).join('');
+
+  // Set dynamic max-height for the dots wrapper based on actual row count
+  const COLS = 17, DOT = 10, GAP = 8;
+  const rows = Math.ceil(sessionQs.length / COLS);
+  const h    = rows * DOT + (rows - 1) * GAP + 11; // 11 = 3px top + 8px bottom padding
+  document.getElementById('pp-quiz')?.style.setProperty('--dots-open-h', h + 'px');
+}
+
+function jumpToQ(idx) {
+  document.getElementById('pp-quiz')?.classList.remove('open');
+  if (idx === currentIdx) return;
+  const wasChecked = qData[idx]?.checked || false;
+  isChecked = wasChecked;
+  loadQuestion(idx);
+  if (wasChecked) displayCheckedState(idx);
+}
+
+/* ════════════════════════════════════
+   DISPLAY CHECKED STATE  (navigate to answered Q)
+════════════════════════════════════ */
+function displayCheckedState(idx) {
+  const q = sessionQs[idx];
+  const u = UI[lang];
+  const allOk = qData[idx].ok;
+
+  const sel = isAnswerImages(q) ? '#ag-quiz .img-ans' : '#al-quiz .ans-card';
+  document.querySelectorAll(sel).forEach(c => {
+    c.classList.add('locked');
+    if (c.dataset.ok === '1') c.classList.add('right');
+  });
+
+  const status = document.getElementById('qs-quiz');
+  if (status) {
+    status.textContent = allOk ? u.correct : u.wrong;
+    status.className   = 'q-status ' + (allOk ? 'ok' : 'err');
+  }
+  const btn = document.getElementById('ab-btn-quiz');
+  if (btn) btn.textContent = idx < sessionQs.length - 1 ? u.next : u.result;
+  const heart = document.getElementById('ab-heart-quiz');
+  if (heart) heart.style.display = 'flex';
+  const bar = document.querySelector('#s-quiz .action-bar');
+  if (bar) bar.classList.add('visible');
+  if (isDesktop() && btn) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = '';
+  }
+}
+
+/* ════════════════════════════════════
+   ANSWER SELECTION
+════════════════════════════════════ */
+function pickAns(card, type) {
+  if (isChecked) return;
+  const list = card.closest('.ans-list');
+  const bar  = card.closest('.screen').querySelector('.action-bar');
+  const pill = card.closest('.screen').querySelector('.prog-pill');
+  if (pill) pill.classList.remove('open');
+
+  if (type === 'single') {
+    const was = card.classList.contains('sel');
+    list.querySelectorAll('.ans-card').forEach(c => c.classList.remove('sel'));
+    if (!was) card.classList.add('sel');
+  } else {
+    card.classList.toggle('sel');
+  }
+
+  const required = list.dataset.required ? parseInt(list.dataset.required) : 0;
+  const ready = required
+    ? list.querySelectorAll('.ans-card.sel').length === required
+    : !!list.querySelector('.ans-card.sel');
+  if (bar) bar.classList.toggle('visible', ready);
+  // Desktop: enable/disable the submit button based on selection
+  if (isDesktop()) {
+    const btn = document.getElementById('ab-btn-quiz');
+    if (btn) {
+      btn.style.opacity       = ready ? '1' : '0.35';
+      btn.style.pointerEvents = ready ? '' : 'none';
+    }
+  }
+}
+
+function pickImg(card) {
+  if (isChecked) return;
+  const grid = card.closest('.img-grid');
+  const bar  = card.closest('.screen').querySelector('.action-bar');
+  const pill = card.closest('.screen').querySelector('.prog-pill');
+  if (pill) pill.classList.remove('open');
+
+  const was = card.classList.contains('sel');
+  grid.querySelectorAll('.img-ans').forEach(c => c.classList.remove('sel'));
+  if (!was) card.classList.add('sel');
+
+  const ready = !!grid.querySelector('.img-ans.sel');
+  if (bar) bar.classList.toggle('visible', ready);
+  if (isDesktop()) {
+    const btn = document.getElementById('ab-btn-quiz');
+    if (btn) {
+      btn.style.opacity       = ready ? '1' : '0.35';
+      btn.style.pointerEvents = ready ? '' : 'none';
+    }
+  }
+}
+
+/* ════════════════════════════════════
+   ACTION BUTTON
+════════════════════════════════════ */
+function onAction() {
+  if (isChecked) nextQ();
+  else           checkAnswer();
+}
+
+function checkAnswer() {
+  const q = sessionQs[currentIdx];
+  const u = UI[lang];
+  isChecked = true;
+  let allOk = true;
+
+  if (isAnswerImages(q)) {
+    document.querySelectorAll('#ag-quiz .img-ans').forEach(card => {
+      card.classList.add('locked');
+      const isOk  = card.dataset.ok === '1';
+      const isSel = card.classList.contains('sel');
+      card.classList.remove('sel');
+      if (isOk)         card.classList.add('right');
+      else if (isSel) { card.classList.add('fail'); allOk = false; }
+    });
+  } else if (isMulti(q)) {
+    let missed = false;
+    document.querySelectorAll('#al-quiz .ans-card').forEach(card => {
+      card.classList.add('locked');
+      const isOk  = card.dataset.ok === '1';
+      const isSel = card.classList.contains('sel');
+      card.classList.remove('sel');
+      if (isOk) { card.classList.add('right'); if (!isSel) missed = true; }
+      else if (isSel) { card.classList.add('fail'); allOk = false; }
+    });
+    if (missed) allOk = false;
+  } else {
+    document.querySelectorAll('#al-quiz .ans-card').forEach(card => {
+      card.classList.add('locked');
+      const isOk  = card.dataset.ok === '1';
+      const isSel = card.classList.contains('sel');
+      card.classList.remove('sel');
+      if (isOk)         card.classList.add('right');
+      else if (isSel) { card.classList.add('fail'); allOk = false; }
+    });
+  }
+
+  if (!qData[currentIdx].checked) {
+    scores.total++;
+    if (allOk) scores.ok++;
+    QuizEngine.recordAttempt(sessionQs[currentIdx].id, allOk);
+  }
+  qData[currentIdx] = { checked: true, ok: allOk };
+  updateDots();
+
+  const status = document.getElementById('qs-quiz');
+  if (status) {
+    status.textContent = allOk ? u.correct : u.wrong;
+    status.className   = 'q-status ' + (allOk ? 'ok' : 'err');
+  }
+  const btn = document.getElementById('ab-btn-quiz');
+  if (btn) btn.textContent = currentIdx < sessionQs.length - 1 ? u.next : u.result;
+  const heart = document.getElementById('ab-heart-quiz');
+  if (heart) heart.style.display = 'flex';
+  // Desktop: re-enable button after checking answer
+  if (isDesktop() && btn) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = '';
+  }
+}
+
+function nextQ() {
+  if (currentIdx < sessionQs.length - 1) {
+    loadQuestion(currentIdx + 1);
+  } else {
+    showResults();
+  }
+}
+
+/* ════════════════════════════════════
+   RESULTS
+════════════════════════════════════ */
+function showResults() {
+  refreshResults();
+  if (examMode) {
+    document.getElementById('res-retry').onclick = () => startExam();
+  } else if (currentTopic === '__weak__') {
+    document.getElementById('res-retry').onclick = () => loadWeakSpots();
+  } else {
+    document.getElementById('res-retry').onclick = () => loadTopic(currentTopic);
+  }
+  goTo('s-results');
+}
+
+function refreshResults() {
+  const u   = UI[lang];
+  const pct = scores.total > 0 ? Math.round(scores.ok / scores.total * 100) : 0;
+  const err = scores.total - scores.ok;
+  const C   = 390;
+
+  if (examMode) {
+    // ── Exam mode: show points score ──
+    const earnedPts = QuizEngine.calculateScore(
+      sessionQs.map((q, i) => ({ correct: qData[i]?.ok || false, question: q }))
+    );
+    const maxPts = QuizEngine.maxScore(sessionQs);
+    const PASS_THRESHOLD = 48;
+    const passed = earnedPts >= PASS_THRESHOLD;
+
+    const verdict  = document.getElementById('res-exam-verdict');
+    const badgeLbl = document.getElementById('res-exam-badge-lbl');
+    const scoreLbl = document.getElementById('res-score-lbl');
+    if (verdict)  verdict.style.display  = 'block';
+    if (badgeLbl) {
+      badgeLbl.textContent  = passed ? u.exam_pass : u.exam_fail;
+      badgeLbl.className    = 'res-exam-badge ' + (passed ? 'pass' : 'fail');
+    }
+    if (scoreLbl) scoreLbl.textContent = `${earnedPts} / ${maxPts} т.`;
+
+    const arcColor = passed ? '#057c46' : '#FF2D55';
+    const arcLen   = Math.round(earnedPts / maxPts * C);
+
+    document.getElementById('res-title').textContent        = u.exam_title;
+    document.getElementById('res-pct').textContent          = pct + '%';
+    document.getElementById('res-accuracy-lbl').textContent = u.accuracy_lbl;
+    document.getElementById('res-hdr-title').textContent    = u.exam_title + u.res_suffix;
+    document.getElementById('res-next-lbl').textContent     = u.exam_retry;
+
+    const arc = document.getElementById('ring-arc');
+    if (arc) {
+      arc.setAttribute('stroke', arcColor);
+      arc.setAttribute('stroke-dasharray', arcLen + ' ' + C);
+    }
+  } else {
+    // ── Topic / Weak mode: show percentage ──
+    const arcLen   = scores.total > 0 ? Math.round(scores.ok / scores.total * C) : 0;
+    const arcColor = pct >= 75 ? '#057c46' : pct >= 40 ? '#FFBB3D' : '#FF2D55';
+
+    const t = TOPICS.find(x => x.key === currentTopic);
+    const topicName = t ? `${u.topic_label} ${t.n} — ${t[lang.toLowerCase()]}` : (lang === 'BG' ? 'Слаби места' : 'Слабые места');
+
+    const verdict = document.getElementById('res-exam-verdict');
+    if (verdict) verdict.style.display = 'none';
+
+    document.getElementById('res-title').textContent        = pct >= 75 ? u.success : u.retry_lbl;
+    document.getElementById('res-pct').textContent          = pct + '%';
+    document.getElementById('res-accuracy-lbl').textContent = u.accuracy_lbl;
+    document.getElementById('res-hdr-title').textContent    = topicName + u.res_suffix;
+    document.getElementById('res-next-lbl').textContent     = u.next_topic;
+
+    const arc = document.getElementById('ring-arc');
+    if (arc) {
+      arc.setAttribute('stroke', arcColor);
+      arc.setAttribute('stroke-dasharray', arcLen + ' ' + C);
+    }
+  }
+
+  document.getElementById('res-ok').textContent  = scores.ok;
+  document.getElementById('res-err').textContent = err;
+  document.getElementById('res-lbl-ok').textContent  = u.stat_ok;
+  document.getElementById('res-lbl-err').textContent = u.stat_err;
+}
+
+/* ════════════════════════════════════
+   SCREEN NAV
+════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id)?.classList.add('on');
+}
+
+/* ════════════════════════════════════
+   OVERLAYS
+════════════════════════════════════ */
+function openOv(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('on')));
+}
+function closeOv(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('on');
+  setTimeout(() => { el.style.display = 'none'; }, 350);
+}
+document.querySelectorAll('.overlay').forEach(ov => ov.style.display = 'none');
+
+/* ════════════════════════════════════
+   LANG TOGGLE
+════════════════════════════════════ */
+function swapLang(newLang) {
+  if (lang === newLang) return;
+  lang = newLang;
+  document.querySelectorAll('.lang-opt').forEach(o =>
+    o.classList.toggle('on', o.dataset.lang === newLang));
+  if (document.getElementById('s-home')?.classList.contains('on')) {
+    refreshHomeTexts();
+  } else {
+    refreshTexts();
+  }
+  if (document.getElementById('s-results')?.classList.contains('on')) refreshResults();
+  buildTopics();
+}
+
+/* ════════════════════════════════════
+   HEART TOGGLE
+════════════════════════════════════ */
+function toggleHeart() {
+  isFav = !isFav;
+  const ahi = document.getElementById('ahi-quiz');
+  if (ahi) ahi.setAttribute('href', isFav ? '#ic-heart-fill' : '#ic-heart');
+  const phi = document.getElementById('phi-quiz');
+  if (phi) phi.setAttribute('href', isFav ? '#ic-heart-fill' : '#ic-heart-w');
+}
+
+/* ════════════════════════════════════
+   TOPIC PICKER  (overlay — rebuilt on lang switch)
+════════════════════════════════════ */
+function buildTopics() {
+  const list = document.getElementById('topics-sheet');
+  if (!list) return;
+  const u = UI[lang];
+  const L = lang.toLowerCase();
+  list.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  TOPICS.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'topic-row';
+    row.onclick   = () => loadTopic(t.key);
+    row.innerHTML = `
+      <div class="ti">
+        <div class="ti-name">${u.topic_label} ${t.n} — ${t[L]}</div>
+      </div>
+      <svg width="8" height="14"><use href="#ic-chevron-right"/></svg>`;
+    frag.appendChild(row);
+  });
+  list.appendChild(frag);
+  buildDtSidebar(); // also rebuild desktop sidebar
+}
+
+/* ════════════════════════════════════
+   DESKTOP SIDEBAR
+════════════════════════════════════ */
+function buildDtSidebar() {
+  const sidebar = document.getElementById('dt-sidebar');
+  if (!sidebar) return;
+  const L = lang.toLowerCase();
+  sidebar.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  TOPICS.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'dt-topic-row' + (t.key === currentTopic ? ' active' : '');
+    row.id = 'dt-row-' + t.key;
+    row.onclick = () => loadTopic(t.key);
+    row.innerHTML = `
+      <span class="dt-topic-num">${t.n}</span>
+      <span class="dt-topic-name">${t[L]}</span>`;
+    frag.appendChild(row);
+  });
+  sidebar.appendChild(frag);
+}
+
+function updateDtSidebarActive() {
+  document.querySelectorAll('.dt-topic-row').forEach(r => r.classList.remove('active'));
+  if (currentTopic && currentTopic !== '__weak__') {
+    const activeRow = document.getElementById('dt-row-' + currentTopic);
+    if (activeRow) {
+      activeRow.classList.add('active');
+      // scroll into view if needed
+      activeRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+}
+
+/* ════════════════════════════════════
+   DESKTOP INLINE PROGRESS
+════════════════════════════════════ */
+function updateDtProgress() {
+  const nums = document.getElementById('dt-prog-nums');
+  const fill = document.getElementById('dt-prog-fill');
+  if (!nums || !fill) return;
+  const cur = currentIdx + 1;
+  const tot = sessionQs.length;
+  nums.textContent = cur + ' / ' + tot;
+  fill.style.width = (cur / tot * 100) + '%';
+}
+
+/* ════════════════════════════════════
+   DESKTOP ACTION BAR ALWAYS VISIBLE
+════════════════════════════════════ */
+function isDesktop() {
+  return window.matchMedia('(min-width: 1024px)').matches;
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+buildTopics();
+goHome();
+</script>
+</body>
+</html>

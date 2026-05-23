@@ -1,0 +1,11 @@
+# Dev
+.DS_Store
+*.log
+
+# Source files not needed in the trainer
+questions.json
+АНАЛИЗ_БИЛЕТОВ.md
+start-server.sh
+tickets/
+img/
+CONTEXT_FOR_NEXT_SESSION.md
