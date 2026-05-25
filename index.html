@@ -1004,12 +1004,16 @@ let sessionQs    = [];
    Format: { "t2_question_1_1_img_1": { type:"image"|"video", url:"/media/..." } }
    Falls back silently to {} if API not available (local dev, etc.) */
 let MEDIA_OVERRIDES = {};
-(async () => {
-  try {
-    const r = await fetch('/api/overrides', { cache: 'no-store' });
-    if (r.ok) MEDIA_OVERRIDES = await r.json();
-  } catch (_) { /* offline or static preview — no overrides */ }
-})();
+fetch('/api/overrides', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : {})
+  .then(data => {
+    MEDIA_OVERRIDES = data;
+    // Re-render current question if quiz screen is active
+    if (document.getElementById('s-quiz')?.classList.contains('on')) {
+      renderQ(currentIdx);
+    }
+  })
+  .catch(() => {});
 let currentIdx   = 0;
 let isChecked    = false;
 let lang         = 'BG';
