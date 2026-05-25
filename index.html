@@ -229,9 +229,27 @@ body {
   margin-bottom: 8px; flex-shrink: 0;
 }
 .home-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: #1a1a1a; }
-.home-sub { font-size: 14px; color: #888; line-height: 1.5; }
-.home-actions { display: flex; flex-direction: column; gap: 10px; }
-.home-row { display: flex; gap: 10px; }
+.home-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* Section label "ОБУЧЕНИЕ" */
+.home-section-label {
+  font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.5);
+  letter-spacing: 0.6px; text-transform: uppercase;
+  padding: 8px 0 2px;
+}
+/* Colored action cards */
+.home-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px; border-radius: 12px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; width: 100%; box-sizing: border-box;
+  border: none; text-align: left;
+}
+.home-card-blue { background: #c1f4ff; }
+.home-card-pink { background: #ffddd5; }
+.home-card-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.home-card-title { font-size: 18px; font-weight: 600; letter-spacing: -0.41px; color: #010101; }
+.home-card-sub   { font-size: 12px; color: rgba(1,1,1,0.55); }
 
 /* Bottom zone — random toggle + compact stats */
 .home-bottom {
@@ -653,21 +671,31 @@ body {
             </svg>
           </div>
           <div class="home-title" id="home-title">Подготви се за изпита</div>
-          <div class="home-sub" id="home-sub">1514 въпроса · 19 теми · BG/RU</div>
         </div>
         <div class="home-actions">
           <button class="btn btn-fill btn-expand" onclick="startExam()">
             <span id="home-btn-exam-lbl">Започни изпит</span>
           </button>
-          <div class="home-row">
-            <button class="btn btn-outline btn-expand" onclick="openOv('ov-topics')">
-              <span id="home-btn-topics-lbl">По теми</span>
-            </button>
-            <button class="btn btn-outline btn-expand" id="home-btn-weak"
-                    onclick="loadWeakSpots()" style="display:none">
-              <span id="home-btn-weak-lbl">Слаби места</span>
-            </button>
-          </div>
+          <div class="home-section-label" id="home-section-lbl">ОБУЧЕНИЕ</div>
+          <button class="home-card home-card-blue" onclick="openOv('ov-topics')">
+            <div class="home-card-text">
+              <div class="home-card-title" id="home-btn-topics-lbl">Тренировка по темам</div>
+              <div class="home-card-sub"   id="home-topics-sub">19 тем · 1514 вопросов</div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7.5 5L12.5 10L7.5 15" stroke="#010101" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="home-card home-card-pink" id="home-btn-weak"
+                  onclick="loadWeakSpots()" style="display:none">
+            <div class="home-card-text">
+              <div class="home-card-title" id="home-btn-weak-lbl">Работа над ошибками</div>
+              <div class="home-card-sub"   id="home-weak-sub">Добавлено 0 вопросов</div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7.5 5L12.5 10L7.5 15" stroke="#010101" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -965,8 +993,11 @@ const UI = {
     active_badge:'АКТИВНА', topic_label:'Тема', loading:'Зареждане…',
     exam_title:'Изпит', exam_pass:'Издържал!', exam_fail:'Не издържал',
     exam_retry:'Нов изпит', exam_home:'Начало',
-    home_title:'Подготви се за изпита', home_sub:'1514 въпроса · 19 теми · BG/RU',
-    home_exam:'Започни изпит', home_topics:'По теми', home_weak:'Слаби места',
+    home_title:'Подготви се за изпита',
+    home_section:'ОБУЧЕНИЕ',
+    home_topics_sub:'19 теми · 1514 въпроса',
+    home_weak_sub: n => `Добавени ${n} въпроса`,
+    home_exam:'Започни изпит', home_topics:'Трениране по теми', home_weak:'Работа върху грешките',
     close_q:'Да затворя темата?', close_sub:'Прогресът ви ще бъде запазен.',
     close_exit:'Излез', close_cancel:'Отказ',
     topics_title:'Изберете тема',
@@ -986,8 +1017,11 @@ const UI = {
     active_badge:'АКТИВНА', topic_label:'Тема', loading:'Загрузка…',
     exam_title:'Экзамен', exam_pass:'Сдал!', exam_fail:'Не сдал',
     exam_retry:'Новый экзамен', exam_home:'На главную',
-    home_title:'Подготовка к экзамену', home_sub:'1514 вопросов · 19 тем · BG/RU',
-    home_exam:'Начать экзамен', home_topics:'По темам', home_weak:'Слабые места',
+    home_title:'Подготовка к экзамену',
+    home_section:'ОБУЧЕНИЕ',
+    home_topics_sub:'19 тем · 1514 вопросов',
+    home_weak_sub: n => `Добавлено ${n} вопросов`,
+    home_exam:'Начать экзамен', home_topics:'Тренировка по темам', home_weak:'Работа над ошибками',
     close_q:'Выйти из темы?', close_sub:'Прогресс сохранится.',
     close_exit:'Выйти', close_cancel:'Отмена',
     topics_title:'Выберите тему',
@@ -1060,7 +1094,10 @@ function goHome() {
   _ensureQuestions();
   const weak = QuizEngine.getWeakSpots(allQuestions);
   const wb = document.getElementById('home-btn-weak');
-  if (wb) wb.style.display = weak.length > 0 ? 'flex' : 'none';
+  if (wb) {
+    wb.style.display = weak.length > 0 ? 'flex' : 'none';
+    setText('home-weak-sub', UI[lang].home_weak_sub(weak.length));
+  }
   refreshHomeTexts();
   refreshHomeStats();
   goTo('s-home');
@@ -1069,9 +1106,10 @@ function goHome() {
 function refreshHomeTexts() {
   const u = UI[lang];
   setText('home-title',          u.home_title);
-  setText('home-sub',            u.home_sub);
+  setText('home-section-lbl',    u.home_section);
   setText('home-btn-exam-lbl',   u.home_exam);
   setText('home-btn-topics-lbl', u.home_topics);
+  setText('home-topics-sub',     u.home_topics_sub);
   setText('home-btn-weak-lbl',   u.home_weak);
   setText('home-stats-label',    u.stats_label);
   setText('stat-topics-lbl',     u.stat_weak_lbl);
