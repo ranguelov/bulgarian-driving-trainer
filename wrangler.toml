@@ -1,5 +1,25 @@
 name = "bulgarian-driving-trainer"
 compatibility_date = "2024-01-01"
 
+# Worker entry point (handles API routes + passes static files through)
+main = "worker.js"
+
 [assets]
 directory = "."
+
+# ── KV: stores override metadata (type, url, timestamps) ─────────────────────
+# Create with: npx wrangler kv:namespace create "ADMIN_KV"
+# Then paste the returned id below.
+[[kv_namespaces]]
+binding = "ADMIN_KV"
+id = "eca0dd7ad2134e41b82e31a9accf7f8f"
+
+# ── R2: stores uploaded image/video files ─────────────────────────────────────
+# Create with: npx wrangler r2 bucket create bulgarian-media
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "bulgarian-media"
+
+# ── Admin token (secret, never commit the value) ──────────────────────────────
+# Set with: npx wrangler secret put ADMIN_TOKEN
+# (enter your chosen password when prompted)

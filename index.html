@@ -766,6 +766,10 @@ body {
       </div>
     </div>
   </div>
+  <div style="text-align:center;padding:12px 0 16px;flex-shrink:0">
+    <a href="/admin" style="font-size:11px;color:#ccc;opacity:.45;text-decoration:none;letter-spacing:.03em"
+       onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='.45'">⚙ media admin</a>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -995,6 +999,17 @@ body {
 ════════════════════════════════════════════════════ */
 let allQuestions = [];
 let sessionQs    = [];
+
+/* ── Media overrides (loaded from Cloudflare KV via Worker API) ──
+   Format: { "t2_question_1_1_img_1": { type:"image"|"video", url:"/media/..." } }
+   Falls back silently to {} if API not available (local dev, etc.) */
+let MEDIA_OVERRIDES = {};
+(async () => {
+  try {
+    const r = await fetch('/api/overrides', { cache: 'no-store' });
+    if (r.ok) MEDIA_OVERRIDES = await r.json();
+  } catch (_) { /* offline or static preview — no overrides */ }
+})();
 let currentIdx   = 0;
 let isChecked    = false;
 let lang         = 'BG';
@@ -1312,7 +1327,15 @@ function loadQuestion(idx) {
   const hasQImg = q.has_image && q.images?.length > 0 && !isAnswerImages(q);
   if (hasQImg) {
     qi.style.display='';
-    qi.innerHTML=`<img src="images/questions/${q.images[0]}" alt="" class="question-illustration">`;
+    const imgFile = q.images[0];
+    const imgKey  = imgFile.replace(/\.[^.]+$/, '');
+    const ov      = MEDIA_OVERRIDES[imgKey];
+    if (ov?.type === 'video') {
+      qi.innerHTML=`<video src="${ov.url}" class="question-illustration" style="max-height:320px;border-radius:8px;display:block;margin:auto" autoplay muted loop playsinline></video>`;
+    } else {
+      const src = ov?.url ?? `images/questions/${imgFile}`;
+      qi.innerHTML=`<img src="${src}" alt="" class="question-illustration">`;
+    }
   } else { qi.style.display='none'; qi.innerHTML=''; }
 
   // Status
@@ -1363,13 +1386,20 @@ function buildImageAnswers(q) {
   const multi = isMulti(q);
   if (multi) grid.setAttribute('data-multi','1'); else grid.removeAttribute('data-multi');
   const imgAnswers = randomMode ? QuizEngine.shuffleArray(q.answers) : q.answers;
-  grid.innerHTML = imgAnswers.map(a => `
-    <div class="img-ans" data-ok="${a.correct?1:0}" onclick="pickImg(this)">
+  grid.innerHTML = imgAnswers.map(a => {
+    const imgKey = (a.image ?? '').replace(/\.[^.]+$/, '');
+    const ov     = MEDIA_OVERRIDES[imgKey];
+    const src    = ov?.url ?? `images/questions/${a.image}`;
+    const media  = ov?.type === 'video'
+      ? `<video src="${src}" style="max-width:100%;display:block;border-radius:6px" muted autoplay loop playsinline></video>`
+      : `<img src="${src}" alt="" style="max-width:100%;display:block;border-radius:6px;">`;
+    return `<div class="img-ans" data-ok="${a.correct?1:0}" onclick="pickImg(this)">
       <div class="img-badge">
         <svg width="16" height="16"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>
       </div>
-      <img src="images/questions/${a.image}" alt="" style="max-width:100%;display:block;border-radius:6px;">
-    </div>`).join('');
+      ${media}
+    </div>`;
+  }).join('');
 }
 
 /* ════════════════════════════════════

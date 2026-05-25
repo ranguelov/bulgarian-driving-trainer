@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Admin — ПДД Тренажор</title>
+<style>
+/* ── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #0f0f1a;
+  --bg2:       #16213e;
+  --bg3:       #1e2a4a;
+  --border:    #2a3560;
+  --accent:    #4f8ef7;
+  --accent2:   #6cf;
+  --ok:        #3ecf8e;
+  --warn:      #f5a623;
+  --danger:    #e74c3c;
+  --txt:       #e8eaf6;
+  --txt2:      #8892b0;
+  --radius:    8px;
+  --nav-h:     52px;
+  --tab-h:     42px;
+}
+body {
+  font-family: "Inter", -apple-system, sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-size: 13px; line-height: 1.5;
+  min-height: 100vh;
+}
+a { color: var(--accent2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Top nav bar ─────────────────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px; height: var(--nav-h);
+}
+.topbar-title { font-weight: 700; font-size: 15px; color: var(--accent2); white-space: nowrap; }
+.topbar-status { font-size: 11px; color: var(--txt2); margin-left: auto; white-space: nowrap; }
+.topbar-status.ok  { color: var(--ok); }
+.topbar-status.err { color: var(--danger); }
+#auth-form { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+#auth-form input {
+  background: var(--bg3); border: 1px solid var(--border); color: var(--txt);
+  border-radius: var(--radius); padding: 5px 10px; font-size: 12px; width: 220px;
+}
+#auth-form input:focus { outline: none; border-color: var(--accent); }
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: var(--radius); border: none; cursor: pointer;
+  font-size: 12px; font-weight: 600; transition: opacity .15s;
+}
+.btn:hover { opacity: .85; }
+.btn-primary  { background: var(--accent); color: #fff; }
+.btn-danger   { background: var(--danger); color: #fff; }
+.btn-ghost    { background: transparent; border: 1px solid var(--border); color: var(--txt2); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 3px 8px; font-size: 11px; }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+
+/* ── Theme tabs ──────────────────────────────────────────────── */
+.tab-bar {
+  position: sticky; top: var(--nav-h); z-index: 99;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto; gap: 2px; padding: 6px 12px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  height: var(--tab-h);
+}
+.tab-bar::-webkit-scrollbar { height: 4px; }
+.tab-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.tab-btn {
+  flex-shrink: 0; padding: 4px 12px; border-radius: 6px; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 500; transition: background .15s, color .15s;
+  background: transparent; color: var(--txt2);
+  white-space: nowrap; position: relative;
+}
+.tab-btn:hover { background: var(--bg3); color: var(--txt); }
+.tab-btn.active { background: var(--accent); color: #fff; }
+.tab-badge {
+  position: absolute; top: 2px; right: 2px;
+  background: var(--ok); color: #000;
+  font-size: 9px; font-weight: 700; line-height: 1;
+  padding: 1px 3px; border-radius: 4px; pointer-events: none;
+}
+
+/* ── Table ───────────────────────────────────────────────────── */
+.main { padding: 16px; }
+.theme-section { margin-bottom: 40px; }
+.theme-header {
+  font-size: 16px; font-weight: 700; color: var(--accent2);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.theme-count { font-size: 11px; color: var(--txt2); font-weight: 400; }
+.img-table { width: 100%; border-collapse: collapse; }
+.img-table th {
+  background: var(--bg2); padding: 8px 10px; text-align: left;
+  color: var(--txt2); font-weight: 600; font-size: 11px; text-transform: uppercase;
+  border-bottom: 2px solid var(--border); white-space: nowrap;
+}
+.img-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.img-table tr:hover td { background: rgba(79,142,247,.04); }
+.col-id   { width: 180px; min-width: 140px; }
+.col-cur  { width: 220px; }
+.col-new  { width: 220px; }
+.col-type { width: 120px; }
+.col-act  { width: 140px; }
+
+/* ── Image cells ─────────────────────────────────────────────── */
+.img-thumb {
+  max-height: 120px; max-width: 200px;
+  border-radius: 6px; border: 1px solid var(--border);
+  display: block; background: var(--bg3);
+}
+.no-img { color: var(--txt2); font-size: 11px; font-style: italic; }
+.img-label { font-size: 10px; color: var(--txt2); margin-top: 4px; }
+.video-preview {
+  max-height: 120px; max-width: 200px;
+  border-radius: 6px; border: 1px solid var(--border); display: block;
+}
+
+/* ── ID cell ─────────────────────────────────────────────────── */
+.q-id { font-family: monospace; font-size: 11px; color: var(--accent2); }
+.q-num { font-size: 11px; color: var(--txt2); margin-top: 2px; }
+.q-img-idx {
+  display: inline-block; padding: 1px 5px; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--border);
+  font-size: 10px; color: var(--txt2); margin-top: 4px;
+}
+
+/* ── Type toggle ─────────────────────────────────────────────── */
+.type-toggle {
+  display: flex; gap: 4px;
+}
+.type-btn {
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 11px; font-weight: 600; transition: all .15s;
+  background: transparent; color: var(--txt2);
+}
+.type-btn:hover { border-color: var(--accent); color: var(--accent); }
+.type-btn.active-image { background: var(--accent); border-color: var(--accent); color: #fff; }
+.type-btn.active-video { background: var(--warn); border-color: var(--warn); color: #000; }
+
+/* ── Upload zone ─────────────────────────────────────────────── */
+.upload-zone {
+  border: 1px dashed var(--border); border-radius: var(--radius);
+  padding: 8px 12px; cursor: pointer; transition: border-color .15s;
+  display: flex; align-items: center; gap: 8px; color: var(--txt2); font-size: 11px;
+}
+.upload-zone:hover { border-color: var(--accent); color: var(--accent); }
+.upload-zone input[type=file] { display: none; }
+.upload-zone svg { flex-shrink: 0; }
+.upload-progress { font-size: 11px; color: var(--accent2); margin-top: 4px; }
+
+/* ── Status badges ───────────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: 2px 7px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; vertical-align: middle;
+}
+.badge-override { background: rgba(62,207,142,.15); color: var(--ok); border: 1px solid rgba(62,207,142,.3); }
+.badge-original { background: var(--bg3); color: var(--txt2); border: 1px solid var(--border); }
+
+/* ── Empty / loading ─────────────────────────────────────────── */
+.loading-msg { text-align: center; padding: 60px; color: var(--txt2); }
+.loading-spinner {
+  display: inline-block; width: 24px; height: 24px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 16px;
+  font-size: 12px; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  animation: fadein .2s ease;
+}
+.toast.ok  { border-color: var(--ok); color: var(--ok); }
+.toast.err { border-color: var(--danger); color: var(--danger); }
+@keyframes fadein { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .col-cur, .col-new { width: 160px; }
+  .col-id { width: 140px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top navigation bar ──────────────────────────────────── -->
+<nav class="topbar">
+  <div class="topbar-title">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:6px">
+      <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#4f8ef7"/>
+      <rect x="9" y="1" width="6" height="6" rx="1.5" fill="#4f8ef7"/>
+      <rect x="1" y="9" width="6" height="6" rx="1.5" fill="#4f8ef7"/>
+      <rect x="9" y="9" width="6" height="6" rx="1.5" fill="#6cf"/>
+    </svg>
+    Media Admin
+  </div>
+  <a href="/" class="btn btn-ghost btn-sm">← Quiz</a>
+  <span id="auth-status" class="topbar-status">не авторизован</span>
+  <form id="auth-form" onsubmit="doLogin(event)">
+    <input type="password" id="token-input" placeholder="Admin token…" autocomplete="current-password">
+    <button type="submit" class="btn btn-primary btn-sm">Войти</button>
+  </form>
+  <button id="logout-btn" class="btn btn-ghost btn-sm" onclick="doLogout()" style="display:none">Выйти</button>
+</nav>
+
+<!-- ── Theme tab bar ────────────────────────────────────────── -->
+<div class="tab-bar" id="tab-bar">
+  <div class="loading-msg" style="padding:4px 12px">Загрузка…</div>
+</div>
+
+<!-- ── Main content ─────────────────────────────────────────── -->
+<main class="main" id="main-content">
+  <div class="loading-msg">
+    <div class="loading-spinner"></div><br>
+    Загрузка вопросов…
+  </div>
+</main>
+
+<!-- questions.js sets window.QUESTIONS_DATA -->
+<script src="/questions.js"></script>
+<script>
+'use strict';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let token       = sessionStorage.getItem('admin_token') ?? '';
+let overrides   = {};   // { imageKey: { type, url, ... } }
+let questions   = [];   // filtered: only questions with images
+let themeGroups = {};   // { t1: [...], t2: [...], ... }
+let activeTheme = '';
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function doLogin(e) {
+  e.preventDefault();
+  token = document.getElementById('token-input').value.trim();
+  if (!token) return;
+  sessionStorage.setItem('admin_token', token);
+  document.getElementById('token-input').value = '';
+  initApp();
+}
+function doLogout() {
+  token = '';
+  sessionStorage.removeItem('admin_token');
+  document.getElementById('auth-form').style.display = '';
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('auth-status').textContent = 'не авторизован';
+  document.getElementById('auth-status').className = 'topbar-status';
+}
+function setAuthOk() {
+  document.getElementById('auth-form').style.display = 'none';
+  document.getElementById('logout-btn').style.display = '';
+  document.getElementById('auth-status').textContent = '✓ авторизован';
+  document.getElementById('auth-status').className = 'topbar-status ok';
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Authorization': `Bearer ${token}` },
+  };
+  if (body instanceof FormData) {
+    opts.body = body;
+  } else if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const r = await fetch(path, opts);
+  if (r.status === 401) throw new Error('Unauthorized');
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error ?? r.statusText);
+  return data;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function initApp() {
+  // Load overrides
+  try {
+    overrides = await api('GET', '/api/admin/overrides');
+    setAuthOk();
+  } catch(e) {
+    if (e.message === 'Unauthorized') {
+      toast('Неверный токен', 'err');
+      token = '';
+      sessionStorage.removeItem('admin_token');
+      return;
+    }
+    toast('Ошибка загрузки: ' + e.message, 'err');
+    overrides = {};
+    setAuthOk(); // still render, overrides will just be empty
+  }
+
+  // Parse questions data
+  const raw = window.QUESTIONS_DATA ?? [];
+  questions = raw.filter(q => q.has_image && q.images && q.images.length > 0);
+
+  // Group by theme
+  themeGroups = {};
+  for (const q of questions) {
+    const t = q.topic ?? 'unknown';
+    if (!themeGroups[t]) themeGroups[t] = [];
+    themeGroups[t].push(q);
+  }
+
+  buildTabs();
+  const themes = Object.keys(themeGroups).sort(themeSortFn);
+  if (themes.length) renderTheme(themes[0]);
+}
+
+function themeSortFn(a, b) {
+  const n = s => parseInt(s.replace(/\D/g,'')) || 0;
+  return n(a) - n(b);
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function buildTabs() {
+  const bar = document.getElementById('tab-bar');
+  const themes = Object.keys(themeGroups).sort(themeSortFn);
+  bar.innerHTML = themes.map(t => {
+    const count = countOverrides(t);
+    return `<button class="tab-btn" id="tab-${t}" onclick="renderTheme('${t}')">
+      ${t.toUpperCase()}
+      ${count ? `<span class="tab-badge">${count}</span>` : ''}
+    </button>`;
+  }).join('');
+}
+
+function countOverrides(theme) {
+  const qs = themeGroups[theme] ?? [];
+  let c = 0;
+  for (const q of qs)
+    for (const img of q.images)
+      if (overrides[imgKey(img)]) c++;
+  return c;
+}
+
+function imgKey(filename) {
+  // "t2_question_1_1_img_1.png" → "t2_question_1_1_img_1"
+  // "t2_question_1_1_img_1.svg" → "t2_question_1_1_img_1"
+  return filename.replace(/\.[^.]+$/, '');
+}
+
+// ── Render theme ──────────────────────────────────────────────────────────────
+function renderTheme(theme) {
+  activeTheme = theme;
+
+  // Update tab active state
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const activeTab = document.getElementById(`tab-${theme}`);
+  if (activeTab) {
+    activeTab.classList.add('active');
+    activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  const qs = themeGroups[theme] ?? [];
+  const rows = [];
+
+  for (const q of qs) {
+    for (let i = 0; i < q.images.length; i++) {
+      const filename = q.images[i];
+      const key = imgKey(filename);
+      const over = overrides[key];
+      const isFirst = i === 0;
+      rows.push(buildRow(q, filename, key, over, isFirst, q.images.length));
+    }
+  }
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="theme-section">
+      <div class="theme-header">
+        Тема ${theme.toUpperCase()}
+        <span class="theme-count">${qs.length} вопросов · ${rows.length} изображений</span>
+        ${countOverrides(theme) ? `<span class="badge badge-override">${countOverrides(theme)} заменено</span>` : ''}
+      </div>
+      <table class="img-table">
+        <thead>
+          <tr>
+            <th class="col-id">ID / вопрос</th>
+            <th class="col-cur">Текущее</th>
+            <th class="col-new">Замена</th>
+            <th class="col-type">Тип</th>
+            <th class="col-act">Действия</th>
+          </tr>
+        </thead>
+        <tbody>${rows.join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function buildRow(q, filename, key, over, isFirst, totalImgs) {
+  const currentSrc = resolveCurrentSrc(filename);
+  const hasOverride = !!over;
+  const overrideType = over?.type ?? 'image';
+
+  const qLabel = `${q.id ?? ''} (стр.${q.page})`;
+  const imgIdx = filename.match(/_img_(\d+)\./)?.[1] ?? '?';
+  const idxLabel = totalImgs > 1 ? `<span class="q-img-idx">img ${imgIdx}</span>` : '';
+
+  // Current image cell
+  const curCell = `
+    <img src="${currentSrc}" alt="" class="img-thumb"
+         onerror="this.style.opacity='.3';this.title='not found'"
+         loading="lazy">
+    <div class="img-label">${filename}</div>`;
+
+  // Override cell
+  let newCell;
+  if (hasOverride) {
+    if (over.type === 'video') {
+      newCell = `
+        <video src="${over.url}" class="video-preview" controls muted playsinline></video>
+        <div class="img-label">${over.filename ?? ''}</div>
+        <span class="badge badge-override">✓ замена</span>`;
+    } else {
+      newCell = `
+        <img src="${over.url}" alt="" class="img-thumb" loading="lazy">
+        <div class="img-label">${over.filename ?? ''}</div>
+        <span class="badge badge-override">✓ замена</span>`;
+    }
+  } else {
+    newCell = `<span class="no-img">нет замены</span>`;
+  }
+
+  // Type toggle
+  const typeCell = `
+    <div class="type-toggle">
+      <button class="type-btn ${overrideType === 'image' ? 'active-image' : ''}"
+              onclick="setType('${key}', 'image', this)">img</button>
+      <button class="type-btn ${overrideType === 'video' ? 'active-video' : ''}"
+              onclick="setType('${key}', 'video', this)">video</button>
+    </div>`;
+
+  // Actions cell
+  const actCell = `
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label class="upload-zone" title="Загрузить файл">
+        <input type="file" accept="image/*,video/mp4,video/webm,.svg"
+               onchange="uploadFile('${key}', this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Загрузить
+      </label>
+      ${hasOverride ? `<button class="btn btn-danger btn-sm" onclick="deleteOverride('${key}')">✕ Удалить</button>` : ''}
+      <div class="upload-progress" id="prog-${key}" style="display:none"></div>
+    </div>`;
+
+  return `<tr id="row-${key}">
+    <td class="col-id">
+      <div class="q-id">${key}</div>
+      <div class="q-num">${qLabel}</div>
+      ${idxLabel}
+    </td>
+    <td class="col-cur">${curCell}</td>
+    <td class="col-new" id="new-cell-${key}">${newCell}</td>
+    <td class="col-type" id="type-cell-${key}">${typeCell}</td>
+    <td class="col-act">${actCell}</td>
+  </tr>`;
+}
+
+function resolveCurrentSrc(filename) {
+  // filename might be "t2_question_1_1_img_1.png" or ".svg"
+  return `images/questions/${filename}`;
+}
+
+// ── Upload ────────────────────────────────────────────────────────────────────
+async function uploadFile(key, input) {
+  const file = input.files?.[0];
+  if (!file) return;
+
+  const prog = document.getElementById(`prog-${key}`);
+  if (prog) { prog.style.display = ''; prog.textContent = 'Загрузка…'; }
+
+  // Determine type from mime
+  const type = file.type.startsWith('video/') ? 'video' : 'image';
+
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('key', key);
+  fd.append('type', type);
+
+  try {
+    const result = await api('POST', '/api/admin/upload', fd);
+    overrides[key] = result.meta;
+    if (prog) { prog.textContent = '✓ готово'; setTimeout(() => { prog.style.display = 'none'; }, 2000); }
+    toast(`Загружено: ${file.name}`, 'ok');
+    updateRow(key);
+    updateTabBadge(activeTheme);
+  } catch(e) {
+    if (prog) { prog.textContent = '✗ ' + e.message; }
+    toast('Ошибка: ' + e.message, 'err');
+  }
+}
+
+// ── Type toggle ───────────────────────────────────────────────────────────────
+async function setType(key, type, btn) {
+  const existing = overrides[key];
+  if (!existing) {
+    // No override yet — just store pending type preference locally
+    // (will be saved when file is uploaded)
+    toast('Тип сохранится при следующей загрузке файла', '');
+    return;
+  }
+  try {
+    const result = await api('PUT', `/api/admin/override/${key}`, { type });
+    overrides[key] = result.data;
+    updateRow(key);
+    toast(`Тип обновлён: ${type}`, 'ok');
+  } catch(e) {
+    toast('Ошибка: ' + e.message, 'err');
+  }
+}
+
+// ── Delete override ───────────────────────────────────────────────────────────
+async function deleteOverride(key) {
+  if (!confirm(`Удалить замену для ${key}?`)) return;
+  try {
+    await api('DELETE', `/api/admin/override/${key}`);
+    delete overrides[key];
+    updateRow(key);
+    updateTabBadge(activeTheme);
+    toast('Замена удалена', 'ok');
+  } catch(e) {
+    toast('Ошибка: ' + e.message, 'err');
+  }
+}
+
+// ── Update a single row in-place ──────────────────────────────────────────────
+function updateRow(key) {
+  // Find which question+filename this key belongs to
+  let foundQ = null, foundFilename = null;
+  outer: for (const qs of Object.values(themeGroups)) {
+    for (const q of qs) {
+      for (const f of q.images) {
+        if (imgKey(f) === key) { foundQ = q; foundFilename = f; break outer; }
+      }
+    }
+  }
+  if (!foundQ) return;
+
+  const over = overrides[key];
+  const hasOverride = !!over;
+  const overrideType = over?.type ?? 'image';
+
+  // Update "new" cell
+  const newCell = document.getElementById(`new-cell-${key}`);
+  if (newCell) {
+    if (hasOverride) {
+      if (over.type === 'video') {
+        newCell.innerHTML = `
+          <video src="${over.url}" class="video-preview" controls muted playsinline></video>
+          <div class="img-label">${over.filename ?? ''}</div>
+          <span class="badge badge-override">✓ замена</span>`;
+      } else {
+        newCell.innerHTML = `
+          <img src="${over.url}" alt="" class="img-thumb">
+          <div class="img-label">${over.filename ?? ''}</div>
+          <span class="badge badge-override">✓ замена</span>`;
+      }
+    } else {
+      newCell.innerHTML = `<span class="no-img">нет замены</span>`;
+    }
+  }
+
+  // Update type cell
+  const typeCell = document.getElementById(`type-cell-${key}`);
+  if (typeCell) {
+    typeCell.innerHTML = `
+      <div class="type-toggle">
+        <button class="type-btn ${overrideType === 'image' ? 'active-image' : ''}"
+                onclick="setType('${key}', 'image', this)">img</button>
+        <button class="type-btn ${overrideType === 'video' ? 'active-video' : ''}"
+                onclick="setType('${key}', 'video', this)">video</button>
+      </div>`;
+  }
+
+  // Update actions cell (add/remove delete button)
+  const actRow = document.querySelector(`#row-${key} .col-act > div`);
+  if (actRow) {
+    const oldDel = actRow.querySelector('.btn-danger');
+    if (hasOverride && !oldDel) {
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn btn-danger btn-sm';
+      delBtn.textContent = '✕ Удалить';
+      delBtn.onclick = () => deleteOverride(key);
+      actRow.insertBefore(delBtn, actRow.querySelector('.upload-progress'));
+    } else if (!hasOverride && oldDel) {
+      oldDel.remove();
+    }
+  }
+}
+
+function updateTabBadge(theme) {
+  const tab = document.getElementById(`tab-${theme}`);
+  if (!tab) return;
+  const count = countOverrides(theme);
+  const existing = tab.querySelector('.tab-badge');
+  if (count) {
+    if (existing) existing.textContent = count;
+    else {
+      const b = document.createElement('span');
+      b.className = 'tab-badge';
+      b.textContent = count;
+      tab.appendChild(b);
+    }
+  } else if (existing) {
+    existing.remove();
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = '') {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  if (!msg) return;
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.remove(), 3000);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+if (token) {
+  // Auto-login if token is stored in session
+  document.getElementById('auth-form').style.display = 'none';
+  document.getElementById('logout-btn').style.display = '';
+  initApp();
+} else {
+  // Show message in tab bar until logged in
+  document.getElementById('tab-bar').innerHTML =
+    '<span style="color:var(--txt2);font-size:12px;padding:8px 12px">Войдите для начала работы</span>';
+}
+</script>
+</body>
+</html>
