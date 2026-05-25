@@ -598,7 +598,7 @@ body {
 
   /* Desktop overlay: centered modal */
   .overlay { justify-content: center; align-items: center; padding: 20px; }
-  .sheet { border-radius: 20px; transform: scale(0.95); width: 100%; max-width: 440px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
+  .sheet { border-radius: 20px; transform: scale(0.95); width: 100%; max-width: 492px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
   .overlay.on .sheet { transform: scale(1); }
   .topics-sheet { max-height: 72vh; }
   .drag-bar { display: none; }
@@ -1115,6 +1115,7 @@ function refreshHomeTexts() {
   setText('stat-topics-lbl',     u.stat_weak_lbl);
   setText('stat-accuracy-lbl',   u.stat_acc_lbl);
   setText('home-random-lbl',     u.random_lbl);
+  setText('ov-topics-title',     u.topics_title);
   const rTog = document.getElementById('random-toggle');
   if (rTog) rTog.checked = randomMode;
   document.querySelectorAll('.lang-opt').forEach(o =>
