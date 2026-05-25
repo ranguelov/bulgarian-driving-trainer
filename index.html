@@ -200,6 +200,24 @@ body {
 }
 .footer-inner { max-width: 560px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
 
+/* Mobile: footer скрыт до выбора ответа, выезжает снизу */
+@media (max-width: 767px) {
+  .action-footer {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    border-top-color: transparent;
+    transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.26s ease;
+  }
+  .action-footer.btn-ready {
+    max-height: 120px;
+    opacity: 1;
+    pointer-events: auto;
+    border-top-color: #F0F0F0;
+  }
+}
+
 /* ═══════════════════════════════════════════
    HOME SCREEN
 ═══════════════════════════════════════════ */
@@ -234,6 +252,18 @@ body {
 }
 .home-block-settings {
   padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+/* Нижняя закреплённая зона (настройки) */
+.home-bottom-wrap {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+.home-bottom-wrap .home-block::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: rgba(0,0,0,0.08);
 }
 
 /* ── Hero ── */
@@ -341,7 +371,7 @@ body {
   width: 100%; border-radius: 12px; overflow: hidden;
   background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.q-img-wrap img { max-width: 100%; display: block; }
+.q-img-wrap img { width: 100%; height: auto; display: block; }
 .q-text { font-size: 18px; font-weight: 700; color: #1a1a1a; line-height: 1.5; letter-spacing: -0.3px; }
 .q-status {
   font-size: 13px; font-weight: 500; color: #888;
@@ -706,29 +736,26 @@ body {
                 <path d="M7.5 5L12.5 10L7.5 15" stroke="#010101" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <div class="home-card home-card-yellow">
-              <div class="home-card-text">
-                <div class="home-card-title" id="home-signs-lbl">Пътни знаци</div>
-                <div class="home-card-sub"   id="home-signs-sub">Знаци по категории</div>
-              </div>
-              <span class="home-card-badge" id="home-soon-badge">СКОРО</span>
-            </div>
           </div>
         </div>
 
-        <!-- БЛОК 3: НАСТРОЙКИ -->
-        <div class="home-block home-block-settings">
-          <div class="home-section-label" id="home-settings-lbl">НАСТРОЙКИ</div>
-          <label class="home-random-row">
-            <span class="home-random-lbl" id="home-random-lbl">Случаен ред в отговорите</span>
-            <span class="tog-switch">
-              <input type="checkbox" id="random-toggle" onchange="setRandomMode(this.checked)">
-              <span class="tog-track"></span>
-              <span class="tog-thumb"></span>
-            </span>
-          </label>
-        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- НАСТРОЙКИ: закреплены снизу -->
+  <div class="home-bottom-wrap">
+    <div class="home-center-inner">
+      <div class="home-block home-block-settings">
+        <div class="home-section-label" id="home-settings-lbl">НАСТРОЙКИ</div>
+        <label class="home-random-row">
+          <span class="home-random-lbl" id="home-random-lbl">Случаен ред в отговорите</span>
+          <span class="tog-switch">
+            <input type="checkbox" id="random-toggle" onchange="setRandomMode(this.checked)">
+            <span class="tog-track"></span>
+            <span class="tog-thumb"></span>
+          </span>
+        </label>
       </div>
     </div>
   </div>
@@ -1268,6 +1295,8 @@ function loadQuestion(idx) {
   // Reset footer
   const btn = document.getElementById('ab-btn-quiz');
   if (btn) { btn.textContent = u.check; btn.classList.add('dimmed'); }
+  const footer = document.getElementById('quiz-action-footer');
+  if (footer) footer.classList.remove('btn-ready');
   // Question text
   document.getElementById('qt-quiz').textContent = QuizEngine.getQuestionText(q, lang);
 
@@ -1276,7 +1305,7 @@ function loadQuestion(idx) {
   const hasQImg = q.has_image && q.images?.length > 0 && !isAnswerImages(q);
   if (hasQImg) {
     qi.style.display='';
-    qi.innerHTML=`<img src="images/questions/${q.images[0]}" alt="" style="max-width:100%;display:block;">`;
+    qi.innerHTML=`<img src="images/questions/${q.images[0]}" alt="" style="width:100%;height:auto;display:block;">`;
   } else { qi.style.display='none'; qi.innerHTML=''; }
 
   // Status
@@ -1358,6 +1387,8 @@ function pickAns(card, type) {
   const ready = req ? sel===req : !!list.querySelector('.ans-card.sel');
   const btn = document.getElementById('ab-btn-quiz');
   if (btn) btn.classList.toggle('dimmed', !ready);
+  const footer = document.getElementById('quiz-action-footer');
+  if (footer) footer.classList.toggle('btn-ready', ready);
 }
 
 function q_required(list) {
@@ -1391,6 +1422,8 @@ function pickImg(card) {
   const selected = grid.querySelectorAll('.img-ans.sel').length;
   const btn = document.getElementById('ab-btn-quiz');
   if (btn) btn.classList.toggle('dimmed', selected < required);
+  const footer = document.getElementById('quiz-action-footer');
+  if (footer) footer.classList.toggle('btn-ready', selected >= required);
 }
 
 /* ════════════════════════════════════
@@ -1522,6 +1555,8 @@ function displayCheckedState(idx) {
   if(status){status.textContent=ok?u.correct:u.wrong; status.className='q-status '+(ok?'ok':'err');}
   const btn=document.getElementById('ab-btn-quiz');
   if(btn){btn.textContent=idx<sessionQs.length-1?u.next:u.result; btn.classList.remove('dimmed');}
+  const footer=document.getElementById('quiz-action-footer');
+  if(footer) footer.classList.add('btn-ready');
 }
 
 
