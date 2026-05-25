@@ -133,6 +133,16 @@
     return arr;
   }
 
+  /**
+   * Return a new shuffled copy of arr without mutating the original.
+   * Uses Fisher-Yates algorithm.
+   * @param {Array} arr
+   * @returns {Array}
+   */
+  function shuffleArray(arr) {
+    return shuffle(arr.slice());
+  }
+
   /* ─────────────────────────────────────────
      SCORING
   ───────────────────────────────────────── */
@@ -257,6 +267,7 @@
     getWeakSpots,
     getQuestionText,
     getAnswerText,
-    setStorage,  // for testing
+    setStorage,   // for testing
+    shuffleArray, // randomisation utility
   };
 }));

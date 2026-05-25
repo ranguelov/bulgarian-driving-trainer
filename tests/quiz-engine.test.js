@@ -345,3 +345,64 @@ describe('getAnswerText', () => {
     assert.equal(QE.getAnswerText(a, 'RU'), 'Fallback');
   });
 });
+
+/* ═══════════════════════════════════════════════════
+   shuffleArray — randomisation utility
+═══════════════════════════════════════════════════ */
+describe('shuffleArray', () => {
+  const ORIGINAL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  it('returns an array of the same length', () => {
+    const result = QE.shuffleArray(ORIGINAL);
+    assert.equal(result.length, ORIGINAL.length);
+  });
+
+  it('contains all original elements (no duplicates, no omissions)', () => {
+    const result = QE.shuffleArray(ORIGINAL);
+    assert.deepEqual([...result].sort((a, b) => a - b), ORIGINAL);
+  });
+
+  it('does not mutate the original array', () => {
+    const copy = ORIGINAL.slice();
+    QE.shuffleArray(copy);
+    assert.deepEqual(copy, ORIGINAL);
+  });
+
+  it('returns a new array (not the same reference)', () => {
+    const arr = [1, 2, 3];
+    const result = QE.shuffleArray(arr);
+    assert.notStrictEqual(result, arr);
+  });
+
+  it('handles an empty array', () => {
+    assert.deepEqual(QE.shuffleArray([]), []);
+  });
+
+  it('handles a single-element array', () => {
+    assert.deepEqual(QE.shuffleArray([42]), [42]);
+  });
+
+  it('produces different orderings across multiple runs (statistical)', () => {
+    // Run 20 shuffles of a 10-element array; at least one must differ from original.
+    // P(all 20 results identical to original) = (1/10!)^20 ≈ 10^-126 — safe to assert.
+    const results = Array.from({ length: 20 }, () => QE.shuffleArray(ORIGINAL).join(','));
+    const allSame = results.every(r => r === ORIGINAL.join(','));
+    assert.equal(allSame, false, 'All 20 shuffles were identical — RNG may be broken');
+  });
+
+  it('shuffles answers without losing correct-answer information', () => {
+    const answers = [
+      { text: 'А', correct: false },
+      { text: 'Б', correct: true  },
+      { text: 'В', correct: false },
+    ];
+    const shuffled = QE.shuffleArray(answers);
+    const correctCount = shuffled.filter(a => a.correct).length;
+    assert.equal(correctCount, 1, 'Exactly one correct answer must survive the shuffle');
+    assert.deepEqual(
+      shuffled.map(a => a.text).sort(),
+      answers.map(a => a.text).sort(),
+      'All answer texts must be preserved'
+    );
+  });
+});
