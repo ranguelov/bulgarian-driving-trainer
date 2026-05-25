@@ -7,6 +7,9 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ПДД Тренажор</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&subset=cyrillic,latin&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
    RESET & BASE
@@ -18,8 +21,7 @@
 }
 html, body { height: 100%; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-               "Helvetica Neue", Inter, Arial, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   background: white; color: #1a1a1a;
   display: flex; flex-direction: column;
   overflow: hidden;
@@ -315,7 +317,7 @@ body {
 ═══════════════════════════════════════════ */
 .q-img-wrap {
   width: 100%; border-radius: 12px; overflow: hidden;
-  background: #F7F7F7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .q-img-wrap img { max-width: 100%; display: block; }
 .q-text { font-size: 18px; font-weight: 700; color: #1a1a1a; line-height: 1.5; letter-spacing: -0.3px; }
@@ -364,28 +366,28 @@ body {
   content: ''; width: 8px; height: 8px;
   border-radius: 50%; background: white;
 }
-/* multi — white checkmark inside */
-.ans-list[data-multi] .ans-card.sel:not(.locked) .ans-radio::after {
-  content: ''; position: absolute;
-  width: 5px; height: 9px;
-  border-right: 2.2px solid white;
-  border-bottom: 2.2px solid white;
-  transform: rotate(45deg) translate(-1px, -2px);
-}
-
 /* After submit: correct */
 .ans-card.right .ans-radio {
   background: #057c46; border-color: #057c46;
 }
-.ans-card.right .ans-radio svg { display: block; }
 /* After submit: wrong */
 .ans-card.fail .ans-radio {
   background: #FF2D55; border-color: #FF2D55;
 }
-.ans-card.fail .ans-radio svg { display: block; }
 
-/* SVG inside radio: hidden by default */
+/* SVG icons: all hidden by default */
 .ans-radio svg { display: none; }
+
+/* Single: show result SVG after submit */
+.ans-list:not([data-multi]) .ans-card.right .ans-radio svg,
+.ans-list:not([data-multi]) .ans-card.fail  .ans-radio svg { display: block; }
+
+/* Multi: show .sv-sel (always a checkmark) when selected before submit */
+.ans-list[data-multi] .ans-card.sel:not(.locked) .ans-radio .sv-sel { display: block; }
+
+/* Multi: show .sv-res after submit */
+.ans-card.right .ans-radio .sv-res,
+.ans-card.fail  .ans-radio .sv-res { display: block; }
 
 .ans-txt { flex: 1; font-size: 14px; color: #1a1a1a; line-height: 1.5; }
 
@@ -477,6 +479,7 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 24px;
 }
 .res-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; text-align: center; color: #1a1a1a; }
+.res-subtitle { font-size: 15px; font-weight: 400; color: #666; text-align: center; margin-top: -16px; }
 .res-exam-block { text-align: center; display: flex; flex-direction: column; gap: 4px; }
 .res-exam-badge { font-size: 22px; font-weight: 700; }
 .res-exam-badge.pass { color: #057c46; }
@@ -754,7 +757,12 @@ body {
     <div class="ab-center">
       <span class="app-bar-title" id="res-hdr-title">Резултат</span>
     </div>
-    <div class="ab-right"></div>
+    <div class="ab-right">
+      <div class="lang-tog">
+        <div class="lang-opt on" data-lang="BG" onclick="swapLang('BG')">BG</div>
+        <div class="lang-opt"    data-lang="RU" onclick="swapLang('RU')">RU</div>
+      </div>
+    </div>
   </header>
 
   <div class="res-body">
@@ -767,6 +775,7 @@ body {
       </div>
 
       <div class="res-title" id="res-title">Тренирайте!</div>
+      <div class="res-subtitle" id="res-subtitle"></div>
 
       <!-- Score ring -->
       <div class="ring-wrap">
@@ -949,6 +958,7 @@ const UI = {
     check:'Предай', next:'Следващ въпрос', result:'Виж резултата',
     correct:'Вярно ✓', wrong:'Невярно ✗',
     hasOne: n => `Въпросът има ${n} верен${n>1?'а':''} отговор${n>1?'а':''}`,
+    result_label:'Резултат', completed_prefix:'Преминахте тема',
     success:'Поздравления!', retry_lbl:'Тренирайте!', res_suffix:' — Резултат',
     stat_ok:'Верни', stat_err:'Грешни', accuracy_lbl:'точност',
     next_topic:'Следваща тема', topic_q:'въпроса', done_badge:'ЗАВЪРШЕН',
@@ -969,6 +979,7 @@ const UI = {
     check:'Проверить', next:'Следующий вопрос', result:'Показать результат',
     correct:'Верно ✓', wrong:'Неверно ✗',
     hasOne: n => `Вопрос имеет ${n} верн${n>1?'ых':'ый'} ответ${n>1?'а':''}`,
+    result_label:'Результат', completed_prefix:'Вы прошли тему',
     success:'Поздравления!', retry_lbl:'Тренируйтесь!', res_suffix:' — Результат',
     stat_ok:'Верные', stat_err:'Неверные', accuracy_lbl:'точность',
     next_topic:'Следующая тема', topic_q:'вопросов', done_badge:'ЗАВЕРШЕНА',
@@ -1231,7 +1242,11 @@ function buildTextAnswers(q) {
     <div class="ans-card" data-ok="${a.correct?1:0}"
          onclick="pickAns(this,'${multi?'multi':'single'}')">
       <div class="ans-radio">
-        <svg width="12" height="12"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>
+        ${multi
+          ? `<svg class="sv-sel" width="12" height="12"><use href="#ic-check"/></svg>
+             <svg class="sv-res" width="12" height="12"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>`
+          : `<svg width="12" height="12"><use href="${a.correct?'#ic-check':'#ic-x'}"/></svg>`
+        }
       </div>
       <span class="ans-txt">${QuizEngine.getAnswerText(a,lang)}</span>
     </div>`).join('');
@@ -1473,18 +1488,28 @@ function refreshResults() {
     const arc=document.getElementById('ring-arc');
     if(arc){arc.setAttribute('stroke',arcColor);arc.setAttribute('stroke-dasharray',arcLen+' '+C);}
     setText('res-title',u.exam_title);
-    setText('res-hdr-title',u.exam_title+u.res_suffix);
+    setText('res-subtitle','');
+    setText('res-hdr-title',`${u.result_label} — ${u.exam_title}`);
     setText('res-next-lbl',u.exam_retry);
   } else {
     const t=TOPICS.find(x=>x.key===currentTopic);
-    const topicName=t?`${u.topic_label} ${t.n} — ${t[lang.toLowerCase()]}`:(lang==='BG'?'Слаби места':'Слабые места');
     const arcLen=scores.total>0?Math.round(scores.ok/scores.total*C):0;
     const arcColor=pct>=75?'#057c46':pct>=40?'#FFBB3D':'#FF2D55';
     const arc=document.getElementById('ring-arc');
     if(arc){arc.setAttribute('stroke',arcColor);arc.setAttribute('stroke-dasharray',arcLen+' '+C);}
     document.getElementById('res-exam-verdict').style.display='none';
-    setText('res-title',pct>=75?u.success:u.retry_lbl);
-    setText('res-hdr-title',topicName+u.res_suffix);
+    // Header: "Резултат — Тема N"
+    const hdrLabel = t ? `${u.result_label} — ${u.topic_label} ${t.n}`
+                       : (currentTopic==='__weak__' ? u.result_label : u.result_label);
+    setText('res-hdr-title', hdrLabel);
+    // Big title + subtitle
+    if (pct >= 75) {
+      setText('res-title', u.success);
+      setText('res-subtitle', t ? `${u.completed_prefix} ${t[lang.toLowerCase()]}` : '');
+    } else {
+      setText('res-title', u.retry_lbl);
+      setText('res-subtitle', t ? `${u.topic_label} ${t.n} — ${t[lang.toLowerCase()]}` : '');
+    }
     setText('res-next-lbl',u.next_topic);
   }
 
