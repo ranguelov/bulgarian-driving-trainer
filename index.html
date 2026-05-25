@@ -372,6 +372,13 @@ body {
   background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .q-img-wrap img { width: 100%; height: auto; display: block; }
+.q-img-wrap .question-illustration {
+  width: auto;
+  max-width: 100%;
+  max-height: 320px;
+  height: auto;
+  border-radius: 8px;
+}
 .q-text { font-size: 18px; font-weight: 700; color: #1a1a1a; line-height: 1.5; letter-spacing: -0.3px; }
 .q-status {
   font-size: 13px; font-weight: 500; color: #888;
@@ -1305,7 +1312,7 @@ function loadQuestion(idx) {
   const hasQImg = q.has_image && q.images?.length > 0 && !isAnswerImages(q);
   if (hasQImg) {
     qi.style.display='';
-    qi.innerHTML=`<img src="images/questions/${q.images[0]}" alt="" style="width:100%;height:auto;display:block;">`;
+    qi.innerHTML=`<img src="images/questions/${q.images[0]}" alt="" class="question-illustration">`;
   } else { qi.style.display='none'; qi.innerHTML=''; }
 
   // Status
