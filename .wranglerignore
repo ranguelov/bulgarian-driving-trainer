@@ -1,0 +1,14 @@
+# PDF source files — too large for Cloudflare Workers (25MB limit)
+tickets/
+
+# Preview directory — temporary, not needed in production
+images/questions_preview/
+
+# Python scripts — not web assets
+*.py
+
+# Node modules if present
+node_modules/
+
+# Git
+.git/
