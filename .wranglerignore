@@ -10,5 +10,8 @@ images/questions_preview/
 # Node modules if present
 node_modules/
 
+# Dev tools — не нужны в проде
+check_images.html
+
 # Git
 .git/

@@ -143,6 +143,33 @@
     return shuffle(arr.slice());
   }
 
+  /**
+   * Prepare a quiz session from a list of questions.
+   *
+   * FIX for "answers re-shuffle on every render" bug:
+   * If randomMode is true, each question's answers are shuffled ONCE here,
+   * at session-build time. The returned question objects carry the pre-shuffled
+   * answer array, so renderQ() can simply use q.answers without calling
+   * shuffleArray() again. This guarantees stable answer order for the life
+   * of the session — navigating back to a question shows the same order.
+   *
+   * Original question objects are NEVER mutated (defensive copies are made).
+   *
+   * @param {Array}   questions   Array of question objects
+   * @param {boolean} randomMode  true = shuffle answers once per question
+   * @returns {Array}             New array of new question objects
+   */
+  function prepareSession(questions, randomMode) {
+    if (!Array.isArray(questions)) return [];
+    return questions.map(function(q) {
+      var shuffledAnswers = randomMode
+        ? shuffle(q.answers.slice())   // shuffle a COPY — original untouched
+        : q.answers.slice();           // still copy even when not shuffling
+      // Object.assign creates a shallow clone of q, then overrides answers
+      return Object.assign({}, q, { answers: shuffledAnswers });
+    });
+  }
+
   /* ─────────────────────────────────────────
      SCORING
   ───────────────────────────────────────── */
@@ -267,7 +294,8 @@
     getWeakSpots,
     getQuestionText,
     getAnswerText,
-    setStorage,   // for testing
-    shuffleArray, // randomisation utility
+    setStorage,      // for testing
+    shuffleArray,    // randomisation utility
+    prepareSession,  // session builder — shuffles answers ONCE per question
   };
 }));

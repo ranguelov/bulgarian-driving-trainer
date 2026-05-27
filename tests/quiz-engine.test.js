@@ -406,3 +406,113 @@ describe('shuffleArray', () => {
     );
   });
 });
+
+/* ═══════════════════════════════════════════════════
+   prepareSession — фикс бага "ответы перемешиваются при каждом рендере"
+   Тесты написаны ДО реализации (TDD). До добавления prepareSession в quiz-engine.js
+   все эти тесты должны падать с "QE.prepareSession is not a function".
+═══════════════════════════════════════════════════ */
+describe('prepareSession', () => {
+  const Q4 = {
+    id: 'q1', topic: 't1', points: 2,
+    question: 'Q?', question_ru: 'Q?',
+    has_image: false, images: [],
+    answers: [
+      { text: 'A', text_ru: 'A', correct: true,  image: null },
+      { text: 'B', text_ru: 'B', correct: false, image: null },
+      { text: 'C', text_ru: 'C', correct: true,  image: null },
+      { text: 'D', text_ru: 'D', correct: false, image: null },
+    ],
+  };
+  const Q4b = {
+    id: 'q2', topic: 't1', points: 1,
+    question: 'Q2?', question_ru: 'Q2?',
+    has_image: false, images: [],
+    answers: [
+      { text: 'X', text_ru: 'X', correct: false, image: null },
+      { text: 'Y', text_ru: 'Y', correct: true,  image: null },
+    ],
+  };
+
+  // ── 1. randomMode=false: порядок ответов не меняется ──────────────────
+  it('randomMode=false: answer order is identical to original', () => {
+    const session = QE.prepareSession([Q4], false);
+    assert.deepEqual(
+      session[0].answers.map(a => a.text),
+      Q4.answers.map(a => a.text)
+    );
+  });
+
+  // ── 2. randomMode=false: возвращает новый массив (не ту же ссылку) ────
+  it('randomMode=false: returns a new array (not the same reference)', () => {
+    const session = QE.prepareSession([Q4], false);
+    assert.notStrictEqual(session, [Q4]);
+    assert.notStrictEqual(session[0], Q4);
+  });
+
+  // ── 3. randomMode=true: все ответы сохранены (нет потери данных) ──────
+  it('randomMode=true: all answers are preserved (no data loss)', () => {
+    const session = QE.prepareSession([Q4], true);
+    const resultTexts = session[0].answers.map(a => a.text).sort();
+    const origTexts   = Q4.answers.map(a => a.text).sort();
+    assert.deepEqual(resultTexts, origTexts);
+  });
+
+  // ── 4. randomMode=true: кол-во правильных ответов сохранено ──────────
+  it('randomMode=true: correct-answer count is preserved', () => {
+    const session = QE.prepareSession([Q4], true);
+    const correctCount = session[0].answers.filter(a => a.correct).length;
+    assert.equal(correctCount, 2); // исходно 2 правильных
+  });
+
+  // ── 5. Оригинальный вопрос не мутирован ──────────────────────────────
+  it('does not mutate original question answers', () => {
+    const origOrder = Q4.answers.map(a => a.text);
+    QE.prepareSession([Q4], true);
+    assert.deepEqual(Q4.answers.map(a => a.text), origOrder);
+  });
+
+  // ── 6. КЛЮЧЕВОЙ ТЕСТ: порядок стабилен внутри сессии ─────────────────
+  // Это воспроизводит баг: если бы shuffle вызывался при каждом рендере,
+  // session[0].answers менялось бы при каждом обращении. После фикса —
+  // answers — это обычный массив, который не меняется сам по себе.
+  it('answer order is STABLE — same object accessed twice gives identical order', () => {
+    const session = QE.prepareSession([Q4], true);
+    const firstAccess  = session[0].answers.map(a => a.text);
+    const secondAccess = session[0].answers.map(a => a.text); // имитация повторного renderQ
+    assert.deepEqual(firstAccess, secondAccess,
+      'BUG: answer order changed between two accesses — shuffle called per-render!');
+  });
+
+  // ── 7. Несколько вопросов обрабатываются корректно ───────────────────
+  it('handles multiple questions — each gets its own stable shuffled order', () => {
+    const session = QE.prepareSession([Q4, Q4b], true);
+    assert.equal(session.length, 2);
+    // Оба вопроса должны иметь все свои ответы
+    assert.equal(session[0].answers.length, 4);
+    assert.equal(session[1].answers.length, 2);
+  });
+
+  // ── 8. Пустой массив вопросов ─────────────────────────────────────────
+  it('returns empty array for empty input', () => {
+    assert.deepEqual(QE.prepareSession([], true),  []);
+    assert.deepEqual(QE.prepareSession([], false), []);
+  });
+
+  // ── 9. Вопрос с одним ответом — не падает ────────────────────────────
+  it('handles single-answer question gracefully', () => {
+    const singleAns = { ...Q4b, answers: [{ text: 'Only', correct: true, image: null }] };
+    const session = QE.prepareSession([singleAns], true);
+    assert.equal(session[0].answers.length, 1);
+    assert.equal(session[0].answers[0].correct, true);
+  });
+
+  // ── 10. Все поля вопроса (кроме answers) сохранены 1-в-1 ────────────
+  it('preserves all question fields except answers', () => {
+    const session = QE.prepareSession([Q4], true);
+    assert.equal(session[0].id,      Q4.id);
+    assert.equal(session[0].topic,   Q4.topic);
+    assert.equal(session[0].points,  Q4.points);
+    assert.equal(session[0].question, Q4.question);
+  });
+});

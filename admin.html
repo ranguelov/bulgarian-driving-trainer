@@ -382,7 +382,8 @@ function renderTheme(theme) {
       <div class="theme-header">
         Тема ${theme.toUpperCase()}
         <span class="theme-count">${qs.length} вопросов · ${rows.length} изображений</span>
-        ${countOverrides(theme) ? `<span class="badge badge-override">${countOverrides(theme)} заменено</span>` : ''}
+        ${countOverrides(theme) ? `<span class="badge badge-override">${countOverrides(theme)} заменено</span>
+        <button class="btn btn-danger btn-sm" style="margin-left:12px" onclick="deleteAllOverrides('${theme}')">✕ Удалить все замены темы</button>` : ''}
       </div>
       <table class="img-table">
         <thead>
@@ -522,6 +523,54 @@ async function setType(key, type, btn) {
     toast(`Тип обновлён: ${type}`, 'ok');
   } catch(e) {
     toast('Ошибка: ' + e.message, 'err');
+  }
+}
+
+// ── Delete ALL overrides in a theme ──────────────────────────────────────────
+async function deleteAllOverrides(theme) {
+  const qs = themeGroups[theme] ?? [];
+  const keys = [];
+  for (const q of qs)
+    for (const img of q.images) {
+      const k = imgKey(img);
+      if (overrides[k]) keys.push(k);
+    }
+  if (!keys.length) { toast('Нет замен для удаления', ''); return; }
+  if (!confirm(`Удалить все ${keys.length} замен для темы ${theme.toUpperCase()}?\nЭто действие необратимо.`)) return;
+
+  // Show progress in the button itself
+  const btn = document.querySelector(`[onclick="deleteAllOverrides('${theme}')"]`);
+  if (btn) { btn.disabled = true; btn.textContent = `Удаление 0/${keys.length}…`; }
+
+  let ok = 0, fail = 0;
+  const failedKeys = [];
+  for (const k of keys) {
+    try {
+      await api('DELETE', `/api/admin/override/${k}`);
+      ok++;
+      if (btn) btn.textContent = `Удаление ${ok}/${keys.length}…`;
+    } catch(e) {
+      fail++;
+      failedKeys.push(k);
+      console.error(`[deleteAll] Failed to delete ${k}:`, e.message);
+    }
+  }
+
+  // Always reload overrides from server to get ground truth
+  try {
+    overrides = await api('GET', '/api/admin/overrides');
+  } catch(e) {
+    console.error('Reload overrides failed:', e);
+  }
+
+  renderTheme(activeTheme);
+  const themes = Object.keys(themeGroups).sort(themeSortFn);
+  themes.forEach(t => updateTabBadge(t));
+
+  if (fail) {
+    toast(`Удалено: ${ok}, ошибок: ${fail}. Смотри консоль.`, 'err');
+  } else {
+    toast(`✓ Удалено ${ok} замен`, 'ok');
   }
 }
 
