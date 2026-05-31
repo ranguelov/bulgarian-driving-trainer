@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Review Admin — ПДД Тренажор</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0f0f1a;
+  --bg2:     #16213e;
+  --bg3:     #1e2a4a;
+  --border:  #2a3560;
+  --accent:  #4f8ef7;
+  --ok:      #3ecf8e;
+  --danger:  #e74c3c;
+  --txt:     #e8eaf6;
+  --txt2:    #8892b0;
+  --nav-h:   52px;
+  --tab-h:   44px;
+  --r:       10px;
+}
+
+body {
+  font-family: -apple-system, "Inter", sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-size: 13px; line-height: 1.5;
+  min-height: 100vh; min-height: 100dvh;
+}
+
+/* ── Top bar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px; height: var(--nav-h);
+}
+.topbar-title { font-weight: 700; font-size: 14px; color: #6cf; white-space: nowrap; }
+.topbar-sep { color: var(--border); }
+.topbar-topic { font-size: 12px; color: var(--txt2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.topbar-back { font-size: 11px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+
+/* ── Tab bar ── */
+.tab-bar {
+  position: sticky; top: var(--nav-h); z-index: 199;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto; gap: 2px; padding: 6px 10px;
+  height: var(--tab-h); align-items: center;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0; padding: 4px 10px; border-radius: 6px; border: none;
+  cursor: pointer; font-size: 11px; font-weight: 600;
+  background: transparent; color: var(--txt2); white-space: nowrap;
+  transition: background .15s, color .15s; position: relative;
+}
+.tab-btn:hover { background: var(--bg3); color: var(--txt); }
+.tab-btn.active { background: var(--accent); color: #fff; }
+.tab-badge {
+  position: absolute; top: 1px; right: 1px;
+  font-size: 8px; font-weight: 800; line-height: 1; padding: 1px 3px;
+  border-radius: 3px; pointer-events: none;
+}
+.badge-ok    { background: var(--ok);     color: #000; }
+.badge-error { background: var(--danger); color: #fff; }
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: flex; gap: 0; overflow-x: auto;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+.stats-bar::-webkit-scrollbar { display: none; }
+.stat-item {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 8px 16px; border-right: 1px solid var(--border); flex-shrink: 0;
+}
+.stat-num  { font-size: 18px; font-weight: 800; line-height: 1; }
+.stat-lbl  { font-size: 9px; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+.c-all     { color: var(--txt); }
+.c-pending { color: var(--txt2); }
+.c-ok      { color: var(--ok); }
+.c-error   { color: var(--danger); }
+
+/* ── Main content ── */
+.main { padding: 12px; }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: var(--r); margin-bottom: 10px;
+  overflow: hidden; transition: border-color .2s;
+}
+.q-card[data-status="ok"]    { border-left-color: var(--ok); }
+.q-card[data-status="error"] { border-left-color: var(--danger); }
+
+/* Desktop: горизонтальный layout */
+@media (min-width: 768px) {
+  .q-card-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 140px;
+    min-height: 120px;
+  }
+  .q-pdf { border-left: 1px solid var(--border); border-top: none; }
+  .q-status-cell { border-left: 1px solid var(--border); border-top: none; }
+}
+
+/* Mobile: вертикальный layout */
+@media (max-width: 767px) {
+  .q-card-inner { display: flex; flex-direction: column; }
+  .q-trainer { order: 1; }
+  .q-pdf { order: 2; border-top: 1px solid var(--border); }
+  .q-status-cell { order: 3; border-top: 1px solid var(--border); flex-direction: row; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .status-label { display: none; }
+  .status-btns { flex-direction: row !important; }
+  .sbtn { flex: 1; }
+}
+
+/* ── Card header ── */
+.q-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  border-radius: var(--r) var(--r) 0 0;
+}
+.q-header-left, .q-header-right { display: flex; align-items: center; gap: 6px; }
+.q-num-label { font-size: 9px; color: var(--txt2); text-transform: uppercase; letter-spacing: .05em; }
+.q-num { font-weight: 800; font-size: 15px; color: var(--accent); font-family: monospace; }
+.q-pts { font-size: 10px; color: var(--txt2); }
+.q-id-badge { font-size: 11px; color: var(--txt2); font-family: monospace; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+.edit-btn { background: none; border: none; cursor: pointer; font-size: 14px; opacity: .6; padding: 2px 4px; border-radius: 4px; }
+.edit-btn:hover { opacity: 1; background: var(--bg); }
+
+/* ── Edit form ── */
+.edit-form { display: flex; flex-direction: column; gap: 8px; padding: 4px 0; }
+.edit-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--txt);
+  border-radius: 6px; padding: 6px 8px; font-size: 12px; font-family: inherit; resize: vertical; }
+.edit-input:focus { outline: none; border-color: var(--accent); }
+.edit-ans-row { display: flex; align-items: center; gap: 6px; padding: 4px 0; }
+.edit-answers { display: flex; flex-direction: column; gap: 6px; }
+.img-drop-zone {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  border: 2px dashed var(--border); border-radius: 8px; padding: 8px 10px;
+  transition: border-color .15s, background .15s; cursor: default;
+}
+.img-drop-zone.drag-over { border-color: var(--accent); background: rgba(79,142,247,.08); }
+.replace-btn {
+  display: inline-block; font-size: 11px; color: var(--accent); cursor: pointer;
+  border: 1px solid var(--accent); border-radius: 5px; padding: 3px 8px;
+}
+.replace-btn:hover { background: rgba(79,142,247,.12); }
+.img-status { font-size: 11px; color: var(--txt2); }
+.img-status.replaced { color: var(--ok); font-weight: 600; }
+
+/* ── Trainer cell ── */
+.q-trainer { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.q-question { font-size: 13px; font-weight: 600; color: var(--txt); line-height: 1.4; }
+
+.q-answers { display: flex; flex-direction: column; gap: 4px; }
+.ans-row { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: var(--txt2); line-height: 1.35; }
+.ans-row.correct { color: var(--ok); font-weight: 600; }
+.ans-mark {
+  width: 15px; height: 15px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800;
+}
+.ans-mark.ok  { background: var(--ok); color: #000; }
+.ans-mark.bad { background: var(--bg3); border: 1px solid var(--border); color: var(--txt2); }
+
+/* Image answers grid */
+.img-ans-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+.img-ans-item {
+  position: relative; border-radius: 7px; overflow: hidden;
+  border: 2px solid var(--border); background: var(--bg3); flex-shrink: 0;
+}
+.img-ans-item.correct { border-color: var(--ok); }
+.img-ans-item img { display: block; width: 90px; height: 90px; object-fit: contain; padding: 4px; }
+.img-check {
+  position: absolute; top: 3px; left: 3px; width: 16px; height: 16px;
+  border-radius: 3px; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 800;
+}
+.img-check.ok  { background: var(--ok); color: #000; }
+.img-check.bad { background: rgba(0,0,0,.5); color: var(--txt2); border: 1px solid var(--border); }
+
+/* Question illustration */
+.q-illus img { max-height: 110px; max-width: 200px; border-radius: 6px; border: 1px solid var(--border); background: #fff; display: block; object-fit: contain; }
+
+/* ── PDF cell ── */
+.q-pdf { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.pdf-label { font-size: 9px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.5px; }
+.pdf-img { width: 100%; border-radius: 6px; border: 1px solid var(--border); display: block; cursor: zoom-in; }
+.pdf-missing { font-size: 11px; color: var(--txt2); font-style: italic; text-align: center; padding: 20px 0; }
+
+/* ── Status cell ── */
+.q-status-cell {
+  padding: 12px; display: flex; flex-direction: column; align-items: stretch;
+  gap: 6px; flex-shrink: 0;
+}
+.status-label { font-size: 9px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+.status-current { font-size: 11px; font-weight: 700; text-align: center; min-height: 16px; }
+.status-current.pending { color: var(--txt2); }
+.status-current.ok      { color: var(--ok); }
+.status-current.error   { color: var(--danger); }
+
+.status-btns { display: flex; flex-direction: column; gap: 5px; }
+.sbtn {
+  padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 11px; font-weight: 700;
+  background: transparent; color: var(--txt2);
+  transition: all .15s; text-align: center; width: 100%;
+}
+.sbtn:active { opacity: .8; }
+.sbtn.ok-btn:hover,  .sbtn.ok-btn.active  { background: var(--ok);     border-color: var(--ok);     color: #000; }
+.sbtn.err-btn:hover, .sbtn.err-btn.active { background: var(--danger);  border-color: var(--danger);  color: #fff; }
+.sbtn.clr-btn:hover { background: var(--bg3); color: var(--txt); }
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,.92);
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.lightbox.on { display: flex; }
+.lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
+.lightbox-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.15); color: #fff;
+  border: none; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Loading ── */
+.loading-msg { text-align: center; padding: 60px 20px; color: var(--txt2); }
+.spinner {
+  display: inline-block; width: 28px; height: 28px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: max(20px, env(safe-area-inset-bottom)); right: 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 14px; font-size: 12px;
+  z-index: 9998; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  animation: fadeIn .2s ease; pointer-events: none;
+}
+.toast.ok    { border-color: var(--ok);     color: var(--ok); }
+.toast.error { border-color: var(--danger); color: var(--danger); }
+@keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; } }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ── -->
+<nav class="topbar">
+  <a href="/" class="topbar-back" style="margin-right:4px">← Тренажер</a>
+  <span class="topbar-sep">|</span>
+  <div class="topbar-title">Review</div>
+  <span class="topbar-sep">|</span>
+  <span class="topbar-topic" id="nav-topic-label">Загрузка…</span>
+  <div id="auth-area" style="display:flex;align-items:center;gap:6px;margin-left:auto">
+    <span id="auth-status" style="font-size:11px;color:var(--txt2)"></span>
+    <form id="auth-form" onsubmit="doLogin(event)" style="display:flex;gap:6px;align-items:center">
+      <input type="password" id="token-input" placeholder="Токен…"
+        style="background:var(--bg3);border:1px solid var(--border);color:var(--txt);
+               border-radius:6px;padding:4px 8px;font-size:12px;width:120px">
+      <button type="submit"
+        style="background:var(--accent);border:none;color:#fff;border-radius:6px;
+               padding:4px 10px;font-size:12px;cursor:pointer">Войти</button>
+    </form>
+    <button id="logout-btn" onclick="doLogout()" style="display:none;background:none;
+      border:1px solid var(--border);color:var(--txt2);border-radius:6px;
+      padding:4px 8px;font-size:11px;cursor:pointer">Выйти</button>
+  </div>
+</nav>
+
+<!-- ── Theme tabs ── -->
+<div class="tab-bar" id="tab-bar">
+  <div style="color:var(--txt2);font-size:11px">Загрузка…</div>
+</div>
+
+<!-- ── Stats ── -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item"><span class="stat-num c-all" id="s-total">—</span><span class="stat-lbl">Всего</span></div>
+  <div class="stat-item"><span class="stat-num c-pending" id="s-pending">—</span><span class="stat-lbl">Не проверено</span></div>
+  <div class="stat-item"><span class="stat-num c-ok" id="s-ok">—</span><span class="stat-lbl">✅ ОК</span></div>
+  <div class="stat-item"><span class="stat-num c-error" id="s-error">—</span><span class="stat-lbl">❌ Ошибка</span></div>
+</div>
+
+<!-- ── Content ── -->
+<div class="main" id="main-content">
+  <div class="loading-msg"><div class="spinner"></div><br>Загрузка…</div>
+</div>
+
+<!-- ── Lightbox ── -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- questions.js -->
+<script src="/questions.js"></script>
+<script src="/quiz-engine.js"></script>
+<script>
+'use strict';
+
+/* ══════════════════════════════════════
+   CONFIG
+══════════════════════════════════════ */
+const ADMIN_TOKEN_KEY = 'pdd_admin_token';
+let token = localStorage.getItem(ADMIN_TOKEN_KEY) ?? '';
+
+function doLogin(e) {
+  e.preventDefault();
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  token = t;
+  localStorage.setItem(ADMIN_TOKEN_KEY, token);
+  document.getElementById('token-input').value = '';
+  updateAuthUI();
+  init();
+}
+function doLogout() {
+  token = '';
+  localStorage.removeItem(ADMIN_TOKEN_KEY);
+  updateAuthUI();
+}
+function updateAuthUI() {
+  const hasToken = !!token;
+  document.getElementById('auth-form').style.display  = hasToken ? 'none' : 'flex';
+  document.getElementById('logout-btn').style.display = hasToken ? '' : 'none';
+  document.getElementById('auth-status').textContent  = hasToken ? '🔑 Авторизован' : '';
+}
+
+const TOPICS = [
+  {n:1,  key:'t1',  bg:'Основни понятия'},
+  {n:2,  key:'t2',  bg:'Пътищата и улиците'},
+  {n:3,  key:'t3',  bg:'Другите участници'},
+  {n:4,  key:'t4',  bg:'Регулиране на движението'},
+  {n:5,  key:'t5',  bg:'Разположение на ППС'},
+  {n:6,  key:'t6',  bg:'Скорост, дистанция'},
+  {n:7,  key:'t7',  bg:'Маневри'},
+  {n:8,  key:'t8',  bg:'Кръстовище, тунел, ЖП прелез'},
+  {n:9,  key:'t9',  bg:'Движение по автомагистрала'},
+  {n:10, key:'t10', bg:'Спирки на превозните средства'},
+  {n:11, key:'t11', bg:'Специални правила'},
+  {n:12, key:'t12', bg:'Престой, паркиране'},
+  {n:13, key:'t13', bg:'Неблагоприятно време'},
+  {n:14, key:'t14', bg:'Организация на пътуването'},
+  {n:15, key:'t15', bg:'Психо-моторни функции'},
+  {n:16, key:'t16', bg:'Задължения на водача'},
+  {n:17, key:'t17', bg:'Административна отговорност'},
+  {n:18, key:'t18', bg:'Правила при ПТП'},
+  {n:19, key:'t19', bg:'Общо устройство на МПС'},
+];
+
+let activeTopicKey = 't2';
+let allStatuses = {};   // { "t2_1_1": "ok"|"error" }
+let questions = [];
+let activeQuestions = [];
+
+/* ══════════════════════════════════════
+   API
+══════════════════════════════════════ */
+async function apiGet(path) {
+  const r = await fetch(path, { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error(r.statusText);
+  return r.json();
+}
+async function apiPut(path, body) {
+  const r = await fetch(path, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(r.statusText);
+  return r.json();
+}
+async function apiDelete(path) {
+  const r = await fetch(path, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error(r.statusText);
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+async function init() {
+  // Parse questions, then apply media overrides from KV
+  const raw = window.QUESTIONS_DATA ?? [];
+
+  // Fetch media overrides (public endpoint, no auth needed)
+  let mediaOverrides = {};
+  try {
+    mediaOverrides = await apiGet('/api/overrides') ?? {};
+  } catch(e) {}
+
+  // Apply media overrides: replace image paths with /media/ URLs where available
+  let withMedia = raw.map(q => {
+    let updated = { ...q };
+    // Question illustration image
+    if (q.images?.length) {
+      const key = q.images[0].replace(/\.[^.]+$/, '');
+      const ov = mediaOverrides[key];
+      if (ov?.url) updated = { ...updated, images: [ov.url, ...q.images.slice(1)] };
+    }
+    // Answer images
+    if (Array.isArray(q.answers) && q.answers.some(a => a.image)) {
+      updated = {
+        ...updated,
+        answers: q.answers.map(a => {
+          if (!a.image) return a;
+          const key = a.image.replace(/\.[^.]+$/, '');
+          const ov = mediaOverrides[key];
+          return ov?.url ? { ...a, image: ov.url } : a;
+        }),
+      };
+    }
+    return updated;
+  });
+
+  // Apply text overrides (question text, answers text saved via edit mode)
+  questions = window.QuizEngine
+    ? QuizEngine.applyTextOverrides(withMedia, mediaOverrides)
+    : withMedia;
+
+  // Load statuses: localStorage as base, KV on top (KV is source of truth when available)
+  const localStatuses = JSON.parse(localStorage.getItem('pdd_review_statuses') || '{}');
+  try {
+    const kvData = await apiGet('/api/review/statuses');
+    // KV stores {qid, status, updatedAt} objects — extract just the status string
+    const kvStatuses = {};
+    Object.entries(kvData ?? {}).forEach(([k, v]) => {
+      kvStatuses[k] = typeof v === 'string' ? v : (v?.status ?? 'pending');
+    });
+    // Merge: local fills gaps, KV takes priority
+    allStatuses = { ...localStatuses, ...kvStatuses };
+    localStorage.setItem('pdd_review_statuses', JSON.stringify(allStatuses));
+  } catch(e) {
+    allStatuses = localStatuses;
+  }
+
+  buildTabs();
+  renderTopic(activeTopicKey);
+}
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+function buildTabs() {
+  const bar = document.getElementById('tab-bar');
+  bar.innerHTML = TOPICS.map(t => {
+    const qs = questions.filter(q => q.topic === t.key);
+    if (!qs.length) return '';
+    const okCount  = qs.filter(q => allStatuses[q.id] === 'ok').length;
+    const errCount = qs.filter(q => allStatuses[q.id] === 'error').length;
+    let badge = '';
+    if (errCount) badge = `<span class="tab-badge badge-error">${errCount}</span>`;
+    else if (okCount === qs.length) badge = `<span class="tab-badge badge-ok">✓</span>`;
+    return `<button class="tab-btn${t.key === activeTopicKey ? ' active' : ''}"
+              id="tab-${t.key}" onclick="renderTopic('${t.key}')">
+              Т${t.n} ${badge}
+            </button>`;
+  }).join('');
+}
+
+function refreshTabBadge(topicKey) {
+  const qs = questions.filter(q => q.topic === topicKey);
+  const tab = document.getElementById(`tab-${topicKey}`);
+  if (!tab) return;
+  const okCount  = qs.filter(q => allStatuses[q.id] === 'ok').length;
+  const errCount = qs.filter(q => allStatuses[q.id] === 'error').length;
+  const existing = tab.querySelector('.tab-badge');
+  if (existing) existing.remove();
+  if (errCount) {
+    tab.insertAdjacentHTML('beforeend', `<span class="tab-badge badge-error">${errCount}</span>`);
+  } else if (okCount === qs.length && qs.length > 0) {
+    tab.insertAdjacentHTML('beforeend', `<span class="tab-badge badge-ok">✓</span>`);
+  }
+}
+
+/* ══════════════════════════════════════
+   RENDER TOPIC
+══════════════════════════════════════ */
+function renderTopic(topicKey) {
+  activeTopicKey = topicKey;
+
+  // Update tab active state
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const activeTab = document.getElementById(`tab-${topicKey}`);
+  if (activeTab) {
+    activeTab.classList.add('active');
+    activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  const topic = TOPICS.find(t => t.key === topicKey);
+  document.getElementById('nav-topic-label').textContent =
+    topic ? `Тема ${topic.n} — ${topic.bg}` : topicKey;
+
+  activeQuestions = questions.filter(q => q.topic === topicKey);
+
+  updateStats();
+  renderCards();
+}
+
+function updateStats() {
+  const qs = activeQuestions;
+  const ok  = qs.filter(q => allStatuses[q.id] === 'ok').length;
+  const err = qs.filter(q => allStatuses[q.id] === 'error').length;
+  const pend = qs.length - ok - err;
+  document.getElementById('s-total').textContent   = qs.length;
+  document.getElementById('s-pending').textContent = pend;
+  document.getElementById('s-ok').textContent      = ok;
+  document.getElementById('s-error').textContent   = err;
+}
+
+/* ══════════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════════ */
+function renderCards() {
+  const container = document.getElementById('main-content');
+
+  if (!activeQuestions.length) {
+    container.innerHTML = '<div class="loading-msg">Вопросы не найдены</div>';
+    return;
+  }
+
+  const html = activeQuestions.map((q, i) => buildCard(q, i + 1)).join('');
+  container.innerHTML = html;
+
+  // Lazy-load PDF images
+  observeImages();
+}
+
+function buildCard(q, seqNum) {
+  const status = allStatuses[q.id] ?? 'pending';
+
+  // Question number from id: "t2_1_1" → "1/1"
+  const m = q.id.match(/t\d+_(\d+)_(\d+)/);
+  const qNum = m ? `${m[1]}/${m[2]}` : q.id;
+
+  // PDF crop path
+  const pdfSrc = `/pdf_crops/${q.topic}/${q.id.replace(q.topic + '_', q.topic + '_')}.png`;
+  // e.g. /pdf_crops/t2/t2_1_1.png
+
+  const statusLabel = status === 'ok' ? '✅ ОК' : status === 'error' ? '❌ Ошибка' : '⬜ Не проверен';
+
+  // Build trainer content
+  const isImgAns = Array.isArray(q.answers) && q.answers.some(a => a.image);
+  const hasQImg  = q.has_image && q.images?.length && !isImgAns;
+
+  let trainerContent = '';
+
+  // Question illustration
+  if (hasQImg) {
+    const src = imgSrc(q.images[0]);
+    trainerContent += `<div class="q-illus"><img src="${src}" alt="" loading="lazy"
+      onerror="this.parentElement.style.display='none'"></div>`;
+  }
+
+  // Answers
+  if (isImgAns) {
+    const items = q.answers.map(a => `
+      <div class="img-ans-item${a.correct ? ' correct' : ''}">
+        <div class="img-check ${a.correct ? 'ok' : 'bad'}">${a.correct ? '✓' : '✗'}</div>
+        <img src="${imgSrc(a.image)}" alt="" loading="lazy"
+             onerror="this.style.opacity='.3'">
+      </div>`).join('');
+    trainerContent += `<div class="img-ans-grid">${items}</div>`;
+  } else {
+    const items = (q.answers ?? []).map(a => `
+      <div class="ans-row${a.correct ? ' correct' : ''}">
+        <span class="ans-mark ${a.correct ? 'ok' : 'bad'}">${a.correct ? '✓' : '✗'}</span>
+        <span>${a.text ?? ''}</span>
+      </div>`).join('');
+    trainerContent += `<div class="q-answers">${items}</div>`;
+  }
+
+  return `
+<div class="q-card" data-status="${status}" id="card-${q.id}">
+  <div class="q-card-header">
+    <div class="q-header-left">
+      <span class="q-num-label">PDF</span>
+      <span class="q-num">${qNum}</span>
+      <span class="q-pts">${q.points ?? 2} т.</span>
+    </div>
+    <div class="q-header-right">
+      <span class="q-num-label">ID</span>
+      <span class="q-id-badge">${seqNum ?? '?'}</span>
+      <button class="edit-btn" onclick="startEdit('${q.id}')" title="Редактировать">✏️</button>
+    </div>
+  </div>
+  <div class="q-card-inner">
+    <div class="q-trainer" id="trainer-${q.id}">
+      <div class="q-question">${q.question ?? ''}</div>
+      ${trainerContent}
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <img class="pdf-img" src="${pdfSrc}"
+           alt="" loading="lazy" style="min-height:60px"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+           onclick="openLightbox('${pdfSrc}')">
+      <div class="pdf-missing" style="display:none">Нет кропа</div>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current ${status}" id="slbl-${q.id}">${statusLabel}</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn${status==='ok'?' active':''}"
+                onclick="setStatus('${q.id}','ok')">✅ ОК</button>
+        <button class="sbtn err-btn${status==='error'?' active':''}"
+                onclick="setStatus('${q.id}','error')">❌ Ошибка</button>
+        <button class="sbtn clr-btn"
+                onclick="setStatus('${q.id}','pending')">↩ Сброс</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+/* ══════════════════════════════════════
+   STATUS
+══════════════════════════════════════ */
+async function setStatus(qid, status) {
+  const prev = allStatuses[qid] ?? 'pending';
+  if (prev === status) status = 'pending'; // toggle off
+
+  if (status === 'pending') delete allStatuses[qid];
+  else allStatuses[qid] = status;
+
+  // Update DOM immediately
+  const card = document.getElementById(`card-${qid}`);
+  const lbl  = document.getElementById(`slbl-${qid}`);
+  if (card) card.dataset.status = status;
+  if (lbl) {
+    lbl.className = `status-current ${status}`;
+    lbl.textContent = status === 'ok' ? '✅ ОК' : status === 'error' ? '❌ Ошибка' : '⬜ Не проверен';
+  }
+  // Update button active states
+  card?.querySelectorAll('.sbtn').forEach(b => b.classList.remove('active'));
+  if (status !== 'pending') {
+    card?.querySelector(`.${status === 'ok' ? 'ok' : 'err'}-btn`)?.classList.add('active');
+  }
+
+  updateStats();
+  refreshTabBadge(activeTopicKey);
+
+  // Persist to KV
+  saveLocal();
+  if (!token) { toast('Сохранено локально (нет токена)', ''); return; }
+  try {
+    const path = `/api/review/status/${qid}`;
+    const r = status === 'pending'
+      ? await fetch(path, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+      : await fetch(path, { method: 'PUT',    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+    if (!r.ok) {
+      const body = await r.json().catch(() => ({}));
+      toast(`Ошибка ${r.status}: ${body.error ?? r.statusText}`, 'error');
+    } else {
+      toast('Сохранено в KV ✓', 'ok');
+    }
+  } catch(e) {
+    toast(`Ошибка: ${e.message}`, 'error');
+  }
+}
+
+function saveLocal() {
+  try { localStorage.setItem('pdd_review_statuses', JSON.stringify(allStatuses)); } catch(_) {}
+}
+
+/* ══════════════════════════════════════
+   LAZY IMAGES
+══════════════════════════════════════ */
+function observeImages() {
+  // PDF crop images now use native loading="lazy" — no custom observer needed
+}
+
+/* ══════════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════════ */
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('on');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('on');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+let _toastTimer;
+function toast(msg, type = '') {
+  document.querySelector('.toast')?.remove();
+  if (!msg) return;
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.remove(), 2500);
+}
+
+/* ══════════════════════════════════════
+   EDIT MODE
+══════════════════════════════════════ */
+function startEdit(qid) {
+  if (!token) { toast('Нужна авторизация для редактирования', 'error'); return; }
+  const q = questions.find(x => x.id === qid);
+  if (!q) return;
+  const isImgAns = Array.isArray(q.answers) && q.answers.some(a => a.image);
+  const hasQImg  = q.has_image && q.images?.length && !isImgAns;
+
+  const ansFields = q.answers.map((a, i) => {
+    if (a.image) {
+      return `<div class="img-drop-zone" id="dropzone-${qid}-${i}"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleImgDrop(event,'${qid}',${i})">
+        <span class="ans-mark ${a.correct?'ok':'bad'}">${a.correct?'✓':'✗'}</span>
+        <img id="imgpreview-${qid}-${i}" src="${imgSrc(a.image)}"
+             style="height:64px;border-radius:4px;border:1px solid var(--border);object-fit:contain">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <label class="replace-btn">
+            Заменить
+            <input type="file" accept="image/*" style="display:none"
+                   onchange="applyImgFile(this.files[0],'${qid}',${i})">
+          </label>
+          <span id="imgstatus-${qid}-${i}" class="img-status"></span>
+        </div>
+        <span style="font-size:10px;color:var(--txt2);align-self:flex-end">или перетащи сюда</span>
+      </div>`;
+    }
+    return `<div class="edit-ans-row" data-idx="${i}">
+      <span class="ans-mark ${a.correct?'ok':'bad'}">${a.correct?'✓':'✗'}</span>
+      <input class="edit-input" data-ans-idx="${i}" value="${escHtml(a.text??'')}" placeholder="Текст ответа…">
+    </div>`;
+  }).join('');
+
+  const qImgField = hasQImg ? `
+    <div class="img-drop-zone" id="dropzone-${qid}-q"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handleQImgDrop(event,'${qid}')">
+      <img id="imgpreview-${qid}-q" src="${imgSrc(q.images[0])}"
+           style="max-height:100px;border-radius:6px;border:1px solid var(--border);object-fit:contain">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label class="replace-btn">
+          Заменить картинку
+          <input type="file" accept="image/*" id="qimg-file-${qid}" style="display:none"
+                 onchange="applyQImgFile(this.files[0],'${qid}')">
+        </label>
+        <span id="imgstatus-${qid}-q" class="img-status"></span>
+      </div>
+      <span style="font-size:10px;color:var(--txt2);align-self:flex-end">или перетащи сюда</span>
+    </div>` : '';
+
+  const cell = document.getElementById(`trainer-${qid}`);
+  cell.innerHTML = `
+    <div class="edit-form" id="editform-${qid}">
+      <textarea class="edit-input" id="eq-text-${qid}" rows="3" placeholder="Текст вопроса (BG)…">${escHtml(q.question??'')}</textarea>
+      <textarea class="edit-input" id="eq-ru-${qid}" rows="2" placeholder="Текст вопроса (RU)…">${escHtml(q.question_ru??'')}</textarea>
+      ${qImgField}
+      <div class="edit-answers" id="eans-${qid}">${ansFields}</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="sbtn ok-btn" onclick="saveEdit('${qid}')">💾 Сохранить</button>
+        <button class="sbtn clr-btn" onclick="cancelEdit('${qid}')">✕ Отмена</button>
+      </div>
+    </div>`;
+}
+
+// Returns correct image URL — supports both /images/questions/ and /media/ paths
+function imgSrc(path) {
+  if (!path) return '';
+  if (path.startsWith('/') || path.startsWith('http')) return path;
+  return `/images/questions/${path}`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Image preview helpers ── */
+function applyImgFile(file, qid, idx) {
+  if (!file) return;
+  const preview = document.getElementById(`imgpreview-${qid}-${idx}`);
+  const status  = document.getElementById(`imgstatus-${qid}-${idx}`);
+  const reader  = new FileReader();
+  reader.onload = e => {
+    preview.src = e.target.result;
+    status.textContent = '✅ Готово к сохранению';
+    status.className = 'img-status replaced';
+    // Store file reference on the dropzone for saveEdit to pick up
+    document.getElementById(`dropzone-${qid}-${idx}`).dataset.pendingFile = '';
+    document.getElementById(`dropzone-${qid}-${idx}`)._pendingFile = file;
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyQImgFile(file, qid) {
+  if (!file) return;
+  const preview = document.getElementById(`imgpreview-${qid}-q`);
+  const status  = document.getElementById(`imgstatus-${qid}-q`);
+  const reader  = new FileReader();
+  reader.onload = e => {
+    preview.src = e.target.result;
+    status.textContent = '✅ Готово к сохранению';
+    status.className = 'img-status replaced';
+    document.getElementById(`dropzone-${qid}-q`)._pendingFile = file;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleImgDrop(event, qid, idx) {
+  event.preventDefault();
+  document.getElementById(`dropzone-${qid}-${idx}`).classList.remove('drag-over');
+  const file = event.dataTransfer.files[0];
+  if (file?.type.startsWith('image/')) applyImgFile(file, qid, idx);
+}
+
+function handleQImgDrop(event, qid) {
+  event.preventDefault();
+  document.getElementById(`dropzone-${qid}-q`).classList.remove('drag-over');
+  const file = event.dataTransfer.files[0];
+  if (file?.type.startsWith('image/')) applyQImgFile(file, qid);
+}
+
+async function saveEdit(qid) {
+  if (!token) { toast('Нужна авторизация для сохранения', 'error'); return; }
+
+  const q = questions.find(x => x.id === qid);
+  if (!q) return;
+
+  const origQ = (window.QUESTIONS_DATA ?? []).find(x => x.id === qid);
+  let anySaved = false;
+
+  // ── 1. Upload question image if a new file was selected ────────
+  const qDropzone = document.getElementById(`dropzone-${qid}-q`);
+  const qImgFile  = qDropzone?._pendingFile;
+  if (qImgFile) {
+    const rawImg = origQ?.images?.[0] ?? q.images?.[0] ?? '';
+    const imgKey = rawImg.replace(/.*\//, '').replace(/\.[^.]+$/, '');
+    console.log('[upload] question img key:', imgKey, 'file:', qImgFile.name);
+    const fd = new FormData();
+    fd.append('file', qImgFile);
+    fd.append('key', imgKey);
+    fd.append('type', 'image');
+    try {
+      const r = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      const data = await r.json();
+      if (!r.ok) { toast(`Ошибка загрузки фото: ${data.error ?? r.status}`, 'error'); return; }
+      console.log('[upload] question img saved → KV key:', imgKey, 'url:', data.url);
+      const qi2 = questions.findIndex(x => x.id === qid);
+      if (qi2 !== -1 && data.url) questions[qi2] = { ...questions[qi2], images: [data.url] };
+      anySaved = true;
+    } catch(e) { toast(`Ошибка загрузки фото: ${e.message}`, 'error'); return; }
+  }
+
+  // ── 2. Upload image answers if changed ─────────────────────────
+  const origAnswers = origQ?.answers ?? q.answers ?? [];
+  for (let idx = 0; idx < q.answers.length; idx++) {
+    const ans = q.answers[idx];
+    if (!ans?.image) continue;
+    const dropzone = document.getElementById(`dropzone-${qid}-${idx}`);
+    const file = dropzone?._pendingFile;
+    if (!file) continue;
+    const rawAns = origAnswers[idx]?.image ?? ans.image;
+    const imgKey = rawAns.replace(/.*\//, '').replace(/\.[^.]+$/, '');
+    console.log('[upload] answer img key:', imgKey, 'file:', file.name);
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('key', imgKey);
+    fd.append('type', 'image');
+    try {
+      const r = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      const data = await r.json();
+      if (!r.ok) { toast(`Ошибка загрузки фото ответа ${idx+1}: ${data.error ?? r.status}`, 'error'); return; }
+      console.log('[upload] answer img saved → KV key:', imgKey, 'url:', data.url);
+      const qi2 = questions.findIndex(x => x.id === qid);
+      if (qi2 !== -1 && data.url) {
+        questions[qi2] = { ...questions[qi2], answers: questions[qi2].answers.map((a, i) => i === idx ? { ...a, image: data.url } : a) };
+      }
+      anySaved = true;
+    } catch(e) { toast(`Ошибка загрузки фото ответа ${idx+1}: ${e.message}`, 'error'); return; }
+  }
+
+  // ── 3. Save text edits if any field changed ────────────────────
+  const newQuestion   = document.getElementById(`eq-text-${qid}`)?.value.trim() ?? '';
+  const newQuestionRu = document.getElementById(`eq-ru-${qid}`)?.value.trim()   ?? '';
+  const answerInputs  = document.querySelectorAll(`#eans-${qid} input.edit-input[data-ans-idx]`);
+  let newAnswers = null;
+  if (answerInputs.length) {
+    newAnswers = q.answers.map((a, i) => {
+      const inp = document.querySelector(`#eans-${qid} input[data-ans-idx="${i}"]`);
+      return inp ? { ...a, text: inp.value.trim() } : { ...a };
+    });
+  }
+
+  const hasTextChanges = newQuestion || newQuestionRu || newAnswers;
+  if (hasTextChanges) {
+    const payload = { type: 'text_override', qid };
+    if (newQuestion)   payload.question    = newQuestion;
+    if (newQuestionRu) payload.question_ru = newQuestionRu;
+    if (newAnswers)    payload.answers     = newAnswers;
+    try {
+      const resp = await fetch(`/api/admin/override/${qid}__text`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const respData = await resp.json().catch(() => ({}));
+      if (!resp.ok) { toast(`Ошибка сохранения текста: ${respData.error ?? resp.status}`, 'error'); return; }
+      anySaved = true;
+    } catch(e) { toast(`Ошибка сохранения текста: ${e.message}`, 'error'); return; }
+  }
+
+  if (!anySaved) { toast('Нечего сохранять', ''); }
+
+  // ── 4. Update local questions array ───────────────────────────
+  const qi = questions.findIndex(x => x.id === qid);
+  if (qi !== -1) {
+    let updated = { ...questions[qi] };  // already has new images from step 1/2
+    if (newQuestion)   updated.question    = newQuestion;
+    if (newQuestionRu) updated.question_ru = newQuestionRu;
+    if (newAnswers)    updated.answers     = newAnswers;
+    questions[qi] = updated;
+    const aqi = activeQuestions.findIndex(x => x.id === qid);
+    if (aqi !== -1) activeQuestions[aqi] = updated;
+  }
+
+  if (anySaved) toast('Сохранено ✓', 'ok');
+
+  // ── 5. Re-render card in non-edit mode ─────────────────────────
+  const oldCard = document.getElementById(`card-${qid}`);
+  if (oldCard) {
+    const seqNum = activeQuestions.findIndex(x => x.id === qid) + 1;
+    const updatedQ = questions.find(x => x.id === qid);
+    const tmp = document.createElement('div');
+    tmp.innerHTML = buildCard(updatedQ, seqNum);
+    oldCard.replaceWith(tmp.firstElementChild);
+    observeImages();
+  }
+}
+
+function cancelEdit(qid) {
+  const q = questions.find(x => x.id === qid);
+  if (!q) return;
+  const cell = document.getElementById(`trainer-${qid}`);
+  if (!cell) return;
+  // Re-render just the trainer cell
+  const isImgAns = Array.isArray(q.answers) && q.answers.some(a => a.image);
+  const hasQImg  = q.has_image && q.images?.length && !isImgAns;
+  let html = `<div class="q-question">${q.question ?? ''}</div>`;
+  if (hasQImg) {
+    html += `<div class="q-illus"><img src="${imgSrc(q.images[0])}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
+  }
+  if (isImgAns) {
+    html += `<div class="img-ans-grid">${q.answers.map(a=>`
+      <div class="img-ans-item${a.correct?' correct':''}">
+        <div class="img-check ${a.correct?'ok':'bad'}">${a.correct?'✓':'✗'}</div>
+        <img src="${imgSrc(a.image)}" alt="" loading="lazy" onerror="this.style.opacity='.3'">
+      </div>`).join('')}</div>`;
+  } else {
+    html += `<div class="q-answers">${q.answers.map(a=>`
+      <div class="ans-row${a.correct?' correct':''}">
+        <span class="ans-mark ${a.correct?'ok':'bad'}">${a.correct?'✓':'✗'}</span>
+        <span>${a.text??''}</span>
+      </div>`).join('')}</div>`;
+  }
+  cell.innerHTML = html;
+}
+
+/* ══════════════════════════════════════
+   BOOT
+══════════════════════════════════════ */
+updateAuthUI();
+init();
+// Сохранять статусы при уходе со страницы
+window.addEventListener('beforeunload', () => saveLocal());
+</script>
+</body>
+</html>

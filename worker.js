@@ -2,13 +2,16 @@
  * Bulgarian Driving Trainer — Cloudflare Worker
  *
  * Routes:
- *   GET  /api/overrides          → public: get all media overrides (for quiz)
- *   GET  /api/admin/overrides    → admin: same + extra metadata
- *   POST /api/admin/upload       → admin: upload file to R2, store metadata in KV
- *   PUT  /api/admin/override/:k  → admin: update type tag or notes
- *   DELETE /api/admin/override/:k → admin: remove override
- *   GET  /media/:filename        → serve file from R2
- *   *                            → pass through to static assets
+ *   GET  /api/overrides              → public: get all media overrides (for quiz)
+ *   GET  /api/admin/overrides        → admin: same + extra metadata
+ *   POST /api/admin/upload           → admin: upload file to R2, store metadata in KV
+ *   PUT  /api/admin/override/:k      → admin: update type tag or notes
+ *   DELETE /api/admin/override/:k   → admin: remove override
+ *   GET  /media/:filename            → serve file from R2
+ *   GET  /api/review/statuses        → admin: get all review statuses
+ *   PUT  /api/review/status/:qid     → admin: set review status
+ *   DELETE /api/review/status/:qid  → admin: remove review status
+ *   *                                → pass through to static assets
  *
  * Auth: Authorization: Bearer <ADMIN_TOKEN>
  *   Set via: npx wrangler secret put ADMIN_TOKEN
@@ -44,6 +47,24 @@ export default {
       const authErr = checkAuth(request, env);
       if (authErr) return withCors(authErr);
       return withCors(await handleAdmin(request, env, url));
+    }
+
+    // ── Review API (auth required) ──────────────────────────────
+    if (url.pathname.startsWith('/api/review/')) {
+      const authErr = checkAuth(request, env);
+      if (authErr) return withCors(authErr);
+      return withCors(await handleReview(request, env, url));
+    }
+
+    // ── /admin → admin.html ─────────────────────────────────────
+    if (url.pathname === '/admin' || url.pathname === '/admin/') {
+      const adminUrl = new URL('/admin.html', request.url);
+      return env.ASSETS.fetch(adminUrl.toString());
+    }
+
+    // ── /admin-review → admin-review.html ──────────────────────
+    if (url.pathname === '/admin-review' || url.pathname === '/admin-review/') {
+      return Response.redirect(new URL('/admin-review.html', request.url).toString(), 301);
     }
 
     // ── Static assets (index.html, questions.js, admin.html …) ──
@@ -95,7 +116,7 @@ async function serveMedia(url, env) {
 
     const headers = new Headers(CORS_HEADERS);
     obj.writeHttpMetadata(headers);
-    headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Cache-Control', 'public, max-age=300');
     return new Response(obj.body, { headers });
   } catch (e) {
     return new Response('Error: ' + e.message, { status: 500 });
@@ -163,7 +184,8 @@ async function uploadFile(request, env) {
 
   const ext = file.name.split('.').pop().toLowerCase();
   const r2key = `${key}.${ext}`;
-  const mediaUrl = `/media/${r2key}`;
+  // Add timestamp so each upload gets a unique URL → bypasses CDN cache for old versions
+  const mediaUrl = `/media/${r2key}?v=${Date.now()}`;
 
   try {
     // Upload to R2
@@ -190,6 +212,50 @@ async function uploadFile(request, env) {
   } catch (e) {
     return json({ error: 'Upload failed: ' + e.message }, 500);
   }
+}
+
+// ── Review status handlers ───────────────────────────────────────────────────
+
+async function handleReview(request, env, url) {
+  const sub = url.pathname.replace('/api/review/', '');
+
+  // GET /api/review/statuses — return all review statuses
+  if (sub === 'statuses' && request.method === 'GET') {
+    try {
+      const list = await env.ADMIN_KV.list({ prefix: 'review:' });
+      const statuses = {};
+      const keys = list.keys.map(k => k.name);
+      for (let i = 0; i < keys.length; i += 50) {
+        const batch = keys.slice(i, i + 50);
+        await Promise.all(batch.map(async key => {
+          const val = await env.ADMIN_KV.get(key, 'json');
+          if (val) statuses[key.replace('review:', '')] = val;
+        }));
+      }
+      return json(statuses);
+    } catch (e) {
+      return json({ error: e.message }, 500);
+    }
+  }
+
+  // PUT /api/review/status/<qid> — set status
+  if (sub.startsWith('status/') && request.method === 'PUT') {
+    const qid = sub.slice('status/'.length);
+    const body = await request.json().catch(() => null);
+    if (!body || !body.status) return json({ error: 'Missing status' }, 400);
+    const record = { qid, status: body.status, updatedAt: new Date().toISOString() };
+    await env.ADMIN_KV.put(`review:${qid}`, JSON.stringify(record));
+    return json({ ok: true, data: record });
+  }
+
+  // DELETE /api/review/status/<qid> — remove status
+  if (sub.startsWith('status/') && request.method === 'DELETE') {
+    const qid = sub.slice('status/'.length);
+    await env.ADMIN_KV.delete(`review:${qid}`);
+    return json({ ok: true });
+  }
+
+  return json({ error: 'Not found' }, 404);
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

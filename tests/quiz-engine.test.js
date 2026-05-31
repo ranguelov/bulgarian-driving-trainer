@@ -516,3 +516,136 @@ describe('prepareSession', () => {
     assert.equal(session[0].question, Q4.question);
   });
 });
+
+/* ═══════════════════════════════════════════════════
+   applyTextOverrides
+   TDD: тесты написаны ДО реализации.
+   Формат оверрайда в KV:
+     ключ  = "{qid}__text"
+     значение = { type:"text_override", qid, question?, question_ru?, answers? }
+═══════════════════════════════════════════════════ */
+describe('applyTextOverrides', () => {
+  const Q_BASE = {
+    id: 't1_1_1', topic: 't1', points: 2,
+    question: 'Оригинальный вопрос', question_ru: 'Оригинальный RU',
+    has_image: false, images: [],
+    answers: [
+      { text: 'Да',   text_ru: 'Да',   correct: true,  image: null },
+      { text: 'Нет',  text_ru: 'Нет',  correct: false, image: null },
+    ],
+  };
+  const Q_OTHER = {
+    id: 't1_2_1', topic: 't1', points: 2,
+    question: 'Другой вопрос', question_ru: 'Другой RU',
+    has_image: false, images: [],
+    answers: [
+      { text: 'А', text_ru: 'А', correct: true, image: null },
+    ],
+  };
+
+  // ── 1. Без оверрайдов — вопросы не меняются ─────────────────────────
+  it('returns questions unchanged when overrides is empty', () => {
+    const result = QE.applyTextOverrides([Q_BASE], {});
+    assert.equal(result[0].question, Q_BASE.question);
+    assert.equal(result[0].question_ru, Q_BASE.question_ru);
+  });
+
+  // ── 2. Оверрайд текста вопроса ───────────────────────────────────────
+  it('replaces question text when override has question field', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question: 'Новый текст' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(result[0].question, 'Новый текст');
+  });
+
+  // ── 3. Оверрайд русского текста ─────────────────────────────────────
+  it('replaces question_ru when override has question_ru field', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question_ru: 'Новый RU' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(result[0].question_ru, 'Новый RU');
+    assert.equal(result[0].question, Q_BASE.question); // оригинальный не тронут
+  });
+
+  // ── 4. Оверрайд ответов ─────────────────────────────────────────────
+  it('replaces answers array when override has answers field', () => {
+    const newAnswers = [
+      { text: 'Новый А', text_ru: 'Новый А RU', correct: false, image: null },
+      { text: 'Новый Б', text_ru: 'Новый Б RU', correct: true,  image: null },
+    ];
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', answers: newAnswers },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.deepEqual(result[0].answers, newAnswers);
+  });
+
+  // ── 5. Частичный оверрайд — недостающие поля берутся из оригинала ───
+  it('keeps original field when override does not specify it', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question: 'Только BG' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(result[0].question,    'Только BG');
+    assert.equal(result[0].question_ru, Q_BASE.question_ru); // не тронут
+    assert.deepEqual(result[0].answers, Q_BASE.answers);     // не тронуты
+  });
+
+  // ── 6. Оверрайд применяется только к нужному вопросу ────────────────
+  it('only overrides the matching question, leaves others unchanged', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question: 'Изменён' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE, Q_OTHER], overrides);
+    assert.equal(result[0].question, 'Изменён');
+    assert.equal(result[1].question, Q_OTHER.question); // не тронут
+  });
+
+  // ── 7. Оверрайды не того типа игнорируются ──────────────────────────
+  it('ignores overrides where type is not text_override', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'image', qid: 't1_1_1', question: 'Не должен применяться' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(result[0].question, Q_BASE.question);
+  });
+
+  // ── 8. Оригинальные объекты не мутируются ───────────────────────────
+  it('does not mutate original question objects', () => {
+    const origQuestion = Q_BASE.question;
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question: 'Изменён' },
+    };
+    QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(Q_BASE.question, origQuestion);
+  });
+
+  // ── 9. Пустой массив вопросов ────────────────────────────────────────
+  it('returns empty array for empty questions input', () => {
+    assert.deepEqual(QE.applyTextOverrides([], { 't1_1_1__text': {} }), []);
+  });
+
+  // ── 10. Оверрайды = null/undefined — не падает ───────────────────────
+  it('returns questions unchanged when overrides is null or undefined', () => {
+    assert.equal(QE.applyTextOverrides([Q_BASE], null)[0].question,      Q_BASE.question);
+    assert.equal(QE.applyTextOverrides([Q_BASE], undefined)[0].question, Q_BASE.question);
+  });
+
+  // ── 11. Возвращает новый массив (не ту же ссылку) ───────────────────
+  it('returns a new array (not the same reference)', () => {
+    const input = [Q_BASE];
+    const result = QE.applyTextOverrides(input, {});
+    assert.notStrictEqual(result, input);
+  });
+
+  // ── 12. Оверрайд с пустой строкой question не применяется ───────────
+  it('does not apply empty string as question override', () => {
+    const overrides = {
+      't1_1_1__text': { type: 'text_override', qid: 't1_1_1', question: '' },
+    };
+    const result = QE.applyTextOverrides([Q_BASE], overrides);
+    assert.equal(result[0].question, Q_BASE.question);
+  });
+});

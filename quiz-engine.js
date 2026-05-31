@@ -280,6 +280,40 @@
   }
 
   /* ─────────────────────────────────────────
+     TEXT OVERRIDES
+  ───────────────────────────────────────── */
+
+  /**
+   * Apply text overrides from the KV override map to a question array.
+   *
+   * Override key format: "{qid}__text"
+   * Override value: { type:"text_override", qid, question?, question_ru?, answers? }
+   *
+   * Rules:
+   *  - Only entries with type === "text_override" are applied.
+   *  - Empty string values are NOT applied (keep original).
+   *  - Original question objects are never mutated (shallow clone created).
+   *  - Fields missing from the override keep their original values.
+   *
+   * @param {Array}  questions  Full question array (from QUESTIONS_DATA)
+   * @param {Object} overrides  Map returned by /api/overrides (may be null/undefined)
+   * @returns {Array}           New array with overrides applied
+   */
+  function applyTextOverrides(questions, overrides) {
+    if (!Array.isArray(questions)) return [];
+    var ov = overrides || {};
+    return questions.map(function(q) {
+      var entry = ov[q.id + '__text'];
+      if (!entry || entry.type !== 'text_override') return Object.assign({}, q);
+      var patched = Object.assign({}, q);
+      if (entry.question)    patched.question    = entry.question;
+      if (entry.question_ru) patched.question_ru = entry.question_ru;
+      if (entry.answers)     patched.answers     = entry.answers;
+      return patched;
+    });
+  }
+
+  /* ─────────────────────────────────────────
      PUBLIC API
   ───────────────────────────────────────── */
   return {
@@ -294,8 +328,9 @@
     getWeakSpots,
     getQuestionText,
     getAnswerText,
-    setStorage,      // for testing
-    shuffleArray,    // randomisation utility
-    prepareSession,  // session builder — shuffles answers ONCE per question
+    setStorage,           // for testing
+    shuffleArray,         // randomisation utility
+    prepareSession,       // session builder — shuffles answers ONCE per question
+    applyTextOverrides,   // apply KV text overrides to question array
   };
 }));

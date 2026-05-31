@@ -860,7 +860,7 @@ body {
 <div class="screen on" id="s-home">
   <header class="app-bar">
     <div class="ab-left">
-      <button class="icon-btn" onclick="location.href='/admin'" aria-label="Admin">
+      <button class="icon-btn" onclick="location.href='/admin-review.html'" aria-label="Admin">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -1183,20 +1183,26 @@ body {
 let allQuestions = [];
 let sessionQs    = [];
 
-/* ── Media overrides (loaded from Cloudflare KV via Worker API) ──
-   Format: { "t2_question_1_1_img_1": { type:"image"|"video", url:"/media/..." } }
+/* ── Media + text overrides (loaded from Cloudflare KV via Worker API) ──
+   Media format:    { "t2_question_1_1_img_1": { type:"image"|"video", url:"/media/..." } }
+   Text format:     { "t1_1_1__text": { type:"text_override", question?, question_ru?, answers? } }
    Falls back silently to {} if API not available (local dev, etc.) */
 let MEDIA_OVERRIDES = {};
 fetch('/api/overrides', { cache: 'no-store' })
   .then(r => r.ok ? r.json() : {})
   .then(data => {
     MEDIA_OVERRIDES = data;
+    console.log('[overrides] loaded:', Object.keys(data).length, 'entries', Object.keys(data).filter(k => !k.endsWith('__text')));
+    // Apply text overrides to allQuestions so quiz picks them up
+    if (window.QuizEngine && allQuestions.length) {
+      allQuestions = QuizEngine.applyTextOverrides(allQuestions, data);
+    }
     // Re-render current question if quiz screen is active
     if (document.getElementById('s-quiz')?.classList.contains('on')) {
       renderQ(currentIdx);
     }
   })
-  .catch(() => {});
+  .catch(e => console.warn('[overrides] fetch failed:', e));
 let currentIdx   = 0;
 let isChecked    = false;
 let lang         = 'BG';
@@ -1302,7 +1308,11 @@ const UI = {
 ════════════════════════════════════ */
 function setText(id, val) { const e=document.getElementById(id); if(e) e.textContent=val; }
 function _ensureQuestions() {
-  if (!allQuestions.length && window.QUESTIONS_DATA?.length) allQuestions = window.QUESTIONS_DATA;
+  if (!allQuestions.length && window.QUESTIONS_DATA?.length) {
+    allQuestions = window.QuizEngine
+      ? QuizEngine.applyTextOverrides(window.QUESTIONS_DATA, MEDIA_OVERRIDES)
+      : window.QUESTIONS_DATA;
+  }
 }
 function isDesktop() { return window.matchMedia('(min-width:768px)').matches; }
 const isAnswerImages = q => QuizEngine.isAnswerImages(q);
@@ -1621,7 +1631,13 @@ function pickAns(card, type) {
     list.querySelectorAll('.ans-card').forEach(c=>c.classList.remove('sel'));
     if (!was) card.classList.add('sel');
   } else {
-    card.classList.toggle('sel');
+    if (card.classList.contains('sel')) {
+      card.classList.remove('sel');
+    } else {
+      const req = q_required(list);
+      const sel = list.querySelectorAll('.ans-card.sel').length;
+      if (sel < req) card.classList.add('sel');
+    }
   }
 
   const req = list.dataset.multi ? q_required(list) : 0;
