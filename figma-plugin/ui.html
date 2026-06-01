@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDD Image Uploader</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, sans-serif;
+    font-size: 13px;
+    color: #1a1a1a;
+    padding: 16px;
+    background: #fff;
+  }
+  h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: #888; margin-bottom: 14px; font-size: 12px; }
+
+  .drop-zone {
+    border: 2px dashed #c8c8c8;
+    border-radius: 8px;
+    padding: 32px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: #0d99ff;
+    background: #f0f8ff;
+  }
+  .drop-zone .icon { font-size: 28px; margin-bottom: 8px; }
+  .drop-zone .hint { color: #888; font-size: 12px; margin-top: 6px; }
+
+  .stats {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    display: none;
+  }
+  .stats.visible { display: flex; gap: 24px; }
+  .stat { text-align: center; }
+  .stat-value { font-size: 20px; font-weight: 600; }
+  .stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+
+  .progress-wrap { margin-top: 14px; display: none; }
+  .progress-wrap.visible { display: block; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .progress-bar-bg { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #0d99ff; border-radius: 3px; transition: width 0.2s; width: 0%; }
+
+  .log {
+    margin-top: 12px;
+    max-height: 220px;
+    overflow-y: auto;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #555;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 8px;
+    display: none;
+  }
+  .log.visible { display: block; }
+  .log-ok { color: #2d8c3e; }
+  .log-err { color: #c0392b; }
+  .log-warn { color: #c87b00; }
+  .log-info { color: #0d99ff; }
+
+  .btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #0d99ff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    display: none;
+  }
+  .btn:hover { background: #0a7acc; }
+  .btn.visible { display: block; }
+</style>
+</head>
+<body>
+
+<h3>PDD Image Uploader</h3>
+<p class="subtitle">Выбери папку <code>images/questions/</code> или все файлы</p>
+
+<div class="drop-zone" id="dropZone">
+  <div class="icon">📁</div>
+  <div>Перетащи файлы сюда или нажми для выбора</div>
+  <div class="hint">PNG, JPG, WEBP, SVG · до 1430 файлов</div>
+  <input type="file" id="fileInput" multiple style="display:none" accept=".png,.jpg,.jpeg,.webp,.svg">
+</div>
+
+<div class="stats" id="stats">
+  <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Файлов</div></div>
+  <div class="stat"><div class="stat-value" id="statOk" style="color:#2d8c3e">0</div><div class="stat-label">Загружено</div></div>
+  <div class="stat"><div class="stat-value" id="statAlready" style="color:#888">0</div><div class="stat-label">Уже было</div></div>
+  <div class="stat"><div class="stat-value" id="statSkip" style="color:#c0392b">0</div><div class="stat-label">Ошибок</div></div>
+</div>
+
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-header">
+    <span id="progressLabel">Подготовка…</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="log" id="logBox"></div>
+
+<button class="btn" id="resetBtn" onclick="reset()">Загрузить другие файлы</button>
+
+<script>
+const dropZone   = document.getElementById('dropZone');
+const fileInput  = document.getElementById('fileInput');
+const stats      = document.getElementById('stats');
+const statTotal   = document.getElementById('statTotal');
+const statOk      = document.getElementById('statOk');
+const statAlready = document.getElementById('statAlready');
+const statSkip    = document.getElementById('statSkip');
+const progWrap   = document.getElementById('progressWrap');
+const progLabel  = document.getElementById('progressLabel');
+const progPct    = document.getElementById('progressPct');
+const progFill   = document.getElementById('progressFill');
+const logBox     = document.getElementById('logBox');
+const resetBtn   = document.getElementById('resetBtn');
+
+let total = 0, okCount = 0, alreadyCount = 0, skipCount = 0;
+let processing = false;
+// Pending ack resolvers: name → { resolve, timer }
+const pending = new Map();
+
+// ── Plugin → UI messages ──────────────────────────────────────────────────
+window.onmessage = (ev) => {
+  const msg = ev.data.pluginMessage;
+  if (!msg) return;
+
+  if (msg.type === 'init-ok') {
+    log(`✓ Фреймов в файле: ${msg.frameCount}`, 'info');
+    return;
+  }
+
+  if (msg.type === 'ack') {
+    const entry = pending.get(msg.name);
+    if (entry) {
+      clearTimeout(entry.timer);
+      pending.delete(msg.name);
+      entry.resolve(msg);
+    }
+  }
+};
+
+// ── Init ──────────────────────────────────────────────────────────────────
+parent.postMessage({ pluginMessage: { type: 'init' } }, '*');
+
+// ── Drop zone ─────────────────────────────────────────────────────────────
+dropZone.onclick    = () => !processing && fileInput.click();
+dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
+dropZone.ondragleave = () => dropZone.classList.remove('drag-over');
+dropZone.ondrop     = (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  if (!processing) handleFiles(e.dataTransfer.files);
+};
+fileInput.onchange  = (e) => handleFiles(e.target.files);
+
+// ── Main upload flow ──────────────────────────────────────────────────────
+async function handleFiles(fileList) {
+  const files = Array.from(fileList).filter(f =>
+    /\.(png|jpe?g|webp|svg)$/i.test(f.name)
+  );
+
+  if (files.length === 0) {
+    log('⚠ Нет подходящих файлов (.png .jpg .webp .svg)', 'warn');
+    return;
+  }
+
+  processing = true;
+  total = files.length;
+  okCount = 0;
+  alreadyCount = 0;
+  skipCount = 0;
+
+  statTotal.textContent = total;
+  statOk.textContent = '0';
+  statAlready.textContent = '0';
+  statSkip.textContent = '0';
+  stats.classList.add('visible');
+  progWrap.classList.add('visible');
+  logBox.classList.add('visible');
+
+  log(`Начинаю загрузку ${total} файлов…`, 'info');
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const name = file.name.replace(/\.(png|jpe?g|webp|svg)$/i, '');
+
+    updateProgress(i, total, name);
+
+    try {
+      const result = await uploadFile(file, name);
+      if (result.ok) {
+        if (result.skipped) {
+          alreadyCount++;
+        } else {
+          okCount++;
+        }
+      } else {
+        skipCount++;
+        log(`⚠ ${name}: ${result.error}`, 'warn');
+      }
+    } catch (e) {
+      skipCount++;
+      log(`✗ ${name}: ${e}`, 'err');
+    }
+
+    statOk.textContent = okCount;
+    statAlready.textContent = alreadyCount;
+    statSkip.textContent = skipCount;
+  }
+
+  updateProgress(total, total, '');
+  log(`✅ Готово! Загружено: ${okCount}, уже было: ${alreadyCount}, ошибок: ${skipCount}`, 'ok');
+  progLabel.textContent = 'Завершено';
+  resetBtn.classList.add('visible');
+  processing = false;
+}
+
+function uploadFile(file, name) {
+  return new Promise((resolve, reject) => {
+    const isSvg = /\.svg$/i.test(file.name);
+    const reader = new FileReader();
+
+    const timer = setTimeout(() => {
+      pending.delete(name);
+      reject(new Error('Timeout'));
+    }, 30000);
+
+    pending.set(name, { resolve, timer });
+
+    if (isSvg) {
+      reader.onload = () => {
+        parent.postMessage({
+          pluginMessage: { type: 'upload-svg', name, svgString: reader.result }
+        }, '*');
+      };
+      reader.readAsText(file);
+    } else {
+      reader.onload = () => {
+        const buf = reader.result;
+        parent.postMessage({
+          pluginMessage: {
+            type: 'upload-png',
+            name,
+            bytes: Array.from(new Uint8Array(buf))
+          }
+        }, '*');
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    reader.onerror = () => {
+      clearTimeout(timer);
+      pending.delete(name);
+      reject(new Error('FileReader error'));
+    };
+  });
+}
+
+function updateProgress(done, total, currentName) {
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  progFill.style.width = pct + '%';
+  progPct.textContent = pct + '%';
+  progLabel.textContent = done < total
+    ? `${done + 1} / ${total}  · ${currentName}`
+    : `${total} / ${total}`;
+}
+
+function log(msg, type) {
+  const div = document.createElement('div');
+  div.textContent = msg;
+  if (type) div.className = 'log-' + type;
+  logBox.appendChild(div);
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+function reset() {
+  processing = false;
+  total = okCount = alreadyCount = skipCount = 0;
+  stats.classList.remove('visible');
+  progWrap.classList.remove('visible');
+  logBox.classList.remove('visible');
+  logBox.innerHTML = '';
+  resetBtn.classList.remove('visible');
+  fileInput.value = '';
+  parent.postMessage({ pluginMessage: { type: 'init' } }, '*');
+}
+</script>
+</body>
+</html>

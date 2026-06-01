@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПРОТОТИП — Review Admin · Тема 2</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0f0f1a;
+  --bg2:     #16213e;
+  --bg3:     #1e2a4a;
+  --border:  #2a3560;
+  --accent:  #4f8ef7;
+  --ok:      #3ecf8e;
+  --warn:    #f5a623;
+  --danger:  #e74c3c;
+  --txt:     #e8eaf6;
+  --txt2:    #8892b0;
+  --radius:  10px;
+}
+body {
+  font-family: -apple-system, "Inter", sans-serif;
+  background: var(--bg); color: var(--txt);
+  font-size: 13px; line-height: 1.5; min-height: 100vh;
+}
+
+/* ── Top bar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; height: 52px;
+}
+.topbar-title { font-weight: 700; font-size: 15px; color: #6cf; }
+.topbar-badge {
+  background: var(--warn); color: #000;
+  font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+.topbar-note { font-size: 11px; color: var(--txt2); margin-left: auto; }
+
+/* ── Layout ── */
+.main { padding: 20px; max-width: 1600px; margin: 0 auto; }
+.section-title {
+  font-size: 16px; font-weight: 700; color: #6cf;
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ── Question card ── */
+.q-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 140px;
+  gap: 0;
+  overflow: hidden;
+}
+.q-card:hover { border-color: #3a4570; }
+
+/* Status border-left indicator */
+.q-card[data-status="ok"]      { border-left: 3px solid var(--ok); }
+.q-card[data-status="error"]   { border-left: 3px solid var(--danger); }
+.q-card[data-status="note"]    { border-left: 3px solid var(--warn); }
+.q-card[data-status="pending"] { border-left: 3px solid var(--border); }
+
+/* ── Meta cell (№, points) ── */
+.q-meta {
+  padding: 16px 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-start; gap: 6px;
+  border-right: 1px solid var(--border);
+  background: var(--bg3);
+}
+.q-num  { font-weight: 800; font-size: 15px; color: var(--accent); font-family: monospace; }
+.q-pts  { font-size: 10px; color: var(--txt2); white-space: nowrap; }
+
+/* ── Trainer content cell ── */
+.q-trainer {
+  padding: 16px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.q-question {
+  font-size: 13px; font-weight: 600; color: var(--txt);
+  line-height: 1.45;
+}
+.q-answers { display: flex; flex-direction: column; gap: 5px; }
+.ans-row {
+  display: flex; align-items: flex-start; gap: 7px;
+  font-size: 12px; color: var(--txt2); line-height: 1.4;
+}
+.ans-row.correct { color: var(--ok); font-weight: 600; }
+.ans-marker {
+  width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+}
+.ans-marker.ok  { background: var(--ok); color: #000; }
+.ans-marker.bad { background: var(--bg3); border: 1px solid var(--border); color: var(--txt2); }
+
+/* Image answers grid */
+.img-ans-grid {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.img-ans-item {
+  position: relative; border-radius: 8px; overflow: hidden;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+}
+.img-ans-item.correct { border-color: var(--ok); }
+.img-ans-item img { display: block; width: 100px; height: 100px; object-fit: contain; padding: 4px; }
+.img-ans-check {
+  position: absolute; top: 4px; left: 4px;
+  width: 18px; height: 18px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+}
+.img-ans-check.ok  { background: var(--ok); color: #000; }
+.img-ans-check.bad { background: rgba(0,0,0,0.5); color: var(--txt2); border: 1px solid var(--border); }
+
+/* Question illustration */
+.q-illustration img {
+  max-height: 120px; max-width: 200px;
+  border-radius: 6px; border: 1px solid var(--border);
+  display: block; object-fit: contain; background: #fff;
+}
+
+/* ── PDF cell ── */
+.q-pdf {
+  padding: 12px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.pdf-label { font-size: 10px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.5px; }
+.pdf-upload {
+  flex: 1; border: 1.5px dashed var(--border);
+  border-radius: 8px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; color: var(--txt2); font-size: 11px;
+  min-height: 100px; transition: border-color .15s, color .15s;
+  text-align: center; padding: 12px;
+}
+.pdf-upload:hover { border-color: var(--accent); color: var(--accent); }
+.pdf-upload input { display: none; }
+.pdf-thumb {
+  width: 100%; border-radius: 6px;
+  border: 1px solid var(--border);
+  display: block; cursor: pointer;
+}
+.pdf-remove {
+  font-size: 10px; color: var(--danger); cursor: pointer;
+  text-align: center; padding: 2px;
+}
+.pdf-remove:hover { text-decoration: underline; }
+
+/* ── Status cell ── */
+.q-status-cell {
+  padding: 16px 12px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+.status-label { font-size: 10px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.5px; }
+.status-current {
+  font-size: 12px; font-weight: 600; text-align: center;
+}
+.status-current.pending { color: var(--txt2); }
+.status-current.ok      { color: var(--ok); }
+.status-current.error   { color: var(--danger); }
+.status-current.note    { color: var(--warn); }
+
+.status-btns { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+.sbtn {
+  padding: 5px 8px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 11px; font-weight: 600;
+  background: transparent; color: var(--txt2);
+  transition: all .15s; text-align: center; width: 100%;
+}
+.sbtn:hover.ok-btn    { background: var(--ok); border-color: var(--ok); color: #000; }
+.sbtn:hover.err-btn   { background: var(--danger); border-color: var(--danger); color: #fff; }
+.sbtn:hover.note-btn  { background: var(--warn); border-color: var(--warn); color: #000; }
+.sbtn.active.ok-btn   { background: var(--ok); border-color: var(--ok); color: #000; }
+.sbtn.active.err-btn  { background: var(--danger); border-color: var(--danger); color: #fff; }
+.sbtn.active.note-btn { background: var(--warn); border-color: var(--warn); color: #000; }
+
+.note-field {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 5px; color: var(--txt); font-size: 11px; padding: 5px 7px;
+  resize: none; font-family: inherit; margin-top: 2px;
+  display: none;
+}
+.note-field.show { display: block; }
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: flex; gap: 16px; margin-bottom: 20px;
+  padding: 12px 16px; background: var(--bg2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-num  { font-size: 22px; font-weight: 800; }
+.stat-lbl  { font-size: 10px; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-pending { color: var(--txt2); }
+.stat-ok      { color: var(--ok); }
+.stat-error   { color: var(--danger); }
+.stat-note    { color: var(--warn); }
+
+/* Column headers */
+.col-headers {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 140px;
+  gap: 0; margin-bottom: 6px;
+}
+.col-hdr {
+  font-size: 10px; font-weight: 700; color: var(--txt2);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 0 12px;
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-title">Review Admin</div>
+  <span class="topbar-badge">ПРОТОТИП</span>
+  <span style="color:var(--txt2);font-size:12px">· Тема 2: Пътищата и улиците</span>
+  <span class="topbar-note" id="stats-note">Загрузка…</span>
+</nav>
+
+<div class="main">
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num" id="total-count">5</span>
+      <span class="stat-lbl">Всего вопросов</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num stat-pending" id="pending-count">5</span>
+      <span class="stat-lbl">⬜ Не проверено</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num stat-ok" id="ok-count">0</span>
+      <span class="stat-lbl">✅ ОК</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num stat-error" id="error-count">0</span>
+      <span class="stat-lbl">❌ Ошибка</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num stat-note" id="note-count">0</span>
+      <span class="stat-lbl">📝 Заметка</span>
+    </div>
+  </div>
+
+  <div class="section-title">Тема 2 — первые 5 вопросов (прототип)</div>
+
+  <!-- Column headers -->
+  <div class="col-headers">
+    <div class="col-hdr" style="padding-left:16px">№</div>
+    <div class="col-hdr">Тренажор — вопрос и ответы</div>
+    <div class="col-hdr">PDF оригинал</div>
+    <div class="col-hdr" style="text-align:center">Статус</div>
+  </div>
+
+  <!-- ══════════════ QUESTION 1/1 ══════════════ -->
+  <div class="q-card" data-status="pending" id="card-t2_q_1_1">
+    <div class="q-meta">
+      <span class="q-num">1/1</span>
+      <span class="q-pts">2 точки</span>
+    </div>
+    <div class="q-trainer">
+      <div class="q-question">Значението на този пътен знак е:</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+        <div class="q-answers">
+          <div class="ans-row correct">
+            <span class="ans-marker ok">✓</span>
+            <span>път с предимство</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>премини, ако пътят е свободен</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>пропусни насрещно движещите се ППС</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>внимание, кръстовище</span>
+          </div>
+        </div>
+        <div class="q-illustration">
+          <img src="images/questions/t2_question_1_1_img_1.png" alt="Знак 1/1"
+               onerror="this.style.opacity='.3'; this.title='Изображение не загружено'">
+        </div>
+      </div>
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <label class="pdf-upload" id="upload-t2_q_1_1">
+        <input type="file" accept="image/*" onchange="handlePdfUpload('t2_q_1_1', this)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <span>Загрузить скриншот<br>из PDF</span>
+      </label>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current pending" id="status-lbl-t2_q_1_1">⬜ Не проверен</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn"   onclick="setStatus('t2_q_1_1','ok')">✅ ОК</button>
+        <button class="sbtn err-btn"  onclick="setStatus('t2_q_1_1','error')">❌ Ошибка</button>
+        <button class="sbtn note-btn" onclick="setStatus('t2_q_1_1','note')">📝 Заметка</button>
+      </div>
+      <textarea class="note-field" id="note-t2_q_1_1" rows="3" placeholder="Описание ошибки…"
+                onchange="saveNote('t2_q_1_1', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUESTION 1/2 ══════════════ -->
+  <div class="q-card" data-status="pending" id="card-t2_q_1_2">
+    <div class="q-meta">
+      <span class="q-num">1/2</span>
+      <span class="q-pts">2 точки</span>
+    </div>
+    <div class="q-trainer">
+      <div class="q-question">Кой от знаците сигнализира, че пътят, по който се движите, е с предимство?</div>
+      <div class="img-ans-grid">
+        <div class="img-ans-item correct">
+          <div class="img-ans-check ok">✓</div>
+          <img src="images/questions/t2_question_1_2_img_1.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_1_2_img_2.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_1_2_img_3.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_1_2_img_4.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+      </div>
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <label class="pdf-upload" id="upload-t2_q_1_2">
+        <input type="file" accept="image/*" onchange="handlePdfUpload('t2_q_1_2', this)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <span>Загрузить скриншот<br>из PDF</span>
+      </label>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current pending" id="status-lbl-t2_q_1_2">⬜ Не проверен</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn"   onclick="setStatus('t2_q_1_2','ok')">✅ ОК</button>
+        <button class="sbtn err-btn"  onclick="setStatus('t2_q_1_2','error')">❌ Ошибка</button>
+        <button class="sbtn note-btn" onclick="setStatus('t2_q_1_2','note')">📝 Заметка</button>
+      </div>
+      <textarea class="note-field" id="note-t2_q_1_2" rows="3" placeholder="Описание ошибки…"
+                onchange="saveNote('t2_q_1_2', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUESTION 2/1 ══════════════ -->
+  <div class="q-card" data-status="pending" id="card-t2_q_2_1">
+    <div class="q-meta">
+      <span class="q-num">2/1</span>
+      <span class="q-pts">2 точки</span>
+    </div>
+    <div class="q-trainer">
+      <div class="q-question">Кой знак означава "Край на пътя с предимство"?</div>
+      <div class="img-ans-grid">
+        <div class="img-ans-item correct">
+          <div class="img-ans-check ok">✓</div>
+          <img src="images/questions/t2_question_2_1_img_1.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_2_1_img_2.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_2_1_img_3.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+        <div class="img-ans-item">
+          <div class="img-ans-check bad">✗</div>
+          <img src="images/questions/t2_question_2_1_img_4.png" alt=""
+               onerror="this.parentElement.style.opacity='.5'">
+        </div>
+      </div>
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <label class="pdf-upload" id="upload-t2_q_2_1">
+        <input type="file" accept="image/*" onchange="handlePdfUpload('t2_q_2_1', this)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <span>Загрузить скриншот<br>из PDF</span>
+      </label>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current pending" id="status-lbl-t2_q_2_1">⬜ Не проверен</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn"   onclick="setStatus('t2_q_2_1','ok')">✅ ОК</button>
+        <button class="sbtn err-btn"  onclick="setStatus('t2_q_2_1','error')">❌ Ошибка</button>
+        <button class="sbtn note-btn" onclick="setStatus('t2_q_2_1','note')">📝 Заметка</button>
+      </div>
+      <textarea class="note-field" id="note-t2_q_2_1" rows="3" placeholder="Описание ошибки…"
+                onchange="saveNote('t2_q_2_1', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUESTION 4/1 ══════════════ -->
+  <div class="q-card" data-status="pending" id="card-t2_q_4_1">
+    <div class="q-meta">
+      <span class="q-num">4/1</span>
+      <span class="q-pts">2 точки</span>
+    </div>
+    <div class="q-trainer">
+      <div class="q-question">Този пътен знак сигнализира:</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+        <div class="q-answers">
+          <div class="ans-row correct">
+            <span class="ans-marker ok">✓</span>
+            <span>че за използването на пътя се изисква платена винетна такса</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>двупосочно движение след знака</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>автомобилен път</span>
+          </div>
+          <div class="ans-row">
+            <span class="ans-marker bad">✗</span>
+            <span>броя на пътните ленти за движение в една посока</span>
+          </div>
+        </div>
+        <div class="q-illustration">
+          <img src="images/questions/t2_question_4_1_img_1.png" alt="Знак 4/1"
+               onerror="this.style.opacity='.3'">
+        </div>
+      </div>
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <label class="pdf-upload" id="upload-t2_q_4_1">
+        <input type="file" accept="image/*" onchange="handlePdfUpload('t2_q_4_1', this)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <span>Загрузить скриншот<br>из PDF</span>
+      </label>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current pending" id="status-lbl-t2_q_4_1">⬜ Не проверен</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn"   onclick="setStatus('t2_q_4_1','ok')">✅ ОК</button>
+        <button class="sbtn err-btn"  onclick="setStatus('t2_q_4_1','error')">❌ Ошибка</button>
+        <button class="sbtn note-btn" onclick="setStatus('t2_q_4_1','note')">📝 Заметка</button>
+      </div>
+      <textarea class="note-field" id="note-t2_q_4_1" rows="3" placeholder="Описание ошибки…"
+                onchange="saveNote('t2_q_4_1', this.value)"></textarea>
+    </div>
+  </div>
+
+  <!-- ══════════════ QUESTION 8/1 (text only, no image) ══════════════ -->
+  <div class="q-card" data-status="pending" id="card-t2_q_8_1">
+    <div class="q-meta">
+      <span class="q-num">8/1</span>
+      <span class="q-pts">2 точки</span>
+    </div>
+    <div class="q-trainer">
+      <div class="q-question">Как се променя устойчивостта на превозното средство, когато при навлизане в завой се увеличава скоростта?</div>
+      <div class="q-answers">
+        <div class="ans-row correct">
+          <span class="ans-marker ok">✓</span>
+          <span>влошава се</span>
+        </div>
+        <div class="ans-row">
+          <span class="ans-marker bad">✗</span>
+          <span>подобрява се</span>
+        </div>
+        <div class="ans-row">
+          <span class="ans-marker bad">✗</span>
+          <span>не се променя</span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--txt2);margin-top:4px;font-style:italic">
+        (текстовый вопрос — без изображений)
+      </div>
+    </div>
+    <div class="q-pdf">
+      <div class="pdf-label">📄 PDF оригинал</div>
+      <label class="pdf-upload" id="upload-t2_q_8_1">
+        <input type="file" accept="image/*" onchange="handlePdfUpload('t2_q_8_1', this)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+        <span>Загрузить скриншот<br>из PDF</span>
+      </label>
+    </div>
+    <div class="q-status-cell">
+      <div class="status-label">Статус</div>
+      <div class="status-current pending" id="status-lbl-t2_q_8_1">⬜ Не проверен</div>
+      <div class="status-btns">
+        <button class="sbtn ok-btn"   onclick="setStatus('t2_q_8_1','ok')">✅ ОК</button>
+        <button class="sbtn err-btn"  onclick="setStatus('t2_q_8_1','error')">❌ Ошибка</button>
+        <button class="sbtn note-btn" onclick="setStatus('t2_q_8_1','note')">📝 Заметка</button>
+      </div>
+      <textarea class="note-field" id="note-t2_q_8_1" rows="3" placeholder="Описание ошибки…"
+                onchange="saveNote('t2_q_8_1', this.value)"></textarea>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+'use strict';
+
+const STATUS_LABELS = {
+  pending: '⬜ Не проверен',
+  ok:      '✅ ОК',
+  error:   '❌ Ошибка',
+  note:    '📝 Заметка',
+};
+
+// Load saved state from localStorage
+const STATE_KEY = 'pdd_review_state';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); } catch(_) {}
+
+// Apply saved state on load
+Object.keys(state).forEach(qid => {
+  const s = state[qid];
+  if (s.status) applyStatus(qid, s.status, false);
+  if (s.note) {
+    const ta = document.getElementById('note-' + qid);
+    if (ta) ta.value = s.note;
+  }
+  if (s.pdfImg) {
+    showPdfThumb(qid, s.pdfImg);
+  }
+});
+updateStats();
+
+function setStatus(qid, status) {
+  if (!state[qid]) state[qid] = {};
+  state[qid].status = status;
+  save();
+  applyStatus(qid, status, true);
+  updateStats();
+}
+
+function applyStatus(qid, status, animate) {
+  const card = document.getElementById('card-' + qid);
+  const lbl  = document.getElementById('status-lbl-' + qid);
+  const note = document.getElementById('note-' + qid);
+
+  if (card) card.dataset.status = status;
+  if (lbl)  { lbl.textContent = STATUS_LABELS[status]; lbl.className = 'status-current ' + status; }
+
+  // Toggle active class on buttons
+  const btns = card?.querySelectorAll('.sbtn');
+  btns?.forEach(b => b.classList.remove('active'));
+  const activeBtn = card?.querySelector(`.${status === 'ok' ? 'ok' : status === 'error' ? 'err' : 'note'}-btn`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Show note field for error/note
+  if (note) note.classList.toggle('show', status === 'error' || status === 'note');
+
+  if (animate && card) {
+    card.style.transition = 'background 0.3s';
+    card.style.background = status === 'ok' ? 'rgba(62,207,142,0.05)' :
+                            status === 'error' ? 'rgba(231,76,60,0.05)' :
+                            status === 'note' ? 'rgba(245,166,35,0.05)' : '';
+    setTimeout(() => { card.style.background = ''; card.style.transition = ''; }, 600);
+  }
+}
+
+function saveNote(qid, value) {
+  if (!state[qid]) state[qid] = {};
+  state[qid].note = value;
+  save();
+}
+
+function handlePdfUpload(qid, input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    if (!state[qid]) state[qid] = {};
+    state[qid].pdfImg = dataUrl;
+    save();
+    showPdfThumb(qid, dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+function showPdfThumb(qid, src) {
+  const zone = document.getElementById('upload-' + qid);
+  if (!zone) return;
+  zone.innerHTML = `
+    <img src="${src}" class="pdf-thumb" onclick="window.open(this.src)" title="Открыть в полном размере">
+    <div class="pdf-remove" onclick="removePdf('${qid}')">✕ Удалить</div>
+  `;
+}
+
+function removePdf(qid) {
+  if (!state[qid]) return;
+  delete state[qid].pdfImg;
+  save();
+  const zone = document.getElementById('upload-' + qid);
+  if (zone) zone.innerHTML = `
+    <input type="file" accept="image/*" onchange="handlePdfUpload('${qid}', this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="3" y="3" width="18" height="18" rx="3"/>
+      <path d="M8 12h8M12 8v8"/>
+    </svg>
+    <span>Загрузить скриншот<br>из PDF</span>
+  `;
+  zone.addEventListener('click', () => zone.querySelector('input')?.click());
+}
+
+function updateStats() {
+  const cards = document.querySelectorAll('.q-card');
+  let pending=0, ok=0, error=0, note=0;
+  cards.forEach(c => {
+    const s = c.dataset.status;
+    if (s === 'ok')      ok++;
+    else if (s === 'error') error++;
+    else if (s === 'note')  note++;
+    else pending++;
+  });
+  document.getElementById('pending-count').textContent = pending;
+  document.getElementById('ok-count').textContent = ok;
+  document.getElementById('error-count').textContent = error;
+  document.getElementById('note-count').textContent = note;
+  document.getElementById('total-count').textContent = cards.length;
+
+  const pct = Math.round((ok + error + note) / cards.length * 100);
+  document.getElementById('stats-note').textContent =
+    `Проверено: ${ok + error + note} / ${cards.length} (${pct}%)`;
+}
+
+function save() {
+  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch(_) {}
+}
+</script>
+</body>
+</html>

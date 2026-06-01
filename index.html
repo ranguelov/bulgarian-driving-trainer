@@ -256,7 +256,7 @@ body {
 }
 /* Тил-состояние: нет слабых мест (новый пользователь) */
 #s-home.teal-state .home-icon {
-  background: #42e4d4;
+  background: none;
 }
 #s-home.teal-state #topics-card-icon {
   background: #42e4d4;
@@ -277,14 +277,12 @@ body {
   align-items: center;
 }
 .home-center-inner {
-  width: 100%; max-width: 400px;
+  width: 100%; max-width: 580px;
   display: flex; flex-direction: column;
   min-height: 100%;
   padding: 16px;
 }
 @media (min-width: 768px) {
-  /* Desktop тил-состояние: иконка тоже тил */
-  #s-home.teal-state .home-icon { background: #42e4d4; }
   #s-home.teal-state #topics-card-icon { background: #42e4d4; }
 }
 
@@ -370,8 +368,8 @@ body {
   flex: 1;
   display: flex; flex-direction: column;
   padding-top: 16px;
-  padding-bottom: 16px;
-  gap: 16px;
+  padding-bottom: 24px;
+  gap: 24px;
 }
 /* Кнопка внутри героя — фиксированные 56px, не растягивается */
 .home-block-hero .btn-expand { flex: none; }
@@ -394,19 +392,40 @@ body {
   flex: 1;
   display: flex; flex-direction: column; align-items: center;
   justify-content: center;
-  gap: 16px; text-align: center; margin-bottom: 0;
+  gap: 0; text-align: center; margin-bottom: 0; justify-content: center;
   min-height: 240px;
 }
 .home-icon {
-  width: 72px; height: 72px; border-radius: 12px;
-  background: #42e4d4;
-  display: flex; align-items: center; justify-content: center;
+  width: min(619px, 90vw);
   flex-shrink: 0;
+  position: relative; left: -8px;
+}
+.home-icon img,
+.home-icon video {
+  width: 100%; height: auto;
+  display: block;
+}
+.home-icon video {
+  -webkit-mask-image:
+    linear-gradient(to right,  transparent 0%, black 8%, black 92%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right,  transparent 0%, black 8%, black 92%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-composite: intersect;
+}
+@media (max-width: 600px) {
+  .home-icon { left: -8px; }
+  .home-hero-text { margin-top: calc(-16% + 12px); }
 }
 /* Группа текста внутри hero: gap:4px между title и subtitle */
 .home-hero-text {
   display: flex; flex-direction: column;
   align-items: center; gap: 4px; width: 100%;
+  position: relative; z-index: 1;
+  margin-top: -8px;
+  padding-bottom: 96px;
 }
 .home-title { font-size: 24px; font-weight: 700; letter-spacing: -0.2px; color: rgba(1,1,1,0.87); }
 .home-hero-sub { font-size: 13px; color: rgba(1,1,1,0.6); }
@@ -419,10 +438,12 @@ body {
 }
 @media (min-width: 768px) {
   .home-center { justify-content: center; }
-  .home-center-inner { max-width: 488px; min-height: auto; padding: 16px; }
+  .home-center-inner { max-width: 580px; min-height: auto; padding: 16px; }
   .home-block { padding: 0; }
   .home-block-hero { flex: none; padding-top: 24px; padding-bottom: 24px; }
   .home-block-settings { padding-top: 16px; }
+  .home-hero-text { padding-bottom: 96px; }
+  .home-icon { width: 413px; }
 }
 
 /* ── Cards ── */
@@ -885,10 +906,7 @@ body {
         <div class="home-block home-block-hero">
           <div class="home-hero">
             <div class="home-icon">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="16" stroke="#010101" stroke-width="2.5"/>
-                <path d="M20 12v8l5 2.5" stroke="#010101" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+              <video src="images/hero.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="home-hero-text">
               <div class="home-title" id="home-title">Подготви се за изпита</div>
@@ -2021,7 +2039,7 @@ function buildTopics() {
     row.onclick=()=>loadTopic(t.key);
     row.innerHTML=`<div class="ti"><div class="ti-name">${u.topic_label} ${t.n} — ${t[L]}</div></div>
       ${isActive
-        ? `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="#057c46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        ? `<svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#057c46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
         : `<svg width="8" height="14"><use href="#ic-chevron-right"/></svg>`}`;
     frag.appendChild(row);
   });
