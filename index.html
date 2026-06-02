@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#E1DCE7">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>ПДД Тренажор</title>
 <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,14 +21,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 html, body { height: 100%; }
-html { background: #ffffff; }
+html { background: #E1DCE7; }
 /* Dynamic viewport height — обновляется когда Safari прячет/показывает хром */
 @supports (height: 100dvh) {
   html, body { height: 100dvh; }
 }
 body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(to bottom, #ffffff 0%, #ebeeee 100%) fixed; color: #1a1a1a;
+  background: #E1DCE7; color: #1a1a1a;
+  /* Quiz screens get original gradient */
   display: flex; flex-direction: column;
   overflow: hidden;
   position: relative;
@@ -40,14 +41,17 @@ body {
 .screen {
   display: none; flex-direction: column;
   flex: 1; min-height: 0; overflow: hidden;
-  background: transparent;
+  background: linear-gradient(to bottom, #ffffff 0%, #EBEEEE 100%) fixed;
   position: relative; z-index: 1;
+}
+#s-home {
+  background: transparent;
 }
 .screen.on { display: flex; }
 /* Results держит белый фон */
 #s-results { background: white; }
 /* Quiz — прозрачный, блобы видны сквозь */
-#s-quiz { background: transparent; }
+#s-quiz { background: linear-gradient(to bottom, #ffffff 0%, #ebeeee 100%) fixed; }
 
 /* ═══════════════════════════════════════════
    APP BAR
@@ -280,7 +284,7 @@ body {
   width: 100%; max-width: 580px;
   display: flex; flex-direction: column;
   min-height: 100%;
-  padding: 16px;
+  padding: 4px 16px 16px;
 }
 @media (min-width: 768px) {
   #s-home.teal-state #topics-card-icon { background: #42e4d4; }
@@ -290,11 +294,7 @@ body {
    ANIMATED BLOB LAYER — глобальный фон
 ═══════════════════════════════════════════ */
 #blob-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
+  display: none;
 }
 .blob {
   position: absolute;
@@ -367,7 +367,7 @@ body {
 .home-block-hero {
   flex: 1;
   display: flex; flex-direction: column;
-  padding-top: 16px;
+  padding-top: 0px;
   padding-bottom: 24px;
   gap: 24px;
 }
@@ -406,26 +406,19 @@ body {
   display: block;
 }
 .home-icon video {
-  -webkit-mask-image:
-    linear-gradient(to right,  transparent 0%, black 8%, black 92%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right,  transparent 0%, black 8%, black 92%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
-  mask-composite: intersect;
+  mix-blend-mode: multiply;
 }
 @media (max-width: 600px) {
-  .home-icon { left: -8px; }
-  .home-hero-text { margin-top: calc(-16% + 12px); }
+  .home-icon { left: 0px; width: min(320px, 80vw); }
+  .home-hero-text { margin-top: 0; }
 }
 /* Группа текста внутри hero: gap:4px между title и subtitle */
 .home-hero-text {
   display: flex; flex-direction: column;
   align-items: center; gap: 4px; width: 100%;
   position: relative; z-index: 1;
-  margin-top: -8px;
-  padding-bottom: 96px;
+  margin-top: -24px;
+  padding-bottom: 28px;
 }
 .home-title { font-size: 24px; font-weight: 700; letter-spacing: -0.2px; color: rgba(1,1,1,0.87); }
 .home-hero-sub { font-size: 13px; color: rgba(1,1,1,0.6); }
@@ -439,9 +432,7 @@ body {
 @media (min-width: 768px) {
   .home-center { justify-content: center; }
   .home-center-inner { max-width: 580px; min-height: auto; padding: 16px; }
-  .home-block { padding: 0; }
-  .home-block-hero { flex: none; padding-top: 24px; padding-bottom: 24px; }
-  .home-block-settings { padding-top: 16px; }
+  .home-block-hero { flex: none; padding-top: 0; padding-bottom: 24px; }
   .home-hero-text { padding-bottom: 96px; }
   .home-icon { width: 413px; }
 }
@@ -487,7 +478,7 @@ body {
 .tog-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
 .tog-track {
   position: absolute; inset: 0; border-radius: 100px;
-  background: #E0E0E0; transition: background 0.22s;
+  background: #C0BAC8; transition: background 0.22s;
 }
 .tog-switch input:checked + .tog-track { background: #010101; }
 .tog-thumb {
@@ -881,7 +872,7 @@ body {
 <div class="screen on" id="s-home">
   <header class="app-bar">
     <div class="ab-left">
-      <button class="icon-btn" onclick="location.href='/admin-review.html'" aria-label="Admin">
+      <button class="icon-btn" onclick="openSettings()" aria-label="Settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -906,7 +897,7 @@ body {
         <div class="home-block home-block-hero">
           <div class="home-hero">
             <div class="home-icon">
-              <video src="images/hero.mp4" autoplay loop muted playsinline></video>
+              <video src="images/hero-car2.mp4" autoplay loop muted playsinline></video>
             </div>
             <div class="home-hero-text">
               <div class="home-title" id="home-title">Подготви се за изпита</div>
@@ -954,18 +945,6 @@ body {
           </div>
         </div>
 
-        <!-- БЛОК 3: НАСТРОЙКИ — сразу под обучением, без белой подложки -->
-        <div class="home-block home-block-settings">
-          <div class="home-section-label" id="home-settings-lbl">Настройки</div>
-          <label class="home-random-row">
-            <span class="home-random-lbl" id="home-random-lbl">Случаен ред в отговорите</span>
-            <span class="tog-switch">
-              <input type="checkbox" id="random-toggle" onchange="setRandomMode(this.checked)">
-              <span class="tog-track"></span>
-              <span class="tog-thumb"></span>
-            </span>
-          </label>
-        </div>
 
 
       </div>
@@ -1281,6 +1260,7 @@ const UI = {
     home_exam:'Започни изпит', home_topics:'Трениране по теми', home_weak:'Работа върху грешките',
     home_hero_sub:'45 въпроса · 45 минути',
     home_settings:'Настройки',
+    sheet_admin:'База знания',
     home_signs:'Пътни знаци', home_signs_sub:'Знаци по категории', home_soon:'СКОРО',
     random_lbl:'Случаен ред в отговорите',
     close_q:'Да затворя темата?', close_sub:'Прогресът ви ще бъде запазен.',
@@ -1309,6 +1289,7 @@ const UI = {
     home_exam:'Начать экзамен', home_topics:'Тренировка по темам', home_weak:'Работа над ошибками',
     home_hero_sub:'45 вопросов · 45 минут',
     home_settings:'Настройки',
+    sheet_admin:'База знаний',
     home_signs:'Дорожные знаки', home_signs_sub:'Знаки по категориям', home_soon:'СКОРО',
     random_lbl:'Случайный порядок в ответах',
     close_q:'Выйти из темы?', close_sub:'Прогресс сохранится.',
@@ -1412,6 +1393,8 @@ function refreshHomeTexts() {
   setText('home-signs-sub',      u.home_signs_sub);
   setText('home-soon-badge',     u.home_soon);
   setText('home-settings-lbl',   u.home_settings);
+  setText('sheet-admin-lbl',     u.sheet_admin);
+  setText('sheet-random-lbl',    u.random_lbl);
   setText('home-random-lbl',     u.random_lbl);
   setText('ov-topics-title',     u.topics_title);
   const rTog = document.getElementById('random-toggle');
@@ -2079,6 +2062,111 @@ document.querySelectorAll('.overlay').forEach(ov=>ov.style.display='none');
 ════════════════════════════════════ */
 buildTopics();
 goHome();
+</script>
+
+<!-- ══════════════════════════════════════════
+     SETTINGS BOTTOM SHEET
+══════════════════════════════════════════ -->
+<style>
+.settings-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.25);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.settings-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+.settings-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, #f2f2f2 0%, #ebeeee 100%);
+  border-radius: 16px 16px 0 0;
+  padding: 8px 16px max(12px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 0;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.settings-overlay.open .settings-sheet {
+  transform: translateY(0);
+}
+.settings-handle {
+  width: 44px; height: 4px; border-radius: 2px;
+  background: rgba(128,128,128,0.3);
+  margin: 0 auto 16px;
+  flex-shrink: 0;
+}
+.settings-row {
+  display: flex; align-items: center; gap: 12px;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0px 8px 8px rgba(0,0,0,0.05);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  border: none; width: 100%; text-align: left;
+}
+.settings-row-icon {
+  width: 44px; height: 44px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.settings-row-title {
+  flex: 1; font-size: 16px; font-weight: 600;
+  color: #010101; letter-spacing: -0.41px;
+}
+.settings-row-arrow {
+  flex-shrink: 0;
+}
+.settings-divider-row {
+  border-top: 0.5px solid rgba(0,0,0,0.04);
+  padding: 16px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.settings-divider-lbl {
+  font-size: 14px; font-weight: 500;
+  color: #010101; letter-spacing: -0.41px;
+}
+</style>
+
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)">
+  <div class="settings-sheet" id="settings-sheet">
+    <div class="settings-handle"></div>
+
+    <!-- Admin Review -->
+    <button class="settings-row" onclick="location.href='/admin-review.html'">
+      <div class="settings-row-icon" style="background:#fcc1aa">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.21387 1.25C10.3784 1.25 11.2705 1.56886 11.7764 2.40137C12.2142 3.12205 12.25 4.08766 12.25 5C12.25 5.91234 12.2142 6.87795 11.7764 7.59863C11.2705 8.43114 10.3784 8.75 9.21387 8.75H8.25V10.75H13.7559C13.7614 10.4856 13.7724 10.2448 13.7998 10.0322C13.8538 9.61415 13.9778 9.19328 14.3105 8.84668C14.6474 8.4958 15.0638 8.36095 15.4795 8.30273C15.8703 8.24803 16.3569 8.25 16.9004 8.25H18.0996C18.6431 8.25 19.1297 8.24804 19.5205 8.30273C19.9362 8.36094 20.3526 8.4958 20.6895 8.84668C21.0222 9.19328 21.1462 9.61415 21.2002 10.0322C21.2518 10.4318 21.25 10.9311 21.25 11.5C21.25 12.0689 21.2518 12.5682 21.2002 12.9678C21.1462 13.3859 21.0222 13.8067 20.6895 14.1533C20.3526 14.5042 19.9362 14.6391 19.5205 14.6973C19.1297 14.752 18.6431 14.75 18.0996 14.75H16.9004C16.3569 14.75 15.8703 14.752 15.4795 14.6973C15.0638 14.6391 14.6474 14.5042 14.3105 14.1533C13.9778 13.8067 13.8538 13.3859 13.7998 12.9678C13.7724 12.7552 13.7614 12.5144 13.7559 12.25H8.25V13.5C8.25 14.9352 8.25202 15.9361 8.35352 16.6914C8.45217 17.4252 8.63242 17.8141 8.90918 18.0908C9.18594 18.3676 9.57482 18.5478 10.3086 18.6465C11.0639 18.748 12.0648 18.75 13.5 18.75H13.7559C13.7614 18.4856 13.7724 18.2448 13.7998 18.0322C13.8538 17.6141 13.9778 17.1933 14.3105 16.8467C14.6474 16.4958 15.0638 16.3609 15.4795 16.3027C15.8703 16.248 16.3569 16.25 16.9004 16.25H18.0996C18.6431 16.25 19.1297 16.248 19.5205 16.3027C19.9362 16.3609 20.3526 16.4958 20.6895 16.8467C21.0222 17.1933 21.1462 17.6141 21.2002 18.0322C21.2518 18.4318 21.25 18.9311 21.25 19.5C21.25 20.0689 21.2518 20.5682 21.2002 20.9678C21.1462 21.3859 21.0222 21.8067 20.6895 22.1533C20.3526 22.5042 19.9362 22.6391 19.5205 22.6973C19.1297 22.752 18.6431 22.75 18.0996 22.75H16.9004C16.3569 22.75 15.8703 22.752 15.4795 22.6973C15.0638 22.6391 14.6474 22.5042 14.3105 22.1533C13.9778 21.8067 13.8538 21.3859 13.7998 20.9678C13.7724 20.7552 13.7614 20.5144 13.7559 20.25H13.5C12.1071 20.25 10.9869 20.2519 10.1084 20.1338C9.20829 20.0128 8.45055 19.7533 7.84863 19.1514C7.24672 18.5495 6.98723 17.7917 6.86621 16.8916C6.74812 16.0131 6.75 14.8929 6.75 13.5V8.75H5.78613C4.62164 8.75 3.72951 8.43114 3.22363 7.59863C2.7858 6.87795 2.75 5.91234 2.75 5C2.75 4.08766 2.7858 3.12205 3.22363 2.40137C3.72951 1.56886 4.62164 1.25 5.78613 1.25H9.21387ZM16.9004 17.75C16.3128 17.75 15.9502 17.7513 15.6875 17.7881C15.4496 17.8214 15.4071 17.8706 15.3926 17.8857C15.3738 17.9053 15.3219 17.9623 15.2881 18.2246C15.2518 18.5058 15.25 18.8905 15.25 19.5C15.25 20.1095 15.2518 20.4942 15.2881 20.7754C15.3219 21.0376 15.3738 21.0947 15.3926 21.1143C15.4071 21.1294 15.4496 21.1786 15.6875 21.2119C15.9502 21.2487 16.3128 21.25 16.9004 21.25H18.0996C18.6872 21.25 19.0498 21.2487 19.3125 21.2119C19.5504 21.1786 19.5929 21.1294 19.6074 21.1143C19.6262 21.0947 19.6781 21.0377 19.7119 20.7754C19.7482 20.4942 19.75 20.1095 19.75 19.5C19.75 18.8905 19.7482 18.5058 19.7119 18.2246C19.6781 17.9623 19.6262 17.9053 19.6074 17.8857C19.5928 17.8706 19.5503 17.8214 19.3125 17.7881C19.0498 17.7513 18.6872 17.75 18.0996 17.75H16.9004ZM16.9004 9.75C16.3128 9.75 15.9502 9.75133 15.6875 9.78809C15.4496 9.8214 15.4071 9.87057 15.3926 9.88574C15.3738 9.90529 15.3219 9.96234 15.2881 10.2246C15.2518 10.5058 15.25 10.8905 15.25 11.5C15.25 12.1095 15.2518 12.4942 15.2881 12.7754C15.3219 13.0376 15.3738 13.0947 15.3926 13.1143C15.4071 13.1294 15.4496 13.1786 15.6875 13.2119C15.9502 13.2487 16.3128 13.25 16.9004 13.25H18.0996C18.6872 13.25 19.0498 13.2487 19.3125 13.2119C19.5504 13.1786 19.5929 13.1294 19.6074 13.1143C19.6262 13.0947 19.6781 13.0377 19.7119 12.7754C19.7482 12.4942 19.75 12.1095 19.75 11.5C19.75 10.8905 19.7482 10.5058 19.7119 10.2246C19.6781 9.96234 19.6262 9.90529 19.6074 9.88574C19.5928 9.87056 19.5503 9.82139 19.3125 9.78809C19.0498 9.75133 18.6872 9.75 18.0996 9.75H16.9004ZM5.78613 2.75C4.8762 2.75 4.62423 2.98583 4.50586 3.18066C4.31948 3.48747 4.25 4.0223 4.25 5C4.25 5.9777 4.31948 6.51253 4.50586 6.81934C4.62423 7.01417 4.8762 7.25 5.78613 7.25H9.21387C10.1238 7.25 10.3758 7.01417 10.4941 6.81934C10.6805 6.51253 10.75 5.9777 10.75 5C10.75 4.0223 10.6805 3.48747 10.4941 3.18066C10.3758 2.98583 10.1238 2.75 9.21387 2.75H5.78613Z" fill="#010101"/>
+        </svg>
+      </div>
+      <span class="settings-row-title" id="sheet-admin-lbl">База знаний</span>
+      <svg class="settings-row-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M7.5 5L12.5 10L7.5 15" stroke="#010101" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Random order toggle -->
+    <label class="settings-divider-row">
+      <span class="settings-divider-lbl" id="sheet-random-lbl">Случаен ред в отговорите</span>
+      <span class="tog-switch">
+        <input type="checkbox" id="random-toggle" onchange="setRandomMode(this.checked)">
+        <span class="tog-track"></span>
+        <span class="tog-thumb"></span>
+      </span>
+    </label>
+  </div>
+</div>
+
+<script>
+function openSettings() {
+  document.getElementById('settings-overlay').classList.add('open');
+}
+function closeSettings(e) {
+  if (e.target === document.getElementById('settings-overlay')) {
+    document.getElementById('settings-overlay').classList.remove('open');
+  }
+}
 </script>
 </body>
 </html>
