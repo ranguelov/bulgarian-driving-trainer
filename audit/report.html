@@ -1,0 +1,1937 @@
+<!doctype html><html lang="ru"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Аудит соответствия PDF — ПДД Тренажор</title>
+<style>
+body{font:15px/1.45 -apple-system,Segoe UI,sans-serif;margin:24px auto;max-width:1200px;padding:0 16px;color:#1a1a1a}
+h1{font-size:24px} h3{margin:0 0 4px} .qid{color:#888;font-weight:400;font-size:13px}
+section{border-top:2px solid #ddd;padding:18px 0;margin-top:8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+figure{margin:0} figcaption{font-size:12px;color:#666;margin-bottom:4px}
+img{max-width:100%;border:1px solid #ccc;border-radius:6px;background:#fff}
+.panel{border:1px solid #ddd;border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.panel.pdf{background:#f4faf4} .panel.app{background:#fbf6f4}
+.panel h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.4px;color:#555}
+.hint{text-transform:none;font-weight:400;letter-spacing:0;color:#999}
+.q{font-weight:600;margin:6px 0}
+ol{margin:4px 0;padding-left:22px} li{margin:3px 0}
+li.cor{outline:2px solid #2e7d32;outline-offset:2px;border-radius:4px}
+li.img{list-style:none;color:#666;font-style:italic}
+mark.bad{background:#ffd6d6;color:#a00;border-radius:3px;padding:0 2px}
+.badge{display:inline-block;background:#fde8c8;border:1px solid #e8b96a;border-radius:12px;padding:2px 10px;font-size:12px;margin-right:6px}
+table{border-collapse:collapse;margin:12px 0} td{border:1px solid #ccc;padding:6px 12px}
+.toc{background:#f5f5f7;border-radius:8px;padding:10px 16px;font-size:14px}
+.toc a{margin-right:2px}
+b{color:#2e7d32}
+</style>
+<h1>Аудит: соответствие вопросов оригинальным PDF</h1>
+<p>Сверено посимвольно (после нормализации пробелов) <b>1514</b> вопросов в 19 темах.
+Без расхождений: <b>1378</b>. Вопросов с ошибками: <b style="color:#a00">136</b>, всего расхождений: 188.
+Отметки правильных ответов извлечены из PDF (залитый квадрат / галочка) для всех 1514 вопросов и сверены по содержанию.</p>
+<table><tr><td>Текст ответа не совпадает с PDF</td><td>78</td></tr><tr><td>Текст вопроса не совпадает с PDF</td><td>77</td></tr><tr><td>Не совпадает правильный ответ</td><td>33</td></tr></table>
+<div class="toc"><b>Оглавление (вопросы с ошибками)</b></p><p><b>Тема 1:</b> <a href="#t1_8_1">8/1</a> <a href="#t1_19_3">19/3</a> <a href="#t1_26_1">26/1</a> <a href="#t1_43_2">43/2</a> <a href="#t1_43_3">43/3</a> <a href="#t1_44_1">44/1</a> </p><p><b>Тема 2:</b> <a href="#t2_8_2">8/2</a> <a href="#t2_8_3">8/3</a> <a href="#t2_30_1">30/1</a> </p><p><b>Тема 3:</b> <a href="#t3_12_3">12/3</a> <a href="#t3_14_1">14/1</a> <a href="#t3_20_1">20/1</a> <a href="#t3_21_2">21/2</a> <a href="#t3_24_1">24/1</a> <a href="#t3_26_1">26/1</a> </p><p><b>Тема 4:</b> <a href="#t4_80_1">80/1</a> <a href="#t4_109_2">109/2</a> <a href="#t4_110_2">110/2</a> </p><p><b>Тема 6:</b> <a href="#t6_2_3">2/3</a> <a href="#t6_9_1">9/1</a> <a href="#t6_10_1">10/1</a> <a href="#t6_22_2">22/2</a> <a href="#t6_36_1">36/1</a> <a href="#t6_36_2">36/2</a> <a href="#t6_40_1">40/1</a> <a href="#t6_42_1">42/1</a> <a href="#t6_42_2">42/2</a> <a href="#t6_43_2">43/2</a> <a href="#t6_47_1">47/1</a> <a href="#t6_48_1">48/1</a> <a href="#t6_60_1">60/1</a> </p><p><b>Тема 7:</b> <a href="#t7_5_1">5/1</a> <a href="#t7_12_1">12/1</a> <a href="#t7_15_1">15/1</a> <a href="#t7_21_1">21/1</a> <a href="#t7_24_1">24/1</a> <a href="#t7_24_2">24/2</a> <a href="#t7_31_1">31/1</a> <a href="#t7_31_2">31/2</a> <a href="#t7_32_1">32/1</a> <a href="#t7_33_1">33/1</a> <a href="#t7_33_3">33/3</a> <a href="#t7_34_1">34/1</a> <a href="#t7_37_1">37/1</a> <a href="#t7_37_2">37/2</a> <a href="#t7_41_2">41/2</a> <a href="#t7_42_1">42/1</a> <a href="#t7_48_2">48/2</a> <a href="#t7_67_1">67/1</a> <a href="#t7_87_1">87/1</a> <a href="#t7_90_1">90/1</a> <a href="#t7_91_1">91/1</a> <a href="#t7_92_1">92/1</a> <a href="#t7_92_3">92/3</a> <a href="#t7_98_1">98/1</a> <a href="#t7_107_1">107/1</a> <a href="#t7_120_1">120/1</a> <a href="#t7_124_1">124/1</a> <a href="#t7_128_1">128/1</a> <a href="#t7_134_1">134/1</a> <a href="#t7_139_1">139/1</a> <a href="#t7_141_1">141/1</a> <a href="#t7_147_1">147/1</a> </p><p><b>Тема 8:</b> <a href="#t8_2_3">2/3</a> <a href="#t8_3_2">3/2</a> <a href="#t8_21_1">21/1</a> <a href="#t8_31_1">31/1</a> <a href="#t8_41_1">41/1</a> <a href="#t8_43_1">43/1</a> <a href="#t8_44_1">44/1</a> <a href="#t8_46_1">46/1</a> <a href="#t8_46_2">46/2</a> <a href="#t8_47_1">47/1</a> <a href="#t8_49_1">49/1</a> <a href="#t8_51_1">51/1</a> <a href="#t8_52_1">52/1</a> <a href="#t8_53_1">53/1</a> <a href="#t8_56_1">56/1</a> <a href="#t8_58_1">58/1</a> <a href="#t8_59_1">59/1</a> <a href="#t8_60_1">60/1</a> <a href="#t8_61_1">61/1</a> <a href="#t8_62_1">62/1</a> <a href="#t8_63_1">63/1</a> <a href="#t8_67_1">67/1</a> <a href="#t8_82_1">82/1</a> <a href="#t8_84_2">84/2</a> <a href="#t8_88_1">88/1</a> <a href="#t8_89_1">89/1</a> <a href="#t8_91_1">91/1</a> <a href="#t8_94_1">94/1</a> <a href="#t8_101_1">101/1</a> <a href="#t8_115_1">115/1</a> <a href="#t8_116_1">116/1</a> <a href="#t8_119_1">119/1</a> <a href="#t8_139_1">139/1</a> <a href="#t8_140_1">140/1</a> <a href="#t8_142_1">142/1</a> <a href="#t8_143_1">143/1</a> <a href="#t8_145_1">145/1</a> </p><p><b>Тема 9:</b> <a href="#t9_27_2">27/2</a> <a href="#t9_48_1">48/1</a> <a href="#t9_50_1">50/1</a> </p><p><b>Тема 10:</b> <a href="#t10_10_1">10/1</a> <a href="#t10_12_1">12/1</a> <a href="#t10_13_1">13/1</a> <a href="#t10_14_1">14/1</a> <a href="#t10_17_1">17/1</a> <a href="#t10_18_2">18/2</a> <a href="#t10_19_1">19/1</a> <a href="#t10_20_1">20/1</a> <a href="#t10_33_1">33/1</a> <a href="#t10_34_1">34/1</a> </p><p><b>Тема 11:</b> <a href="#t11_36_1">36/1</a> <a href="#t11_38_1">38/1</a> <a href="#t11_44_3">44/3</a> </p><p><b>Тема 12:</b> <a href="#t12_44_1">44/1</a> </p><p><b>Тема 13:</b> <a href="#t13_5_1">5/1</a> <a href="#t13_9_1">9/1</a> <a href="#t13_14_1">14/1</a> <a href="#t13_24_1">24/1</a> </p><p><b>Тема 14:</b> <a href="#t14_1_1">1/1</a> <a href="#t14_5_1">5/1</a> <a href="#t14_11_1">11/1</a> <a href="#t14_18_1">18/1</a> </p><p><b>Тема 15:</b> <a href="#t15_14_1">14/1</a> </p><p><b>Тема 16:</b> <a href="#t16_42_2">42/2</a> <a href="#t16_46_1">46/1</a> </p><p><b>Тема 17:</b> <a href="#t17_39_1">39/1</a> </p><p><b>Тема 18:</b> <a href="#t18_21_1">21/1</a> <a href="#t18_26_1">26/1</a> <a href="#t18_26_2">26/2</a> <a href="#t18_31_1">31/1</a> </p><p><b>Тема 19:</b> <a href="#t19_11_1">11/1</a> <a href="#t19_19_1">19/1</a> <a href="#t19_42_3">42/3</a> </div>
+
+<section id="t1_8_1">
+<h3>Тема 1 — вопрос 8/1 <span class="qid">(t1_8_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t1_8_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Автомобил, с допустима максимална маса над 3,5 т, е разрешено да се управлява с правоспособност за категория В, ако броят на местата за сядане, без мястото на водача, не надвишават 8.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Автомобил, с допустима максимална маса над 3,5 т, е разрешено да се управлява с правоспособност за категория В, ако броят на местата за сядане, без мястото на водача, не надвишават 8. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t1_19_3">
+<h3>Тема 1 — вопрос 19/3 <span class="qid">(t1_19_3, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t1_19_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Трамваят е релсово превозно средство, което се приравнява към групата на моторните превозни средства.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Трамваят е релсово превозно средство, което се приравнява към групата на моторните превозни средства. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t1_26_1">
+<h3>Тема 1 — вопрос 26/1 <span class="qid">(t1_26_1, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t1_26_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Мотопедът има двигател с работен обем до 50 cm³ и конструктивна максимална скорост, която не надвишава 45 km/h.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Мотопедът има двигател с работен обем до 50 cm³ и конструктивна максимална скорост, която не надвишава 45 km/h. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t1_43_2">
+<h3>Тема 1 — вопрос 43/2 <span class="qid">(t1_43_2, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t1_43_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">„Граница на платното за движение” е линията, очертана или не с пътна маркировка, която отделя платното за движение от другите конструктивни елементи на пътното платно.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">„Граница на платното за движение” е линията, очертана или не с пътна маркировка, която отделя платното за движение от другите конструктивни елементи на пътното платно. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t1_43_3">
+<h3>Тема 1 — вопрос 43/3 <span class="qid">(t1_43_3, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t1_43_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">“Граница на платното за движение” е линията, очертана или не, с пътна маркировка, която отделя пътните платна едно от друго.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">“Граница на платното за движение” е линията, очертана или не, с пътна маркировка, която отделя пътните платна едно от друго. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t1_44_1">
+<h3>Тема 1 — вопрос 44/1 <span class="qid">(t1_44_1, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 1, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t1_44_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Линията, с която се очертава “ВUS”-лентата, е граница на платното за движение.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Линията, с която се очертава “ВUS”-лентата, е граница на платното за движение. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t2_8_2">
+<h3>Тема 2 — вопрос 8/2 <span class="qid">(t2_8_2, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 2, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t2_8_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При навлизане в завой, с увеличаването на скоростта, устойчивостта на превозното средство се подобрява.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При навлизане в завой, с увеличаването на скоростта, устойчивостта на превозното средство се подобрява. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t2_8_3">
+<h3>Тема 2 — вопрос 8/3 <span class="qid">(t2_8_3, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 2, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t2_8_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При навлизане в завой, с увеличаването на скоростта, устойчивостта на превозното средство се влошава.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При навлизане в завой, с увеличаването на скоростта, устойчивостта на превозното средство се влошава. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t2_30_1">
+<h3>Тема 2 — вопрос 30/1 <span class="qid">(t2_30_1, PDF стр. 14)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 2, стр. 14)</figcaption>
+  <img loading="lazy" src="crops/t2_30_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация пешеходецът пресича платното за движение по пешеходна пътека.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация пешеходецът пресича платното за движение по пешеходна пътека. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_12_3">
+<h3>Тема 3 — вопрос 12/3 <span class="qid">(t3_12_3, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t3_12_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Пътното превозно средство е извънгабаритно когато:</p><ol><li>височината му, включително товара, е 4,2 м<b> ✓</b></li><li>широчината му, включително товара, е 2,2 м<b></b></li><li>дължината му, включително товара, е 12 м<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Пътното превозно средство е извънгабаритно когато:</p><ol><li class="cor"><mark class="bad">широчината</mark> му, включително товара, е <mark class="bad">2,8</mark> м</li><li><mark class="bad">височината</mark> му, включително товара, е <mark class="bad">2,8</mark> м</li><li>дължината му, включително товара, е 12 м</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_14_1">
+<h3>Тема 3 — вопрос 14/1 <span class="qid">(t3_14_1, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t3_14_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, преди да започна изпреварването, трябва да подам звуков сигнал.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, преди да започна изпреварването, трябва да подам звуков сигнал. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_20_1">
+<h3>Тема 3 — вопрос 20/1 <span class="qid">(t3_20_1, PDF стр. 9)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 9)</figcaption>
+  <img loading="lazy" src="crops/t3_20_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил трябва да пропусне пешеходеца.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил трябва да пропусне пешеходеца. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_21_2">
+<h3>Тема 3 — вопрос 21/2 <span class="qid">(t3_21_2, PDF стр. 9)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 9)</figcaption>
+  <img loading="lazy" src="crops/t3_21_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация пешеходецът е с предимство.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация пешеходецът е с предимство. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_24_1">
+<h3>Тема 3 — вопрос 24/1 <span class="qid">(t3_24_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t3_24_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация няма опасност, защото детето се качва на тротоара и освобождава платното за движение.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация няма опасност, защото детето се качва на тротоара и освобождава платното за движение. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t3_26_1">
+<h3>Тема 3 — вопрос 26/1 <span class="qid">(t3_26_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 3, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t3_26_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация е достатъчно децата да застанат в средата на улицата, за да премина безопасно зад тях.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация е достатъчно децата да застанат в средата на улицата, за да премина безопасно зад тях. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t4_80_1">
+<h3>Тема 4 — вопрос 80/1 <span class="qid">(t4_80_1, PDF стр. 26)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 4, стр. 26)</figcaption>
+  <img loading="lazy" src="crops/t4_80_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация дължината на участъка с последователни опасни завои е 1000 м.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация дължината на участъка с последователни опасни завои е 1000 м. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t4_109_2">
+<h3>Тема 4 — вопрос 109/2 <span class="qid">(t4_109_2, PDF стр. 33)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 4, стр. 33)</figcaption>
+  <img loading="lazy" src="crops/t4_109_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, на водача на лекия автомобил е разрешено да пресече единичната непрекъсната линия за да спре от другата страна на пътя.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, на водача на лекия автомобил е разрешено да пресече единичната непрекъсната линия за да спре от другата страна на пътя. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t4_110_2">
+<h3>Тема 4 — вопрос 110/2 <span class="qid">(t4_110_2, PDF стр. 34)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 4, стр. 34)</figcaption>
+  <img loading="lazy" src="crops/t4_110_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, на водача на лекия автомобил е разрешено да пресече единичната прекъсната линия за да спре от другата страна на пътя.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, на водача на лекия автомобил е разрешено да пресече единичната прекъсната линия за да спре от другата страна на пътя. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_2_3">
+<h3>Тема 6 — вопрос 2/3 <span class="qid">(t6_2_3, PDF стр. 2)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 2)</figcaption>
+  <img loading="lazy" src="crops/t6_2_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Когато няма други ограничения, водачът на триколесно МПС от категория А при движение извън населено място не трябва да превишава:</p><ol><li>80 km/h<b> ✓</b></li><li>60 km/h<b></b></li><li>70 km/h<b></b></li><li>90 km/h<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Когато няма други ограничения, водачът на триколесно МПС от категория А при движение извън населено място не трябва да превишава:</p><ol><li class="cor"><mark class="bad">60</mark> km/h</li><li><mark class="bad">70</mark> km/h</li><li><mark class="bad">80</mark> km/h</li><li>90 km/h</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_9_1">
+<h3>Тема 6 — вопрос 9/1 <span class="qid">(t6_9_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t6_9_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Този пътен знак:</p><ol><li>сигнализира за край на ограничението на скоростта, въведено с пътен знак<b> ✓</b></li><li>забранява движението на МПС, които не могат да развият скорост, по- голяма от означената<b></b></li><li>забрананява движението със скорост, по-висока от означената<b></b></li><li>забрананява движението със скорост, по-ниска от означената<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Този пътен знак:</p><ol><li class="cor">сигнализира за край на ограничението на скоростта, въведено с пътен знак</li><li>забранява движението на МПС, които не могат да развият скорост, по- голяма от означената</li><li><mark class="bad">голяма от означената</mark> забрананява движението със скорост, по-висока от означената</li><li>забрананява движението със скорост, по-ниска от означената</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_10_1">
+<h3>Тема 6 — вопрос 10/1 <span class="qid">(t6_10_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t6_10_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">След този пътен знак няма ограничение за скоростта на движение.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">След този пътен знак няма ограничение за скоростта на движение. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_22_2">
+<h3>Тема 6 — вопрос 22/2 <span class="qid">(t6_22_2, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t6_22_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Влияние върху големината на коефициента на сцепление на автомобилните гуми с пътя оказват:</p><ol><li>видът на пътната настилка<b> ✓</b></li><li>видът на автомобилната гума<b> ✓</b></li><li>разположението на двигателя<b></b></li><li>диаметърът на автомобилните гуми<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Влияние върху големината на коефициента на сцепление на автомобилните гуми с пътя оказват:</p><ol><li class="cor">видът на пътната настилка</li><li class="cor"><mark class="bad">състоянието</mark> на <mark class="bad">пътната настилка</mark></li><li><mark class="bad">видът</mark> на <mark class="bad">автомобилните гуми</mark></li><li>диаметърът на автомобилните гуми</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_36_1">
+<h3>Тема 6 — вопрос 36/1 <span class="qid">(t6_36_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t6_36_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водачът на пътно превозно средство:</p><ol><li>не трябва да намалява скоростта рязко, освен ако това е необходимо за предотвратяване на произшествие<b> ✓</b></li><li>трябва да намали скоростта и при необходимост да спре, когато възникне опасност за движението<b> ✓</b></li><li>е задължен да намали скоростта и при необходимост да спре при заслепяване<b> ✓</b></li><li>не е задължен да намали скоростта за да предпази пешеходците от изцапване, когато на платното за движение има вода или кал<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водачът на пътно превозно средство:</p><ol><li class="cor">не трябва да намалява скоростта рязко, освен ако това е необходимо за предотвратяване на произшествие</li><li class="cor">трябва да намали скоростта и при необходимост да спре,</li><li class="cor">е задължен да намали скоростта и при необходимост да спре при заслепяване</li><li>не е задължен да намали скоростта за да предпази пешеходците от изцапване, когато на платното за движение има вода или кал</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_36_2">
+<h3>Тема 6 — вопрос 36/2 <span class="qid">(t6_36_2, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t6_36_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водачът на пътно превозно средство:</p><ol><li>не трябва да намалява скоростта рязко, освен ако това е необходимо за предотвратяване на произшествие<b> ✓</b></li><li>трябва да намали скоростта и при необходимост да спре, когато възникне опасност за движението<b> ✓</b></li><li>е задължен да намали скоростта и при необходимост да спре при заслепяване<b> ✓</b></li><li>не е задължен да намали скоростта за да предпази пешеходците от нараняване, когато на платното за движение има дребни камъни<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водачът на пътно превозно средство:</p><ol><li class="cor">не трябва да намалява скоростта рязко, освен ако това е необходимо за предотвратяване на произшествие</li><li class="cor">трябва да намали скоростта и при необходимост да спре,</li><li class="cor">е задължен да намали скоростта и при необходимост да спре при заслепяване</li><li>не е задължен да намали скоростта за да предпази пешеходците от нараняване, когато на платното за движение има дребни камъни</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_40_1">
+<h3>Тема 6 — вопрос 40/1 <span class="qid">(t6_40_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t6_40_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, за да осигуря безопасността на децата, е достатъчно само да намаля скоростта.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, за да осигуря безопасността на децата, е достатъчно само да намаля скоростта. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_42_1">
+<h3>Тема 6 — вопрос 42/1 <span class="qid">(t6_42_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t6_42_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация няма ограничения и мога да увелича скоростта на движение.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация няма ограничения и мога да увелича скоростта на движение. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_42_2">
+<h3>Тема 6 — вопрос 42/2 <span class="qid">(t6_42_2, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t6_42_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация:</p><ol><li>трябва да намаля скоростта<b> ✓</b></li><li>трябва да управлявам с готовност за спиране<b> ✓</b></li><li>пешеходците не са на платното за движение и не съм задължен да променям скоростта<b></b></li><li>движа се по път с предимство и не съм задължен да намалявам скоростта<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация:</p><ol><li class="cor">трябва да намаля скоростта</li><li class="cor">трябва да управлявам с готовност за спиране</li><li>пешеходците не са на платното за движение и не съм задължен да променям скоростта</li><li><mark class="bad">скоростта</mark> движа се по път с предимство и не съм задължен да намалявам скоростта</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_43_2">
+<h3>Тема 6 — вопрос 43/2 <span class="qid">(t6_43_2, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t6_43_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">След като преминат децата, увеличавам скоростта и продължавам движението.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">След като преминат децата, увеличавам скоростта и продължавам движението. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_47_1">
+<h3>Тема 6 — вопрос 47/1 <span class="qid">(t6_47_1, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t6_47_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, за да осигуря по-голяма безопасност за децата, е достатъчно само да увелича страничната дистанция.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, за да осигуря по-голяма безопасност за децата, е достатъчно само да увелича страничната дистанция. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_48_1">
+<h3>Тема 6 — вопрос 48/1 <span class="qid">(t6_48_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t6_48_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, за да осигуря безопасността за велосипедиста при изпреварването, е достатъчно само да намаля скоростта.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, за да осигуря безопасността за велосипедиста при изпреварването, е достатъчно само да намаля скоростта. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t6_60_1">
+<h3>Тема 6 — вопрос 60/1 <span class="qid">(t6_60_1, PDF стр. 15)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 6, стр. 15)</figcaption>
+  <img loading="lazy" src="crops/t6_60_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие в тази ситуация?</p><ol><li>увеличавам скоростта си, за да осигуря безопасна дистанция<b></b></li><li>намалявам скоростта си, за да може и водачът отзад да намали скоростта си<b></b></li><li>продължавам движението си, без да променям скоростта си<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие в тази ситуация?</p><ol><li>увеличавам скоростта си, за да осигуря безопасна дистанция</li><li>намалявам скоростта си, за да може и водачът отзад да намали скоростта си</li><li class="cor"><mark class="bad">скоростта си</mark> продължавам движението си, без да променям скоростта си</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_5_1">
+<h3>Тема 7 — вопрос 5/1 <span class="qid">(t7_5_1, PDF стр. 1)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 1)</figcaption>
+  <img loading="lazy" src="crops/t7_5_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, водачът на червения автомобил:</p><ol><li>трябва да пропусне синия автомобил, защото навлиза в лентата, по която той се движи<b> ✓</b></li><li>преди да се включи в движението трябва да се убеди, че няма да създаде опасност за другите участници в него<b> ✓</b></li><li>е с предимство защото се намира отдясно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, водачът на червения автомобил:</p><ol><li class="cor">трябва да пропусне синия <mark class="bad">автомобил</mark></li><li class="cor"><mark class="bad">е с предимство защото</mark> се <mark class="bad">намира отдясно</mark></li><li>е с предимство защото <mark class="bad">е подал сигнал за маневра</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_12_1">
+<h3>Тема 7 — вопрос 12/1 <span class="qid">(t7_12_1, PDF стр. 2)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 2)</figcaption>
+  <img loading="lazy" src="crops/t7_12_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил:</p><ol><li>трябва да пропусне товарния автомобил, защото навлиза в заеманата от него пътна лента<b> ✓</b></li><li>е с предимство при заобикалянето, защото е подал сигнал за маневрата<b></b></li><li>е с предимство защото е по-близо до препятствието<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил:</p><ol><li class="cor">трябва да пропусне товарния автомобил, защото навлиза в заеманата от него пътна лента</li><li><mark class="bad">него пътна лента</mark> е с предимство при заобикалянето, защото е подал сигнал за маневрата</li><li>е с предимство защото е по-близо до препятствието</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_15_1">
+<h3>Тема 7 — вопрос 15/1 <span class="qid">(t7_15_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t7_15_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Когато на кръстовище пътните ленти не са обозначени с пътна маркировка за движение в съответна посока, завиването надясно е разрешено да се извършва:</p><ol><li>от най-дясната част на платното за движение<b> ✓</b></li><li>от която и да е част на платното за движение, ако радиусът на завиване на автомобила е по-голям от радиуса на завоя<b> ✓</b></li><li>във всички случаи от най-удобната за водача пътна лента<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Когато на кръстовище пътните ленти не са обозначени с пътна маркировка за движение в съответна посока, завиването надясно е разрешено да се извършва:</p><ol><li class="cor">от най-дясната част на платното за движение</li><li class="cor">от която и да е част на платното за движение, ако радиусът на завиване на автомобила е по-голям от радиуса на завоя</li><li><mark class="bad">на завоя</mark> във всички случаи от най-удобната за водача пътна лента</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_21_1">
+<h3>Тема 7 — вопрос 21/1 <span class="qid">(t7_21_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t7_21_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_24_1">
+<h3>Тема 7 — вопрос 24/1 <span class="qid">(t7_24_1, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t7_24_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца.</p><ol><li>неправилно<b></b></li><li>правилно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца. <mark class="bad">неправилно правилно</mark></p><ol><li>неправилно</li><li class="cor">правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_24_2">
+<h3>Тема 7 — вопрос 24/2 <span class="qid">(t7_24_2, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t7_24_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца.</p><ol><li>неправилно<b></b></li><li>правилно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна пешеходеца. <mark class="bad">неправилно правилно</mark></p><ol><li>неправилно</li><li class="cor">правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_31_1">
+<h3>Тема 7 — вопрос 31/1 <span class="qid">(t7_31_1, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t7_31_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация синият автомобил е с предимство.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация синият автомобил е с предимство. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_31_2">
+<h3>Тема 7 — вопрос 31/2 <span class="qid">(t7_31_2, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t7_31_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм задължен да пропусна синия автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм задължен да пропусна синия автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_32_1">
+<h3>Тема 7 — вопрос 32/1 <span class="qid">(t7_32_1, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t7_32_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство за преминаване преди червения автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство за преминаване преди червения автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_33_1">
+<h3>Тема 7 — вопрос 33/1 <span class="qid">(t7_33_1, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t7_33_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_33_3">
+<h3>Тема 7 — вопрос 33/3 <span class="qid">(t7_33_3, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t7_33_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна синия автомобил.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна синия автомобил. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_34_1">
+<h3>Тема 7 — вопрос 34/1 <span class="qid">(t7_34_1, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t7_34_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да премина преди червения автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да премина преди червения автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_37_1">
+<h3>Тема 7 — вопрос 37/1 <span class="qid">(t7_37_1, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t7_37_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство, защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство, защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_37_2">
+<h3>Тема 7 — вопрос 37/2 <span class="qid">(t7_37_2, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t7_37_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам с предимство преди трамвая.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам с предимство преди трамвая. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_41_2">
+<h3>Тема 7 — вопрос 41/2 <span class="qid">(t7_41_2, PDF стр. 9)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 9)</figcaption>
+  <img loading="lazy" src="crops/t7_41_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил не е задължен да пропусне трамвая.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация водачът на лекия автомобил не е задължен да пропусне трамвая. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_42_1">
+<h3>Тема 7 — вопрос 42/1 <span class="qid">(t7_42_1, PDF стр. 9)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 9)</figcaption>
+  <img loading="lazy" src="crops/t7_42_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация синият автомобил трябва да премине преди трамвая.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация синият автомобил трябва да премине преди трамвая. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_48_2">
+<h3>Тема 7 — вопрос 48/2 <span class="qid">(t7_48_2, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t7_48_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Завиването в обратна посока от крайната дясна лента е:</p><ol><li>разрешено при недостатъчна широчина на платното за движение<b> ✓</b></li><li>разрешено във всички случаи<b></b></li><li>забранено<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Завиването в обратна посока от крайната дясна лента е:</p><ol><li class="cor">разрешено при</li><li>разрешено във всички случаи</li><li>забранено</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_67_1">
+<h3>Тема 7 — вопрос 67/1 <span class="qid">(t7_67_1, PDF стр. 14)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 14)</figcaption>
+  <img loading="lazy" src="crops/t7_67_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство за преминаване през стеснения участък от пътя.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство за преминаване през стеснения участък от пътя. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_87_1">
+<h3>Тема 7 — вопрос 87/1 <span class="qid">(t7_87_1, PDF стр. 17)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 17)</figcaption>
+  <img loading="lazy" src="crops/t7_87_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Изпреварването е забранено, когато:</p><ol><li>при използване на пътна лента за насрещното движение не е възможно безпрепятственото връщане в напуснатата лента<b> ✓</b></li><li>видимостта е ограничена<b> ✓</b></li><li>изпреварващият автомобил е с повредени пътепоказатели<b></b></li><li>се извършва по двулентов двупосочен път<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Изпреварването е забранено, когато:</p><ol><li class="cor">при използване на пътна лента за насрещното движение не е възможно безпрепятственото връщане в напуснатата лента</li><li class="cor"><mark class="bad">напуснатата лента</mark> видимостта е ограничена</li><li>изпреварващият автомобил е с повредени пътепоказатели</li><li>се извършва по двулентов двупосочен път</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_90_1">
+<h3>Тема 7 — вопрос 90/1 <span class="qid">(t7_90_1, PDF стр. 17)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 17)</figcaption>
+  <img loading="lazy" src="crops/t7_90_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li>при използване на пътна лента за насрещно движение, когато изпреварващият не може да се върне безпрепятствено в напуснатата пътна лента<b> ✓</b></li><li>пред и върху сигнализирана пешеходна пътека<b> ✓</b></li><li>в стеснен участък от пътя<b></b></li><li>на железопътен прелез с бариери<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li class="cor">при използване на пътна лента за насрещно движение, когато изпреварващият не може да се върне безпрепятствено в напуснатата пътна лента</li><li class="cor"><mark class="bad">безпрепятствено в напуснатата пътна лента</mark> пред и върху сигнализирана пешеходна пътека</li><li>в стеснен участък от пътя</li><li>на железопътен прелез с бариери</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_91_1">
+<h3>Тема 7 — вопрос 91/1 <span class="qid">(t7_91_1, PDF стр. 17)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 17)</figcaption>
+  <img loading="lazy" src="crops/t7_91_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li>при ограничена видимост, когато разстоянието е по-малко от необходимото за изпреварване<b> ✓</b></li><li>пред и върху сигнализирана пешеходна пътека<b> ✓</b></li><li>на път с еднопосочно движение<b></b></li><li>на мост<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li class="cor">при ограничена видимост, когато разстоянието е по-малко от необходимото за изпреварване</li><li class="cor">пред и върху сигнализирана пешеходна пътека</li><li>на път с еднопосочно движение</li><li>на мост <mark class="bad">на</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_92_1">
+<h3>Тема 7 — вопрос 92/1 <span class="qid">(t7_92_1, PDF стр. 17)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 17)</figcaption>
+  <img loading="lazy" src="crops/t7_92_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li>на кръстовище на равнозначни пътища<b> ✓</b></li><li>на железопътен прелез без бариери<b> ✓</b></li><li>при използване на пътна лента за насрещно движение, когато изпреварващият не може да се върне безпрепятствено в напуснатата пътна лента<b> ✓</b></li><li>в тунел<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li class="cor">на кръстовище на равнозначни пътища</li><li class="cor">на железопътен прелез без бариери</li><li class="cor">при използване на пътна лента за насрещно движение, когато изпреварващият не може да се върне безпрепятствено в напуснатата пътна лента</li><li><mark class="bad">безпрепятствено в напуснатата пътна лента</mark> в тунел</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_92_3">
+<h3>Тема 7 — вопрос 92/3 <span class="qid">(t7_92_3, PDF стр. 18)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 18)</figcaption>
+  <img loading="lazy" src="crops/t7_92_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li>на кръстовище на равнозначни пътища<b> ✓</b></li><li>на железопътен прелез без бариери<b> ✓</b></li><li>пред пешеходна пътека, когато изпреварваното превозно средство закрива видимостта към пешеходната пътека<b> ✓</b></li><li>на пътища с двупосочно движение<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Изпреварването на МПС, с изключение на мотопеди и мотоциклети без кош, е забранено:</p><ol><li class="cor">на кръстовище на равнозначни пътища</li><li class="cor">на железопътен прелез без бариери</li><li class="cor">пред пешеходна пътека, когато изпреварваното превозно средство закрива видимостта към пешеходната пътека</li><li><mark class="bad">пътека</mark> на пътища с двупосочно движение</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_98_1">
+<h3>Тема 7 — вопрос 98/1 <span class="qid">(t7_98_1, PDF стр. 18)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 18)</figcaption>
+  <img loading="lazy" src="crops/t7_98_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, когато пешеходецът напуска платното за движение и имам видимост към пешеходната пътека, е разрешено да продължа изпреварването.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, когато пешеходецът напуска платното за движение и имам видимост към пешеходната пътека, е разрешено да продължа изпреварването. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_107_1">
+<h3>Тема 7 — вопрос 107/1 <span class="qid">(t7_107_1, PDF стр. 20)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 20)</figcaption>
+  <img loading="lazy" src="crops/t7_107_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водач, който изпреварва, е длъжен:</p><ol><li>да осигури достатъчно странично разстояние между своето и изпреварваното ППС<b> ✓</b></li><li>когато навлиза в лента за насрещното движение, да не създава опасност за превозните средства, движещи се по нея<b> ✓</b></li><li>да се убеди, че с безопасна скорост, може да извърши изпреварването за кратко време<b> ✓</b></li><li>да се движи в непосредствена близост до изпреварваното превозно средство<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водач, който изпреварва, е длъжен:</p><ol><li class="cor">да осигури достатъчно странично разстояние между своето и изпреварваното ППС</li><li class="cor">когато навлиза в лента за насрещното движение, да не създава опасност за превозните средства, движещи се по нея</li><li class="cor"><mark class="bad">по нея</mark> да се убеди, че с безопасна скорост, може да извърши изпреварването за кратко време</li><li>да се движи в непосредствена близост до изпреварваното превозно средство</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_120_1">
+<h3>Тема 7 — вопрос 120/1 <span class="qid">(t7_120_1, PDF стр. 22)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 22)</figcaption>
+  <img loading="lazy" src="crops/t7_120_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>изпреварвам велосипедиста преди той да заобиколи товарния автомобил<b></b></li><li>изпреварвам велосипедиста, след като той премине през завоя<b> ✓</b></li><li>изпреварвам велосипедиста веднага, след като заобиколи товарния автомобил (преди да премине през завоя)<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>изпреварвам велосипедиста преди той да заобиколи товарния автомобил</li><li class="cor"><mark class="bad">автомобил</mark> изпреварвам велосипедиста, след като той премине през завоя</li><li>изпреварвам велосипедиста веднага, след като заобиколи товарния автомобил (преди да премине през завоя) <mark class="bad">0:15 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_124_1">
+<h3>Тема 7 — вопрос 124/1 <span class="qid">(t7_124_1, PDF стр. 23)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 23)</figcaption>
+  <img loading="lazy" src="crops/t7_124_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>продължавам движението си, без да променям скоростта си<b></b></li><li>продължавам движението си в лентата за паркиране<b></b></li><li>продължавам движението си, като увеличавам скоростта си<b></b></li><li>намалявам скоростта си<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>продължавам движението си, без да променям скоростта си</li><li>продължавам движението си в лентата за паркиране</li><li>продължавам движението си, като увеличавам скоростта си</li><li class="cor">намалявам скоростта си <mark class="bad">0:15 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_128_1">
+<h3>Тема 7 — вопрос 128/1 <span class="qid">(t7_128_1, PDF стр. 24)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 24)</figcaption>
+  <img loading="lazy" src="crops/t7_128_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация?</p><ol><li>намалявам скоростта си, за да може изпреварващото превозно средство да се прибере пред мен<b> ✓</b></li><li>ускорявам, за да може изпреварващото превозно средство да премине в дясната лента зад мен<b></b></li><li>поддържам скоростта си, защото има достатъчно безопасно разстояние<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация?</p><ol><li class="cor">намалявам скоростта си, за да може изпреварващото превозно средство да се прибере пред мен</li><li>ускорявам, за да може изпреварващото превозно средство да премине в дясната лента зад мен</li><li>поддържам скоростта си, защото има достатъчно безопасно разстояние <mark class="bad">0:00</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_134_1">
+<h3>Тема 7 — вопрос 134/1 <span class="qid">(t7_134_1, PDF стр. 25)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 25)</figcaption>
+  <img loading="lazy" src="crops/t7_134_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>да подам сигнал с превключване на дългите светлини<b></b></li><li>да продължа без да променям скоростта, като се движа възможно най-вдясно<b></b></li><li>да намаля скоростта своевременно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>да подам сигнал с превключване на дългите светлини</li><li>да продължа без да променям скоростта, като се движа възможно най-вдясно</li><li class="cor"><mark class="bad">възможно най-вдясно</mark> да намаля скоростта своевременно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_139_1">
+<h3>Тема 7 — вопрос 139/1 <span class="qid">(t7_139_1, PDF стр. 27)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 27)</figcaption>
+  <img loading="lazy" src="crops/t7_139_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие в тази ситуация?</p><ol><li>да намаля скоростта<b> ✓</b></li><li>да увелича скоростта си<b></b></li><li>да продължа движението си, без да променям скоростта<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие в тази ситуация?</p><ol><li class="cor">да намаля скоростта</li><li>да увелича скоростта си</li><li>да продължа движението си, без да променям скоростта <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_141_1">
+<h3>Тема 7 — вопрос 141/1 <span class="qid">(t7_141_1, PDF стр. 27)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 27)</figcaption>
+  <img loading="lazy" src="crops/t7_141_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li>трябва да намаля скоростта и да продължа движението си в заеманата лента<b> ✓</b></li><li>да премина в лявата лента<b></b></li><li>продължавам движението си в заеманата лента, без да намалявам скоростта<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li class="cor">трябва да намаля скоростта и да продължа движението си в заеманата лента</li><li><mark class="bad">заеманата лента</mark> да премина в лявата лента</li><li>продължавам движението си в заеманата лента, без да намалявам скоростта</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t7_147_1">
+<h3>Тема 7 — вопрос 147/1 <span class="qid">(t7_147_1, PDF стр. 29)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 7, стр. 29)</figcaption>
+  <img loading="lazy" src="crops/t7_147_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>продължавам движението си, без да променям скоростта<b></b></li><li>преминавам в дясната лента<b></b></li><li>намалявам скоростта си<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>продължавам движението си, без да променям скоростта</li><li>преминавам в дясната лента</li><li class="cor">намалявам скоростта си <mark class="bad">0:00</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_2_3">
+<h3>Тема 8 — вопрос 2/3 <span class="qid">(t8_2_3, PDF стр. 1)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 1)</figcaption>
+  <img loading="lazy" src="crops/t8_2_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">В кой от случаите водачът не трябва да навлиза в кръстовище?</p><ol><li>когато обстановката ще го принуди да спре в кръстовището, при което ще възпрепятства напречното движение<b> ✓</b></li><li>когато по напречния път приближава автомобил със специален режим на движение<b> ✓</b></li><li>когато преминаването се регулира от светофар със жълта мигаща светлина<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">В кой от случаите водачът не трябва да навлиза в кръстовище?</p><ol><li class="cor">когато обстановката ще го принуди да спре в кръстовището, при което ще възпрепятства напречното движение</li><li class="cor"><mark class="bad">движение</mark> когато по напречния път приближава автомобил със специален режим на движение</li><li>когато преминаването се регулира от светофар със жълта мигаща светлина</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_3_2">
+<h3>Тема 8 — вопрос 3/2 <span class="qid">(t8_3_2, PDF стр. 2)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 2)</figcaption>
+  <img loading="lazy" src="crops/t8_3_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При този сигнал на светофара навлизането в кръстовището е:</p><ol><li>разрешено, освен когато водачът може да остане в кръстовището поради задръстване<b> ✓</b></li><li>разрешено без ограничения<b></b></li><li>забранено<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При този сигнал на светофара навлизането в кръстовището е:</p><ol><li class="cor">разрешено, освен когато водачът може да остане в кръстовището поради задръстване</li><li><mark class="bad">задръстване</mark> разрешено без ограничения</li><li>забранено</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_21_1">
+<h3>Тема 8 — вопрос 21/1 <span class="qid">(t8_21_1, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t8_21_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация при определяне на реда за преминаване през кръстовището се прилагат следните правила:</p><ol><li>през кръстовището преминават ППС, които имат разрешаващ сигнал от светофара<b> ✓</b></li><li>ППС завиващо наляво пропуска насрещнодвижещото се<b> ✓</b></li><li>ППС на пътя с предимство, трябва да премине преди ППС от другия път<b></b></li><li>ППС преминаващи при разрешаващ сигнал, прилагат правилото за „предимството на дясностоящия”<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация при определяне на реда за преминаване през кръстовището се прилагат следните правила:</p><ol><li class="cor">през кръстовището преминават ППС, които имат разрешаващ сигнал от светофара</li><li class="cor"><mark class="bad">светофара</mark> ППС завиващо наляво пропуска насрещнодвижещото се</li><li>ППС на пътя с предимство, трябва да премине преди ППС от другия път</li><li>ППС преминаващи при разрешаващ сигнал, прилагат правилото за „предимството на дясностоящия”</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_31_1">
+<h3>Тема 8 — вопрос 31/1 <span class="qid">(t8_31_1, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t8_31_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва задължително да завия наляво.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва задължително да завия наляво. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_41_1">
+<h3>Тема 8 — вопрос 41/1 <span class="qid">(t8_41_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t8_41_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация мога да премина без да спирам, при условие, че пропусна синия автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация мога да премина без да спирам, при условие, че пропусна синия автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_43_1">
+<h3>Тема 8 — вопрос 43/1 <span class="qid">(t8_43_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t8_43_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация:</p><ol><li>е разрешено да премина, без да спирам, но трябва да пропусна ППС от другия път<b> ✓</b></li><li>задължен съм да спра, преди да премина през кръстовището<b></b></li><li>мога да премина без да спирам, защото пътят, по който се движа, е с предимство<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация:</p><ol><li class="cor">е разрешено да премина, без да спирам, но трябва да пропусна ППС от другия път</li><li><mark class="bad">другия път</mark> задължен съм да спра, преди да премина през кръстовището</li><li>мога да премина без да спирам, защото пътят, по който се движа, е с предимство</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_44_1">
+<h3>Тема 8 — вопрос 44/1 <span class="qid">(t8_44_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t8_44_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При този пътен знак:</p><ol><li>е разрешено да премина, без да спирам, защото пътят, по който се движа, е с предимство<b> ✓</b></li><li>задължен съм да спра, преди да премина през кръстовището<b></b></li><li>мога да премина, без да спирам, но трябва да пропусна ППС от другия път<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При този пътен знак:</p><ol><li class="cor">е разрешено да премина, без да спирам, защото пътят, по който се движа, е с предимство</li><li><mark class="bad">с предимство</mark> задължен съм да спра, преди да премина през кръстовището</li><li>мога да премина, без да спирам, но трябва да пропусна ППС от другия път</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_46_1">
+<h3>Тема 8 — вопрос 46/1 <span class="qid">(t8_46_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t8_46_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам преди синия автомобил защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам преди синия автомобил защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_46_2">
+<h3>Тема 8 — вопрос 46/2 <span class="qid">(t8_46_2, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t8_46_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство, защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство, защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_47_1">
+<h3>Тема 8 — вопрос 47/1 <span class="qid">(t8_47_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t8_47_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна товарния автомобил, защото се движи направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна товарния автомобил, защото се движи направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_49_1">
+<h3>Тема 8 — вопрос 49/1 <span class="qid">(t8_49_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t8_49_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация автомобилът, който се движи направо, е с предимство пред автомобила, който завива надясно.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация автомобилът, който се движи направо, е с предимство пред автомобила, който завива надясно. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_51_1">
+<h3>Тема 8 — вопрос 51/1 <span class="qid">(t8_51_1, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t8_51_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация задължени ли сте да пропуснете товарния автомобил?</p><ol><li>да, защото се намира на пътя с предимство<b> ✓</b></li><li>да, защото се намира отдясно<b> ✓</b></li><li>не, защото се движа направо<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация задължени ли сте да пропуснете товарния автомобил?</p><ol><li class="cor">да, <mark class="bad">независимо от посоката, в която ще продължи да</mark> се <mark class="bad">движи</mark></li><li class="cor"><mark class="bad">зависи от посоката, в която ще продължи да</mark> се <mark class="bad">движи</mark></li><li><mark class="bad">не</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_52_1">
+<h3>Тема 8 — вопрос 52/1 <span class="qid">(t8_52_1, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t8_52_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_53_1">
+<h3>Тема 8 — вопрос 53/1 <span class="qid">(t8_53_1, PDF стр. 12)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 12)</figcaption>
+  <img loading="lazy" src="crops/t8_53_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам преди товарния автомобил, защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам преди товарния автомобил, защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_56_1">
+<h3>Тема 8 — вопрос 56/1 <span class="qid">(t8_56_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t8_56_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил, който завива надясно, е с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил, който завива надясно, е с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_58_1">
+<h3>Тема 8 — вопрос 58/1 <span class="qid">(t8_58_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t8_58_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна червения автомобил.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна червения автомобил. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_59_1">
+<h3>Тема 8 — вопрос 59/1 <span class="qid">(t8_59_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t8_59_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам преди синия автомобил защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам преди синия автомобил защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_60_1">
+<h3>Тема 8 — вопрос 60/1 <span class="qid">(t8_60_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t8_60_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_61_1">
+<h3>Тема 8 — вопрос 61/1 <span class="qid">(t8_61_1, PDF стр. 13)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 13)</figcaption>
+  <img loading="lazy" src="crops/t8_61_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_62_1">
+<h3>Тема 8 — вопрос 62/1 <span class="qid">(t8_62_1, PDF стр. 14)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 14)</figcaption>
+  <img loading="lazy" src="crops/t8_62_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация с предимство е:</p><ol><li>червеният автомобил, защото приближава кръстовището от дясната страна на зеления автомобил<b> ✓</b></li><li>зеленият автомобил, защото се движи направо<b></b></li><li>червеният автомобил, защото се намира на пътя с предимство<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация с предимство е:</p><ol><li class="cor">червеният автомобил, защото приближава кръстовището от дясната страна на зеления автомобил</li><li><mark class="bad">на зеления автомобил</mark> зеленият автомобил, защото се движи направо</li><li>червеният автомобил, защото се намира на пътя с предимство</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_63_1">
+<h3>Тема 8 — вопрос 63/1 <span class="qid">(t8_63_1, PDF стр. 14)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 14)</figcaption>
+  <img loading="lazy" src="crops/t8_63_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_67_1">
+<h3>Тема 8 — вопрос 67/1 <span class="qid">(t8_67_1, PDF стр. 15)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 15)</figcaption>
+  <img loading="lazy" src="crops/t8_67_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна само червения автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна само червения автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_82_1">
+<h3>Тема 8 — вопрос 82/1 <span class="qid">(t8_82_1, PDF стр. 18)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 18)</figcaption>
+  <img loading="lazy" src="crops/t8_82_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_84_2">
+<h3>Тема 8 — вопрос 84/2 <span class="qid">(t8_84_2, PDF стр. 19)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 19)</figcaption>
+  <img loading="lazy" src="crops/t8_84_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация съм с предимство защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация съм с предимство защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_88_1">
+<h3>Тема 8 — вопрос 88/1 <span class="qid">(t8_88_1, PDF стр. 19)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 19)</figcaption>
+  <img loading="lazy" src="crops/t8_88_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_89_1">
+<h3>Тема 8 — вопрос 89/1 <span class="qid">(t8_89_1, PDF стр. 19)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 19)</figcaption>
+  <img loading="lazy" src="crops/t8_89_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам едновременно с червения автомобил и не съм задължен да пропусна синия автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам едновременно с червения автомобил и не съм задължен да пропусна синия автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_91_1">
+<h3>Тема 8 — вопрос 91/1 <span class="qid">(t8_91_1, PDF стр. 20)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 20)</figcaption>
+  <img loading="lazy" src="crops/t8_91_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам с предимство, защото се движа направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам с предимство, защото се движа направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_94_1">
+<h3>Тема 8 — вопрос 94/1 <span class="qid">(t8_94_1, PDF стр. 20)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 20)</figcaption>
+  <img loading="lazy" src="crops/t8_94_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация трябва да пропусна червения автомобил.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация трябва да пропусна червения автомобил. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_101_1">
+<h3>Тема 8 — вопрос 101/1 <span class="qid">(t8_101_1, PDF стр. 22)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 22)</figcaption>
+  <img loading="lazy" src="crops/t8_101_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство, защото се движи направо.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация червеният автомобил е с предимство, защото се движи направо. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_115_1">
+<h3>Тема 8 — вопрос 115/1 <span class="qid">(t8_115_1, PDF стр. 25)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 25)</figcaption>
+  <img loading="lazy" src="crops/t8_115_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Този знак:</p><ol><li>сигнализира авариен изход в тунел<b> ✓</b></li><li>обозначава вход на пешеходен подлез<b></b></li><li>указва място за излизане на пешеходците от автомагистрала<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Този знак:</p><ol><li class="cor">сигнализира авариен изход в тунел</li><li>обозначава вход на пешеходен подлез</li><li>указва място за излизане на пешеходците от автомагистрала <mark class="bad">знак:</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_116_1">
+<h3>Тема 8 — вопрос 116/1 <span class="qid">(t8_116_1, PDF стр. 25)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 25)</figcaption>
+  <img loading="lazy" src="crops/t8_116_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Този знак:</p><ol><li>указва посока за движение към авариен изход в тунел<b> ✓</b></li><li>указва задължителна посока за движение по пешеходна алея<b></b></li><li>обозначава направление към пешеходен подлез<b></b></li><li>указва място за излизане на пешеходците от автомагистрала<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Този знак:</p><ol><li class="cor">указва посока за движение към авариен изход в тунел</li><li>указва задължителна посока за движение по пешеходна алея</li><li><mark class="bad">указва задължителна посока за движение по пешеходна алея</mark> обозначава направление към пешеходен подлез</li><li>указва място за излизане на пешеходците от автомагистрала</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_119_1">
+<h3>Тема 8 — вопрос 119/1 <span class="qid">(t8_119_1, PDF стр. 25)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 25)</figcaption>
+  <img loading="lazy" src="crops/t8_119_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При движение в тунел с дължина над 500 м, дистанцията между леките автомобили, трябва да е равна на разстоянието, изминавано за две секунди с разрешената скорост на движение.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При движение в тунел с дължина над 500 м, дистанцията между леките автомобили, трябва да е равна на разстоянието, изминавано за две секунди с разрешената скорост на движение. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_139_1">
+<h3>Тема 8 — вопрос 139/1 <span class="qid">(t8_139_1, PDF стр. 29)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 29)</figcaption>
+  <img loading="lazy" src="crops/t8_139_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li>да намаля скоростта и при необходимост да спра<b> ✓</b></li><li>да осигуря предимство на автомобила, който се движи в кръстовището с кръгово движение<b> ✓</b></li><li>да включа десен пътепоказател<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li class="cor">да намаля скоростта и при необходимост да спра</li><li class="cor">да осигуря предимство на автомобила, който се движи в кръстовището с кръгово движение</li><li><mark class="bad">кръстовището с кръгово движение</mark> да включа десен пътепоказател <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_140_1">
+<h3>Тема 8 — вопрос 140/1 <span class="qid">(t8_140_1, PDF стр. 29)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 29)</figcaption>
+  <img loading="lazy" src="crops/t8_140_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li>да спра в разделителната ивица между платната на релсовия път, където е спрял другият автомобил<b></b></li><li>да спра, преди да завия наляво<b> ✓</b></li><li>да завия наляво, за да не възпрепятствам движението на автомобилите зад мен<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какво трябва да направите при тази ситуация?</p><ol><li>да спра в разделителната ивица между платната на релсовия път, където е спрял другият автомобил</li><li class="cor"><mark class="bad">път, където е спрял другият автомобил</mark> да спра, преди да завия наляво</li><li>да завия наляво, за да не възпрепятствам движението на автомобилите зад мен <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_142_1">
+<h3>Тема 8 — вопрос 142/1 <span class="qid">(t8_142_1, PDF стр. 29)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 29)</figcaption>
+  <img loading="lazy" src="crops/t8_142_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>изчаквам на коловозите<b></b></li><li>внимателно пресичам релсите<b></b></li><li>изчаквам пред прелеза<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>изчаквам на коловозите</li><li>внимателно пресичам релсите</li><li class="cor">изчаквам пред прелеза <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_143_1">
+<h3>Тема 8 — вопрос 143/1 <span class="qid">(t8_143_1, PDF стр. 30)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 30)</figcaption>
+  <img loading="lazy" src="crops/t8_143_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация? Спирам, изключвам двигателя и:</p><ol><li>напускам тунела през най-близкия авариен изход<b> ✓</b></li><li>изчаквам в превозното средство на мястото на инцидента, докато пътят се освободи<b></b></li><li>спирам автомобила извън лентата за принудително спиране<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация? Спирам, изключвам двигателя и:</p><ol><li class="cor">напускам тунела през най-близкия авариен изход</li><li>изчаквам в превозното средство на мястото на инцидента, докато пътят се освободи</li><li class="cor"><mark class="bad">докато пътят се освободи</mark> спирам автомобила извън лентата за принудително спиране <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t8_145_1">
+<h3>Тема 8 — вопрос 145/1 <span class="qid">(t8_145_1, PDF стр. 30)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 8, стр. 30)</figcaption>
+  <img loading="lazy" src="crops/t8_145_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Искате да продължите по пътя с предимство. Какво трябва да очаквате при тази ситуация?</p><ol><li>че децата ще слязат на платното за движение<b> ✓</b></li><li>че микробусът ще продължи движението си по пътя с предимство<b></b></li><li>че водачът на червения автомобил няма да ме види навреме<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Искате да продължите по пътя с предимство. Какво трябва да очаквате при тази ситуация?</p><ol><li class="cor">че децата ще слязат на платното за движение</li><li>че микробусът ще продължи движението си по пътя с предимство</li><li class="cor"><mark class="bad">предимство</mark> че водачът на червения автомобил няма да ме види навреме <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t9_27_2">
+<h3>Тема 9 — вопрос 27/2 <span class="qid">(t9_27_2, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 9, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t9_27_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">На скоростен път е забранено движението на:</p><ol><li>автомобили с конструктивна максимална скорост по-малка от 50 km/h<b> ✓</b></li><li>мотоциклети с конструктивна максимална скорост по-малка от 50 km/h<b> ✓</b></li><li>мотопеди<b> ✓</b></li><li>съчленени пътни превозни средства<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">На скоростен път е забранено движението на:</p><ol><li class="cor">автомобили</li><li class="cor">мотоциклети</li><li class="cor"><mark class="bad">МПС с изключение на самоходните машини</mark></li><li><mark class="bad">МПС с изключение на мотопедите</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t9_48_1">
+<h3>Тема 9 — вопрос 48/1 <span class="qid">(t9_48_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 9, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t9_48_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При движение по автомагистрала на водача е забранено:</p><ol><li>да завива в обратна посока<b> ✓</b></li><li>да навлиза в разделителната ивица или да я пресича, включително и на местата, където тя е прекъсната<b> ✓</b></li><li>да се движи по лентата за принудително спиране<b> ✓</b></li><li>да тегли повредено МПС с твърда връзка<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При движение по автомагистрала на водача е забранено:</p><ol><li class="cor">да <mark class="bad">спира за престой извън местата обозначени за паркиране</mark></li><li class="cor">да навлиза в разделителната ивица</li><li class="cor">да <mark class="bad">пресича разделителната ивица, включително и на местата, където тя е прекъсната</mark></li><li>да <mark class="bad">се движи</mark> с <mark class="bad">прикачено ремарке</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t9_50_1">
+<h3>Тема 9 — вопрос 50/1 <span class="qid">(t9_50_1, PDF стр. 11)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 9, стр. 11)</figcaption>
+  <img loading="lazy" src="crops/t9_50_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Разрешено ли е лентата за принудително спиране на автомагистрала да се използва за движение при теглене на повредено МПС?</p><ol><li>не<b> ✓</b></li><li>да, когато се тегли с гъвкава връзка<b></b></li><li>да, но само през нощта<b></b></li><li>да, но само при теглене с твърда връзка<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Разрешено ли е лентата за принудително спиране на автомагистрала да се използва за движение при теглене на повредено МПС?</p><ol><li class="cor">не</li><li>да, когато се тегли с гъвкава връзка</li><li>да, но само през нощта</li><li>да, но само</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_10_1">
+<h3>Тема 10 — вопрос 10/1 <span class="qid">(t10_10_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t10_10_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Навлизането на пешеходци на платното за движение, непосредствено пред спрелия автобус, е забранено и затова при тази ситуация не съм задължен да намаля скоростта.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Навлизането на пешеходци на платното за движение, непосредствено пред спрелия автобус, е забранено и затова при тази ситуация не съм задължен да намаля скоростта. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_12_1">
+<h3>Тема 10 — вопрос 12/1 <span class="qid">(t10_12_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t10_12_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, при преминаване покрай автобуса съм задължен да намаля скоростта.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, при преминаване покрай автобуса съм задължен да намаля скоростта. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_13_1">
+<h3>Тема 10 — вопрос 13/1 <span class="qid">(t10_13_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t10_13_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация:</p><ol><li>трябва да спра, ако преча на пешеходците да преминават през платното за движение<b> ✓</b></li><li>мога да премина без да спирам, защото на платното за движение има очертан остров<b> ✓</b></li><li>задължен съм да спра на 1 м зад трамвая<b></b></li><li>заобикалям трамвая отляво<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация:</p><ol><li class="cor">трябва да спра, ако преча на пешеходците да преминават през платното за движение</li><li class="cor">мога да премина без да спирам, защото на платното за движение има очертан остров</li><li><mark class="bad">очертан остров</mark> задължен съм да спра на 1 м зад трамвая</li><li>заобикалям трамвая отляво</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_14_1">
+<h3>Тема 10 — вопрос 14/1 <span class="qid">(t10_14_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t10_14_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация, преминавайки покрай спрелия на спирката трамвай:</p><ol><li>трябва своевременно да намаля скоростта<b> ✓</b></li><li>трябва да управлявам с готовност за спиране<b> ✓</b></li><li>трябва да внимавам за поведението на пешеходците преминаващи през платното за движение<b> ✓</b></li><li>няма опасност от пресичащи пешеходци, защото няма пешеходна пътека<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация, преминавайки покрай спрелия на спирката трамвай:</p><ol><li class="cor">трябва своевременно да намаля скоростта</li><li class="cor">трябва да управлявам с готовност за спиране</li><li class="cor">трябва да внимавам за поведението на пешеходците преминаващи през платното за движение</li><li><mark class="bad">платното за движение</mark> няма опасност от пресичащи пешеходци, защото няма пешеходна пътека</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_17_1">
+<h3>Тема 10 — вопрос 17/1 <span class="qid">(t10_17_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t10_17_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация увеличавам скоростта, за да премина по-бързо покрай спиращия трамвай.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация увеличавам скоростта, за да премина по-бързо покрай спиращия трамвай. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_18_2">
+<h3>Тема 10 — вопрос 18/2 <span class="qid">(t10_18_2, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t10_18_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация при приближаване към трамвайната спирка:</p><ol><li>трябва да спра, когато трамваят е спрял на спирката<b> ✓</b></li><li>трябва да спра, когато трамваят спира на спирката<b> ✓</b></li><li>не съм задължен да намаля скоростта, когато трамваят потегля от спирката<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация при приближаване към трамвайната спирка:</p><ol><li class="cor">трябва да спра,</li><li class="cor">трябва да спра, когато трамваят спира на спирката</li><li>не съм задължен да намаля скоростта, когато трамваят потегля от спирката</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_19_1">
+<h3>Тема 10 — вопрос 19/1 <span class="qid">(t10_19_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t10_19_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация:</p><ol><li>задължен съм да спра на 1 м зад трамвая<b> ✓</b></li><li>трябва да спра, ако преча на пешеходците да преминават през платното за движение<b></b></li><li>заобикалям трамвая отляво<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация:</p><ol><li class="cor">задължен съм да спра на 1 м зад трамвая</li><li>трябва да спра, ако преча на пешеходците да преминават през платното за движение</li><li><mark class="bad">движение</mark> заобикалям трамвая отляво</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_20_1">
+<h3>Тема 10 — вопрос 20/1 <span class="qid">(t10_20_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t10_20_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация преминавам, без да спирам покрай спрелия на спирката трамвай, защото той е със затворени врати.</p><ol><li>неправилно<b> ✓</b></li><li>правилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация преминавам, без да спирам покрай спрелия на спирката трамвай, защото той е със затворени врати. <mark class="bad">неправилно правилно</mark></p><ol><li class="cor">неправилно</li><li>правилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_33_1">
+<h3>Тема 10 — вопрос 33/1 <span class="qid">(t10_33_1, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t10_33_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация:</p><ol><li>съществува опасност пешеходци да пресичат платното за движение пред автобуса<b> ✓</b></li><li>трябва да спра зад автобуса<b></b></li><li>мога да премина, като намаля скоростта и управлявам с готовност за спиране<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация:</p><ol><li class="cor">съществува опасност пешеходци да пресичат платното за движение пред автобуса</li><li><mark class="bad">движение пред автобуса</mark> трябва да спра зад автобуса</li><li class="cor">мога да премина, като намаля скоростта и управлявам с готовност за спиране <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t10_34_1">
+<h3>Тема 10 — вопрос 34/1 <span class="qid">(t10_34_1, PDF стр. 7)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 10, стр. 7)</figcaption>
+  <img loading="lazy" src="crops/t10_34_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Как трябва да постъпите при тази ситуация?</p><ol><li>разрешено е да премина покрай автобуса, като намаля скоростта, за да мога в случай на необходимост да спра<b> ✓</b></li><li>трябва да спра, защото е забранено преминаването покрай спрял на спирката автобус<b></b></li><li>преминавам с повишено внимание, защото пешеходци могат да преминат през платното за движение<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Как трябва да постъпите при тази ситуация?</p><ol><li class="cor">разрешено е да премина покрай автобуса, като намаля скоростта, за да мога в случай на необходимост да спра</li><li>трябва да спра, защото е забранено преминаването покрай спрял на спирката автобус</li><li class="cor">преминавам с повишено внимание, защото пешеходци могат да преминат през платното за движение <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t11_36_1">
+<h3>Тема 11 — вопрос 36/1 <span class="qid">(t11_36_1, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 11, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t11_36_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация водачът на зеления автомобил трябва:</p><ol><li>да пропусне автомобила със специален режим на движение<b> ✓</b></li><li>да пропусне двата автомобила<b></b></li><li>да премине преди двата автомобила<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация водачът на зеления автомобил трябва:</p><ol><li class="cor">да пропусне автомобила</li><li>да пропусне двата автомобила</li><li>да премине преди двата автомобила</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t11_38_1">
+<h3>Тема 11 — вопрос 38/1 <span class="qid">(t11_38_1, PDF стр. 9)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 11, стр. 9)</figcaption>
+  <img loading="lazy" src="crops/t11_38_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При тази ситуация водачът на жълтия автомобил трябва:</p><ol><li>да пропусне автомобила със специален режим на движение<b> ✓</b></li><li>да премине преди двата автомобила<b></b></li><li>да пропусне двата автомобила<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При тази ситуация водачът на жълтия автомобил трябва:</p><ol><li class="cor">да пропусне автомобила</li><li>да премине преди двата автомобила</li><li>да пропусне двата автомобила</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t11_44_3">
+<h3>Тема 11 — вопрос 44/3 <span class="qid">(t11_44_3, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 11, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t11_44_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">На водача на МПС със специален режим на движение</p><ol><li>е разрешено да преминава при забраняващ сигнал на светофара<b> ✓</b></li><li>е разрешено да надвишава разрешената максимална скорост на движение<b> ✓</b></li><li>е разрешено да не се съобразява с организацията на движението, относно посока на движение и завиване в определени направления<b> ✓</b></li><li>е забранено да преминава, без да спира, при наличие на пътен знак, който изисква това<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">На водача на МПС със специален режим на движение <mark class="bad">е разрешено да преминава при забраняващ сигнал на светофара е разрешено да надвишава разрешената максимална скорост на движение е разрешено да не се съобразява с организацията на движението, относно посока на движение и завиване в определени направления е забранено да преминава, без да спира, при наличие на пътен знак, който изисква това</mark></p><ol><li class="cor">е разрешено да преминава при забраняващ сигнал на светофара</li><li class="cor">е разрешено да надвишава разрешената максимална скорост на движение</li><li class="cor">е разрешено да не се съобразява с организацията на движението, относно посока на движение и завиване в определени направления</li><li>е забранено да преминава, без да спира, при наличие на пътен знак, който изисква това</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t12_44_1">
+<h3>Тема 12 — вопрос 44/1 <span class="qid">(t12_44_1, PDF стр. 10)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 12, стр. 10)</figcaption>
+  <img loading="lazy" src="crops/t12_44_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Паркирането е забранено:</p><ol><li>на пешеходна пътека<b> ✓</b></li><li>на разстояние по-малко от 5 м преди пешеходна пътека<b> ✓</b></li><li>на разстояние по-малко от 5 м след пешеходна пътека<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Паркирането е забранено:</p><ol><li class="cor">на пешеходна пътека</li><li class="cor">на разстояние по-малко от 5 м преди пешеходна пътека</li><li>на разстояние по-малко от 5 м след пешеходна пътека <mark class="bad">Паркирането е забранено:</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t13_5_1">
+<h3>Тема 13 — вопрос 5/1 <span class="qid">(t13_5_1, PDF стр. 1)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 13, стр. 1)</figcaption>
+  <img loading="lazy" src="crops/t13_5_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">При движение през нощта по неосветен път скоростта се избира в зависимост и от дължината на участъка, осветен от фаровете.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">При движение през нощта по неосветен път скоростта се избира в зависимост и от дължината на участъка, осветен от фаровете. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t13_9_1">
+<h3>Тема 13 — вопрос 9/1 <span class="qid">(t13_9_1, PDF стр. 2)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 13, стр. 2)</figcaption>
+  <img loading="lazy" src="crops/t13_9_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">През деня, моторните превозни средства се движат с включени светлини за движение през деня или с къси светлини.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">През деня, моторните превозни средства се движат с включени светлини за движение през деня или с къси светлини. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t13_14_1">
+<h3>Тема 13 — вопрос 14/1 <span class="qid">(t13_14_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 13, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t13_14_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Използването на дългите светлини е забранено, когато при снеговалеж видимостта е намалена.</p><ol><li>правилно<b></b></li><li>не е забранено, но е неправилно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Използването на дългите светлини е забранено, когато при снеговалеж видимостта е намалена. <mark class="bad">правилно не е забранено, но е неправилно</mark></p><ol><li>правилно</li><li class="cor">не е забранено, но е неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t13_24_1">
+<h3>Тема 13 — вопрос 24/1 <span class="qid">(t13_24_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 13, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t13_24_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Този знак сигнализира за:</p><ol><li>задължително движение с вериги за сняг най-малко на две от двигателните колела<b> ✓</b></li><li>хлъзгав участък от пътя<b></b></li><li>забрана за движение с неподходящи за сезона гуми<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Този знак сигнализира за:</p><ol><li class="cor">задължително движение с вериги за сняг най-малко на две от двигателните колела</li><li><mark class="bad">колела</mark> хлъзгав участък от пътя</li><li>забрана за движение с неподходящи за сезона гуми</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t14_1_1">
+<h3>Тема 14 — вопрос 1/1 <span class="qid">(t14_1_1, PDF стр. 1)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 14, стр. 1)</figcaption>
+  <img loading="lazy" src="crops/t14_1_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Движението при едни и същи условия, по ежедневно използван маршрут, води до привикване с пътната обстановка и отслабване на вниманието.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Движението при едни и същи условия, по ежедневно използван маршрут, води до привикване с пътната обстановка и отслабване на вниманието. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t14_5_1">
+<h3>Тема 14 — вопрос 5/1 <span class="qid">(t14_5_1, PDF стр. 1)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 14, стр. 1)</figcaption>
+  <img loading="lazy" src="crops/t14_5_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Неправилното положение на тялото на водача по време на управление води до по-бърза умора.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Неправилното положение на тялото на водача по време на управление води до по-бърза умора. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t14_11_1">
+<h3>Тема 14 — вопрос 11/1 <span class="qid">(t14_11_1, PDF стр. 2)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 14, стр. 2)</figcaption>
+  <img loading="lazy" src="crops/t14_11_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Превозването на предмети върху покрива на автомобила води до увеличаване на разхода на гориво.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Превозването на предмети върху покрива на автомобила води до увеличаване на разхода на гориво. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t14_18_1">
+<h3>Тема 14 — вопрос 18/1 <span class="qid">(t14_18_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 14, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t14_18_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Пониженото налягане на въздуха в автомобилните гуми води до увеличаване на разхода на гориво.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Пониженото налягане на въздуха в автомобилните гуми води до увеличаване на разхода на гориво. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t15_14_1">
+<h3>Тема 15 — вопрос 14/1 <span class="qid">(t15_14_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 15, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t15_14_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Приемането на различни освежителни напитки, като силно кафе или чай има продължителен ободрителен ефект върху водача.</p><ol><li>правилно<b></b></li><li>неправилно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Приемането на различни освежителни напитки, като силно кафе или чай има продължителен ободрителен ефект върху водача. <mark class="bad">правилно неправилно</mark></p><ol><li>правилно</li><li class="cor">неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t16_42_2">
+<h3>Тема 16 — вопрос 42/2 <span class="qid">(t16_42_2, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 16, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t16_42_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Кой от изброените документи е задължен да носи водачът, когато управлява МПС?</p><ol><li>знак за първоначален технически преглед или удостоверение за периодичен преглед за техническа изправност<b> ✓</b></li><li>свидетелство за регистрация на МПС<b> ✓</b></li><li>документ за сключена застраховка „Гражданска отговорност” на автомобилиста<b> ✓</b></li><li>документ за платен данък МПС<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Кой от изброените документи е задължен да носи водачът, когато управлява МПС?</p><ol><li class="cor"><mark class="bad">свидетелство</mark> за <mark class="bad">управление валидно</mark> за <mark class="bad">категорията на МПС, което управлява</mark></li><li class="cor">свидетелство за регистрация на МПС</li><li class="cor">документ за сключена застраховка „Гражданска отговорност”</li><li>документ за платен данък МПС</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t16_46_1">
+<h3>Тема 16 — вопрос 46/1 <span class="qid">(t16_46_1, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 16, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t16_46_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">За да участва в движението, МПС задължително трябва да бъде:</p><ol><li>регистрирано<b> ✓</b></li><li>със сключена застраховка &quot;Каско&quot;<b></b></li><li>оборудвано с инструменти за ремонт<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">За да участва в движението, МПС задължително трябва да бъде:</p><ol><li class="cor">регистрирано</li><li>със сключена застраховка <mark class="bad">&amp;quot;Каско&amp;quot;</mark></li><li>оборудвано с инструменти за ремонт</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t17_39_1">
+<h3>Тема 17 — вопрос 39/1 <span class="qid">(t17_39_1, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 17, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t17_39_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Контролните органи временно прекратяват регистрацията на моторно превозно средство на собственик, който управлява моторно превозно средство:</p><ol><li>с концентрация на алкохол в кръвта над 0,5 на хиляда<b> ✓</b></li><li>не изпълни предписанието за медицинско изследване за установяване на концентрацията на алкохол в кръвта или употреба на наркотични вещества или техни аналози<b> ✓</b></li><li>откаже да му бъде извършена проверка с техническо средство за установяване на концентрацията на алкохол в кръвта или употребата на наркотични вещества или техни аналози<b> ✓</b></li><li>и превиши максимално разрешената скорост в населено място с повече от 50 km/h<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Контролните органи временно прекратяват регистрацията на моторно превозно средство на собственик, който управлява моторно превозно средство:</p><ol><li class="cor">с концентрация на алкохол в кръвта над 0,5 на хиляда <mark class="bad">не изпълни предписанието за медицинско изследване за установяване на</mark></li><li class="cor">не изпълни предписанието за медицинско изследване за установяване на концентрацията на алкохол в кръвта или употреба на наркотични вещества или техни аналози <mark class="bad">откаже да му бъде извършена проверка с техническо средство за установяване</mark></li><li class="cor">откаже да му бъде извършена проверка с техническо средство за установяване на концентрацията на алкохол в кръвта или употребата на наркотични вещества или техни аналози</li><li>и превиши максимално разрешената скорост в населено място с повече от 50 km/h</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t18_21_1">
+<h3>Тема 18 — вопрос 21/1 <span class="qid">(t18_21_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 18, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t18_21_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водач, който е участник в ПТП, при което има пострадали хора:</p><ol><li>трябва да изчака на мястото на произшествието представител на полицията<b> ✓</b></li><li>трябва да вземе мерки следите от произшествието да бъдат запазени до тяхното фиксиране или описване от компетентните служби<b> ✓</b></li><li>не трябва да консумира алкохолни напитки до пристигането на контролните органи<b> ✓</b></li><li>може да напусне местопроизшествието, след като установи какви са последиците от него<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водач, който е участник в ПТП, при което има пострадали хора:</p><ol><li class="cor">трябва да изчака на мястото на произшествието представител на полицията</li><li class="cor">трябва да вземе мерки следите от произшествието да бъдат запазени до тяхното фиксиране или описване от компетентните служби</li><li class="cor"><mark class="bad">компетентните служби</mark> не трябва да консумира алкохолни напитки до пристигането на контролните органи</li><li>може да напусне местопроизшествието, след като установи какви са последиците от него</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t18_26_1">
+<h3>Тема 18 — вопрос 26/1 <span class="qid">(t18_26_1, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 18, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t18_26_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водач, който е участник в ПТП, съобразно необходимостта, уведомява за произшествието:</p><ol><li>органите за контрол на МВР, когато при произшествието има пострадали хора<b> ✓</b></li><li>собствениците на имуществото, което е повредено в резултат на произшествието<b> ✓</b></li><li>органите за контрол на МВР, когато няма пострадали хора, но между участниците в произшествието няма съгласие относно обстоятелствата, свързани с него<b> ✓</b></li><li>Изпълнителна агенция „Автомобилна администрация”<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водач, който е участник в ПТП, съобразно необходимостта, уведомява за произшествието:</p><ol><li class="cor">органите за контрол на МВР, когато при произшествието има пострадали хора</li><li class="cor">собствениците на имуществото, което е повредено в резултат на произшествието</li><li class="cor">органите за контрол на МВР, когато няма пострадали хора, но между участниците в произшествието няма съгласие относно обстоятелствата, свързани с него</li><li><mark class="bad">съгласие относно обстоятелствата, свързани с него</mark> Изпълнителна агенция „Автомобилна администрация”</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t18_26_2">
+<h3>Тема 18 — вопрос 26/2 <span class="qid">(t18_26_2, PDF стр. 5)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 18, стр. 5)</figcaption>
+  <img loading="lazy" src="crops/t18_26_2.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Водач, който е участник в ПТП, уведомява за произшествието компетентната служба на МВР когато:</p><ol><li>при произшествието има пострадали хора<b> ✓</b></li><li>ПТП е само с имуществени вреди, но между участниците няма съгласие относно обстоятелствата, свързани с него<b> ✓</b></li><li>винаги, независимо от обстоятелствата<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Водач, който е участник в ПТП, уведомява за произшествието компетентната служба на МВР когато:</p><ol><li class="cor">при произшествието има пострадали хора</li><li class="cor">ПТП е само с имуществени вреди, но между участниците няма съгласие относно обстоятелствата, свързани с него</li><li><mark class="bad">него</mark> винаги, независимо от обстоятелствата <mark class="bad">номер 112 е:</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t18_31_1">
+<h3>Тема 18 — вопрос 31/1 <span class="qid">(t18_31_1, PDF стр. 6)</span></h3>
+<div class="badges"><span class="badge">Текст ответа не совпадает с PDF</span> <span class="badge">Не совпадает правильный ответ</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 18, стр. 6)</figcaption>
+  <img loading="lazy" src="crops/t18_31_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li>да се движа възможно най-вляво<b> ✓</b></li><li>продължавам движението си в заеманата лента<b></b></li><li>намалявам скоростта си на движение<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Какъв е правилният начин на действие при тази ситуация?</p><ol><li class="cor">да се движа възможно най-вляво</li><li>продължавам движението си в заеманата лента</li><li class="cor">намалявам скоростта си на движение <mark class="bad">0:00 / 0:15</mark></li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t19_11_1">
+<h3>Тема 19 — вопрос 11/1 <span class="qid">(t19_11_1, PDF стр. 3)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 19, стр. 3)</figcaption>
+  <img loading="lazy" src="crops/t19_11_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Трябва ли водачът да следи нивото на маслото в картера на двигателя.</p><ol><li>да<b> ✓</b></li><li>не<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Трябва ли водачът да следи нивото на маслото в картера на двигателя. <mark class="bad">да не</mark></p><ol><li class="cor">да</li><li>не</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t19_19_1">
+<h3>Тема 19 — вопрос 19/1 <span class="qid">(t19_19_1, PDF стр. 4)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 19, стр. 4)</figcaption>
+  <img loading="lazy" src="crops/t19_19_1.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Когато през зимата няма сняг, използването на зимни гуми не е необходимо.</p><ol><li>правилно<b></b></li><li>неправилно<b> ✓</b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Когато през зимата няма сняг, използването на зимни гуми не е необходимо. <mark class="bad">правилно неправилно</mark></p><ol><li>правилно</li><li class="cor">неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+<section id="t19_42_3">
+<h3>Тема 19 — вопрос 42/3 <span class="qid">(t19_42_3, PDF стр. 8)</span></h3>
+<div class="badges"><span class="badge">Текст вопроса не совпадает с PDF</span></div>
+<div class="cols">
+ <figure><figcaption>Оригинал (PDF, тема 19, стр. 8)</figcaption>
+  <img loading="lazy" src="crops/t19_42_3.png"></figure>
+ <div>
+  <div class="panel pdf"><h4>Эталон из PDF (текстовый слой)</h4>
+   <p class="q">Антиблокиращата спирачна система (ABS) не позволява на колелата да блокират при рязко спиране.</p><ol><li>правилно<b> ✓</b></li><li>неправилно<b></b></li></ol></div>
+  <div class="panel app"><h4>Сейчас в приложении <span class="hint">(красным — отличия от PDF; зелёная рамка — помечен правильным)</span></h4>
+   <p class="q">Антиблокиращата спирачна система (ABS) не позволява на колелата да блокират при рязко спиране. <mark class="bad">правилно неправилно</mark></p><ol><li class="cor">правилно</li><li>неправилно</li></ol></div>
+ </div>
+</div>
+</section>
+</html>

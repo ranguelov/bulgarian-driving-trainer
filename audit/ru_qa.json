@@ -1,0 +1,37 @@
+[
+ {
+  "id": "t7_127_1",
+  "field": "answer_2",
+  "type": "untranslated",
+  "bg": "велосипедиста",
+  "ru": "велосипедиста"
+ },
+ {
+  "id": "t8_138_1",
+  "field": "answer_3",
+  "type": "untranslated",
+  "bg": "велосипедиста",
+  "ru": "велосипедиста"
+ },
+ {
+  "id": "t1_5_1",
+  "field": "answer_4",
+  "type": "untranslated",
+  "bg": "категория Ткт",
+  "ru": "категория Ткт"
+ },
+ {
+  "id": "t1_6_1",
+  "field": "answer_2",
+  "type": "untranslated",
+  "bg": "категория Ткт",
+  "ru": "категория Ткт"
+ },
+ {
+  "id": "t1_11_1",
+  "field": "answer_3",
+  "type": "untranslated",
+  "bg": "категория Ткт",
+  "ru": "категория Ткт"
+ }
+]

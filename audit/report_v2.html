@@ -1,0 +1,174 @@
+<!doctype html><html lang="ru"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Аудит v2 — ПДД Тренажор</title>
+<style>
+body{font:15px/1.5 -apple-system,Segoe UI,sans-serif;margin:24px auto;max-width:1150px;padding:0 16px;color:#1a1a1a}
+h1{font-size:24px} h2{font-size:19px;margin-top:34px;border-bottom:2px solid #ddd;padding-bottom:6px}
+h3{margin:0 0 6px} .qid{color:#888;font-weight:400;font-size:13px}
+table{border-collapse:collapse;margin:12px 0} td,th{border:1px solid #ccc;padding:6px 14px;text-align:left}
+th{background:#f5f5f7} .ok{color:#2e7d32;font-weight:600}
+.big{font-size:17px;background:#eef7ee;border:1px solid #bcd9bc;border-radius:10px;padding:14px 18px;margin:14px 0}
+section{border-top:1px solid #e3e3e3;padding:18px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-top:10px}
+figure{margin:0 0 8px} figcaption{font-size:12px;color:#666;margin-bottom:4px}
+img{max-width:100%;border:1px solid #ccc;border-radius:6px;background:#fff}
+.panel{border:1px solid #ddd;border-radius:8px;padding:10px 14px}
+.panel.bg{background:#f4faf4} .panel.ru{background:#f4f7fb}
+.panel h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:#555}
+.q{font-weight:600;margin:6px 0} ol{margin:4px 0;padding-left:22px} li{margin:3px 0}
+li.cor{outline:2px solid #2e7d32;outline-offset:2px;border-radius:4px}
+ul.checks li{margin:6px 0}
+</style>
+<h1>Аудит v2 — соответствие PDF и качество перевода</h1>
+<p>Дата: 13.06.2026. Повторный независимый прогон: PDF перепарсены с нуля, сверка с текущим <code>questions.js</code>.</p>
+
+<div class="big">✅ <b>Болгарский текст: 1514 / 1514 вопросов совпадают с официальными PDF посимвольно</b> —
+тексты вопросов, тексты и количество ответов, баллы и отметки правильных ответов. Расхождений: <b>0</b>.</div>
+<div class="big">✅ <b>Русский перевод: покрытие 100%</b> (1514 вопросов, 5069 ответов) —
+все автопроверки пройдены, смысловая вычитка выборки из 57 вопросов по всем 19 темам ошибок не выявила.</div>
+<div class="big">✅ <b>KV-оверрайды: 192 устаревшие текстовые правки удалены из прода</b> —
+текст больше не подменяется поверх questions.js (медиа-оверрайды сохранены).</div>
+
+<h2>1. Сверка с PDF по темам</h2>
+<table><tr><th>Тема</th><th>Вопросов</th><th>Болгарский текст</th><th>Русский перевод</th></tr>
+<tr><td>Тема 1</td><td>84</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 2</td><td>87</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 3</td><td>97</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 4</td><td>200</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 5</td><td>46</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 6</td><td>89</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 7</td><td>170</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 8</td><td>178</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 9</td><td>77</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 10</td><td>36</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 11</td><td>59</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 12</td><td>82</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 13</td><td>39</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 14</td><td>35</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 15</td><td>44</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 16</td><td>46</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 17</td><td>57</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 18</td><td>38</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr><tr><td>Тема 19</td><td>50</td><td class='ok'>✓ 1:1 с PDF</td><td class='ok'>✓ переведено</td></tr>
+<tr><th>Итого</th><th>1514</th><th class="ok">0 расхождений</th><th class="ok">0 пропусков</th></tr></table>
+<p>Метод: эталон извлечён из текстового слоя PDF по координатам таблиц (границы ячеек, чекбоксы-якоря,
+заливка/галочка правильного ответа), сравнение детерминированное, посимвольное после нормализации пробелов.</p>
+
+<h2>2. Проверки русского перевода</h2>
+<ul class="checks">
+<li><b>Полнота:</b> question_ru и text_ru заполнены у 100% записей, пустых — 0.</li>
+<li><b>Числа и единицы:</b> все числа, km/h, kW, cm³, тоннажи и метражи совпадают с болгарским оригиналом (0 расхождений).</li>
+<li><b>Болгарские следы:</b> поиск по болгарской лексике и графике («трябва», «защото», «ъ» внутри слов и т.п.) — 0 находок.</li>
+<li><b>Непереведённые строки:</b> 0 (5 ложных срабатываний — совпадающие формы вроде «велосипедиста», «категория Ткт»).</li>
+<li><b>Картинки-ответы:</b> плейсхолдеры «Изображение N» согласованы — 0 ошибок.</li>
+<li><b>Согласование падежей с вопросом:</b> сплошной скан конструкций («из-за:», «для:», «относится к:»,
+«запрещено движение:», «преимущество имеет водитель:» и др.) — внесено 165 контекстных правок, после чего скан чистый.</li>
+<li><b>Смысловая вычитка:</b> стратифицированная выборка 57 вопросов (по 3 из каждой темы) — смысл, термины и правильные ответы соответствуют болгарскому оригиналу.</li>
+</ul>
+
+<h2>3. Доказательная галерея: PDF → BG → RU</h2>
+<p>12 случайных вопросов из разных тем. Рамка зелёным — правильный ответ (совпадает с отметкой в PDF).</p>
+
+<section>
+<h3>Тема 1 — вопрос 9/2 <span class="qid">(t1_9_2, PDF стр. 3)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t1_9_2.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">На водач с правоспособност за категория В е разрешено да управлява товарен автомобил, когато:</p><ol><li class="cor">допустимата максимална маса на автомобила не надвишава 3,5 t</li><li>товара на автомобила не надвишава 3,5 t</li><li>водачът има стаж над 5 години</li><li>притежава правоспособност за категория Ткт</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Водителю с правами категории B разрешено управлять грузовым автомобилем, когда:</p><ol><li class="cor">допустимая максимальная масса автомобиля не превышает 3,5 t</li><li>груз автомобиля не превышает 3,5 t</li><li>водитель имеет стаж более 5 лет</li><li>имеет права категории Ткт</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 2 — вопрос 2/1 <span class="qid">(t2_2_1, PDF стр. 1)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t2_2_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">Кой знак означава “Край на пътя с предимство”?</p><ol><li class="cor">Изображение 1</li><li>Изображение 2</li><li>Изображение 3</li><li>Изображение 4</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Какой знак означает &quot;Конец дороги с преимуществом&quot;?</p><ol><li class="cor">Изображение 1</li><li>Изображение 2</li><li>Изображение 3</li><li>Изображение 4</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 3 — вопрос 38/1 <span class="qid">(t3_38_1, PDF стр. 13)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t3_38_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">Когато подава сигнал с ръка, при потегляне и включване в движението от дясната част на пътя, водачът на двуколесното ППС сигнализира чрез:</p><ol><li class="cor">Изображение 1</li><li>Изображение 2</li><li>Изображение 3</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Подавая сигнал рукой при трогании и включении в движение с правой стороны дороги, водитель двухколёсного ТС сигнализирует:</p><ol><li class="cor">Изображение 1</li><li>Изображение 2</li><li>Изображение 3</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 4 — вопрос 97/3 <span class="qid">(t4_97_3, PDF стр. 31)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t4_97_3.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">На какво разстояние преди опасността се поставят предупредителните пътни знаци?</p><ol><li class="cor">от 50 до 100 метра в населено място</li><li class="cor">от 100 до 150 метра извън населено място</li><li>на не повече от 50 метра</li><li>непосредствено преди опасността</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">На каком расстоянии до опасности устанавливаются предупреждающие дорожные знаки?</p><ol><li class="cor">от 50 до 100 метров в населённом пункте</li><li class="cor">от 100 до 150 метров вне населённого пункта</li><li>не более чем на 50 метров</li><li>непосредственно перед опасностью</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 5 — вопрос 30/2 <span class="qid">(t5_30_2, PDF стр. 7)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t5_30_2.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">На кои ППС е разрешено движението в BUS - лентата след този знак?</p><ol><li class="cor">на ППС от редовните линии за обществен превоз на пътници</li><li>на всички автобуси</li><li>на таксиметровите автомобили</li><li>на бавнодвижещите се превозни средства</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Каким ТС разрешено движение по BUS-полосе после этого знака?</p><ol><li class="cor">ТС регулярных линий общественной перевозки пассажиров</li><li>всем автобусам</li><li>таксомоторным автомобилям</li><li>тихоходным транспортным средствам</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 6 — вопрос 11/2 <span class="qid">(t6_11_2, PDF стр. 5)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t6_11_2.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">При тази ситуация водачът на червения автомобил може да се движи с разрешената максимална скорост:</p><ol><li class="cor">само при наличието на необходимите условия за безопасност</li><li>във всички случаи</li><li>само, ако има стаж като водач над 2 години</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">При этой ситуации водитель красного автомобиля может двигаться с разрешённой максимальной скоростью:</p><ol><li class="cor">только при наличии необходимых условий безопасности</li><li>во всех случаях</li><li>только если имеет стаж водителя более 2 лет</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 7 — вопрос 87/1 <span class="qid">(t7_87_1, PDF стр. 17)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t7_87_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">Изпреварването е забранено, когато:</p><ol><li class="cor">при използване на пътна лента за насрещното движение не е възможно безпрепятственото връщане в напуснатата лента</li><li class="cor">видимостта е ограничена</li><li>изпреварващият автомобил е с повредени пътепоказатели</li><li>се извършва по двулентов двупосочен път</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Обгон запрещён, когда:</p><ol><li class="cor">при использовании полосы встречного движения невозможно беспрепятственное возвращение в покинутую полосу</li><li class="cor">видимость ограничена</li><li>обгоняющий автомобиль имеет неисправные указатели поворота</li><li>выполняется по двухполосной двусторонней дороге</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 8 — вопрос 71/1 <span class="qid">(t8_71_1, PDF стр. 16)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t8_71_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">При тази ситуация трябва:</p><ol><li class="cor">да премина преди червения автомобил</li><li class="cor">да пропусна синия автомобил</li><li>да пропусна червения автомобил</li><li>да премина преди синия автомобил</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">При этой ситуации необходимо:</p><ol><li class="cor">проехать раньше красного автомобиля</li><li class="cor">пропустить синий автомобиль</li><li>пропустить красный автомобиль</li><li>проехать раньше синего автомобиля</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 9 — вопрос 31/1 <span class="qid">(t9_31_1, PDF стр. 7)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t9_31_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">На автомобилен път е забранено движението на:</p><ol><li class="cor">мотопеди</li><li class="cor">трактори</li><li>леки автомобили с ремаркета</li><li class="cor">велосипеди</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">На автомобильной дороге запрещено движение:</p><ol><li class="cor">мопедов</li><li class="cor">тракторов</li><li>легковых автомобилей с прицепами</li><li class="cor">велосипедов</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 10 — вопрос 16/1 <span class="qid">(t10_16_1, PDF стр. 4)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t10_16_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">При тази ситуация, настигайки спиращия на спирката трамвай, трябва:</p><ol><li class="cor">да спра</li><li>да продължа движението с повишено внимание</li><li>да увелича скоростта</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">При этой ситуации, догоняя останавливающийся на остановке трамвай, необходимо:</p><ol><li class="cor">остановиться</li><li>продолжить движение с повышенным вниманием</li><li>увеличить скорость</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 11 — вопрос 13/1 <span class="qid">(t11_13_1, PDF стр. 3)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t11_13_1.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">Каква трябва да бъде дължината на твърдата връзка при теглене на повредено МПС?</p><ol><li class="cor">от 2 до 4 м</li><li>до 2 м</li><li>от 4 до 6 м</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">Какой должна быть длина жёсткой сцепки при буксировке неисправного механического ТС?</p><ol><li class="cor">от 2 до 4 м</li><li>до 2 м</li><li>от 4 до 6 м</li></ol></div>
+</div>
+</section>
+<section>
+<h3>Тема 12 — вопрос 60/2 <span class="qid">(t12_60_2, PDF стр. 14)</span></h3>
+<figure><figcaption>Оригинал из PDF</figcaption><img loading="lazy" src="crops_v2/t12_60_2.png"></figure>
+<div class="cols">
+ <div class="panel bg"><h4>В приложении — BG (= PDF посимвольно)</h4>
+  <p class="q">При паркиране преди кръстовище водачът е в нарушение, ако разстоянието от автомобила до кръстовището е:</p><ol><li class="cor">2 м</li><li class="cor">4 м</li><li>6 м</li><li>10 м</li></ol></div>
+ <div class="panel ru"><h4>В приложении — RU (новый перевод)</h4>
+  <p class="q">При парковке перед перекрёстком водитель совершает нарушение, если расстояние от автомобиля до перекрёстка составляет:</p><ol><li class="cor">2 м</li><li class="cor">4 м</li><li>6 м</li><li>10 м</li></ol></div>
+</div>
+</section>
+</html>

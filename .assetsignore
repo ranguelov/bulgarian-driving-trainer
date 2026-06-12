@@ -3,3 +3,4 @@ images/questions_preview/
 *.py
 node_modules/
 .git/
+audit/

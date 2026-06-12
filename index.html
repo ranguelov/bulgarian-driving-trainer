@@ -945,7 +945,10 @@ body {
           </div>
         </div>
 
-
+        <!-- Версия сборки -->
+        <div class="build-info" style="text-align:center;padding:28px 0 16px;font-size:12px;color:#9a93a5;">
+          Версия 1.0 · обновлено 13.06.2026, 01:50
+        </div>
 
       </div>
     </div>
@@ -1530,10 +1533,14 @@ function loadQuestion(idx) {
   // Question text
   document.getElementById('qt-quiz').textContent = QuizEngine.getQuestionText(q, lang);
 
-  // Question image
+  // Question image / video
   const qi = document.getElementById('qi-quiz');
   const hasQImg = q.has_image && q.images?.length > 0 && !isAnswerImages(q);
-  if (hasQImg) {
+  if (q.video) {
+    // Официальное видео вопроса (источник: public-eis.rta.government.bg, кат. B)
+    qi.style.display='';
+    qi.innerHTML=`<video src="${q.video}" class="question-illustration" style="max-height:320px;border-radius:8px;display:block;margin:auto" autoplay muted loop playsinline controls></video>`;
+  } else if (hasQImg) {
     qi.style.display='';
     const imgFile = q.images[0];
     const imgKey  = imgFile.replace(/\.[^.]+$/, '');
@@ -2043,6 +2050,9 @@ function goTo(id) {
   // Блобы только на главной
   const blobs = document.getElementById('blob-layer');
   if (blobs) blobs.style.display = (id === 's-home') ? '' : 'none';
+  // theme-color: главная — фиолетовая, остальные — белые
+  const tc = document.querySelector('meta[name="theme-color"]');
+  if (tc) tc.content = (id === 's-home') ? '#E1DCE7' : '#ffffff';
 }
 function openOv(id) {
   const el=document.getElementById(id); if(!el) return;

@@ -9,3 +9,10 @@ start-server.sh
 tickets/
 img/
 CONTEXT_FOR_NEXT_SESSION.md
+
+# Wrangler local state
+.wrangler/
+
+# Audit backups (тяжёлые бэкапы questions.js)
+audit/questions.js.bak*
+audit/parse_log.txt
